@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Satoshi", "sans-serif";
+
+  --color-brand-light: #02c39a;
+  --color-brand: #00a896;
+  --color-brand-dark: #028090;
+
+  --color-background: #fffff0;
+  --color-foreground: #05668d;
+  --color-muted: #f0f0f0;
+}
+html,
+body,
+#root {
+  background-color: #f0f0f0;
+  height: 100%;
+  width: 100%;
+}

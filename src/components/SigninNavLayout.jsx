@@ -1,0 +1,11 @@
+import { Outlet } from "react-router-dom";
+import Nav from "./Nav";
+
+export default function SigninNavLayout() {
+  return (
+    <div className="flex flex-col">
+      <Nav />
+      <Outlet />
+    </div>
+  );
+}
