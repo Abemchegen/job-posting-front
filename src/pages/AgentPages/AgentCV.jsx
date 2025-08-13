@@ -12,67 +12,49 @@ import { useEffect } from "react";
 import Button from "../../components/Button";
 import AgentCvCard from "../../components/AgentComponents/AgentCvCard";
 import AgentCvElement from "../../components/AgentComponents/AgentCvElement";
+import { useAuth } from "../../context/authContext";
+import { useApplications } from "../../hook/useApplications";
 
 export default function AgentCV() {
-  // Config arrays for each section
+  const { user } = useAuth();
+  const { uploadCv, updateCv, deleteCv } = useApplications();
   const educationConfig = [
-    { key: "educationLevel", label: "Education" },
-    { key: "educationInstitution", label: "Institution" },
+    { key: "level", label: "Education" },
+    { key: "institution", label: "Institution" },
     { key: "gpa", label: "Gpa" },
   ];
 
   const experianceConfig = [
-    { key: "experianceName", label: "Experiance" },
-    { key: "experianceDescription", label: "Description" },
-    { key: "experianceYear", label: "Year" },
+    { key: "name", label: "Experiance" },
+    { key: "description", label: "Description" },
+    { key: "year", label: "Year" },
   ];
   const projectConfig = [
-    { key: "projectName", label: "Project" },
-    { key: "projectDescription", label: "Description" },
-    { key: "projectUrl", label: "Link" },
+    { key: "name", label: "Project" },
+    { key: "description", label: "Description" },
+    { key: "url", label: "Link" },
   ];
   const awardConfig = [
-    { key: "awardname", label: "Award" },
-    { key: "awardDescription", label: "Description" },
-    { key: "awardUrl", label: "Link" },
+    { key: "name", label: "Award" },
+    { key: "description", label: "Description" },
+    { key: "url", label: "Link" },
   ];
-  const [cvData, setCvData] = useState({
-    Education: [
-      {
-        educationLevel: "Highschool",
-        educationInstitution: "Don bosco",
-        gpa: "3.8",
-      },
-      {
-        educationLevel: "Degree",
-        educationInstitution: "Addis Ababa Science and Technology University",
-        gpa: "3.5",
-      },
-    ],
-    Experiance: [
-      {
-        experianceName: "Atlas Computer Technology",
-        experianceDescription: "Java Developer",
-        experianceYear: 2,
-      },
-    ],
-    Award: [
-      {
-        awardname: "hackaton leader",
-        awardDescription: "won hackathon",
-        awardUrl: "url",
-      },
-    ],
-    Project: [
-      {
-        projectName: "Food ordering Site",
-        projectDescription: "Made with react and Golang",
-        projectUrl: "url",
-      },
-    ],
-  });
 
-  const [cvIcons, SetCvIcons] = useState({
+  const [cvData, setCvData] = useState({});
+
+  useEffect(() => {
+    if (user && user.cv != null && user.cv.resume != null) {
+      setCvData({
+        Education: user.cv.resume.education,
+        Experiance: user.cv.resume.experiance,
+        Award: user.cv.resume.award,
+        Project: user.cv.resume.project,
+      });
+      console.log(cvData);
+    }
+  }, [user]);
+
+  const [expand, setExpand] = useState({
     education: false,
     project: false,
     award: false,
@@ -83,12 +65,14 @@ export default function AgentCV() {
   const [deleteEle, setDeleteEle] = useState(false);
   const [selectedItem, setSelectedItem] = useState({
     label: null,
+    id: null,
     itemIndex: null,
     config: null,
   });
   const [editFormData, setEditFormData] = useState({});
   const [addFormData, setAddFormData] = useState({});
   const [add, setAdd] = useState(false);
+
   useEffect(() => {
     if (edit && selectedItem) {
       setEditFormData({
@@ -97,56 +81,111 @@ export default function AgentCV() {
     }
   }, [edit, selectedItem]);
 
-  function handleSaveEdit() {
-    const updatedSection = [...cvData[selectedItem.label]];
-    updatedSection[selectedItem.itemIndex] = { ...editFormData };
-    setCvData({
-      ...cvData,
-      [selectedItem.label]: updatedSection,
-    });
-    console.log(updatedSection, editFormData);
-    setEdit(false);
-    setEditFormData(null);
-    setSelectedItem(null);
-  }
+  const handleSaveEdit = async () => {
+    try {
+      if (!editFormData) return;
+      const uploadData = {
+        id: selectedItem.id,
+      };
+      if (selectedItem.label == "Education") {
+        uploadData["education"] = editFormData;
+      } else if (selectedItem.label == "Project") {
+        uploadData["project"] = editFormData;
+      } else if (selectedItem.label == "Experiance") {
+        uploadData["experiance"] = editFormData;
+      } else if (selectedItem.label == "Award") {
+        uploadData["award"] = editFormData;
+      }
+      console.log(uploadData);
+      const response = await updateCv(uploadData);
+      setCvData({
+        Education: response.cv.resume.education,
+        Experiance: response.cv.resume.experiance,
+        Award: response.cv.resume.award,
+        Project: response.cv.resume.project,
+      });
+      console.log(response);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setEdit(false);
+      setSelectedItem(null);
+    }
+  };
 
-  function handleDelete() {
-    let section = [...cvData[selectedItem.label]];
-    section = section.filter((_, idx) => idx !== selectedItem.itemIndex);
-    setCvData({
-      ...cvData,
-      [selectedItem.label]: section,
-    });
-    setDeleteEle(false);
-    setSelectedItem(null);
-  }
+  const handleDelete = async () => {
+    try {
+      if (!selectedItem) return;
+      let deletename;
+      if (selectedItem.label == "Education") {
+        deletename = "education";
+      } else if (selectedItem.label == "Project") {
+        deletename = "project";
+      } else if (selectedItem.label == "Experiance") {
+        deletename = "experiance";
+      } else if (selectedItem.label == "Award") {
+        deletename = "award";
+      }
+      console.log(deletename, selectedItem.id);
+      const response = await deleteCv(selectedItem.id, deletename);
+      setCvData({
+        Education: response.cv.resume.education,
+        Experiance: response.cv.resume.experiance,
+        Award: response.cv.resume.award,
+        Project: response.cv.resume.project,
+      });
+      console.log(response);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setDeleteEle(false);
+      setSelectedItem(null);
+    }
+  };
 
-  function handleAdd() {
-    let section = [...cvData[selectedItem.label]];
-    section.push({
-      ...addFormData,
-    });
-    setCvData({
-      ...cvData,
-      [selectedItem.label]: section,
-    });
-    setAdd(false);
-    setAddFormData(null);
-    setSelectedItem(null);
-  }
+  const handleAdd = async () => {
+    try {
+      if (!addFormData) return;
+      const uploadData = {};
+      if (selectedItem.label == "Education") {
+        uploadData["education"] = [addFormData];
+      } else if (selectedItem.label == "Project") {
+        uploadData["project"] = [addFormData];
+      } else if (selectedItem.label == "Experiance") {
+        uploadData["experiance"] = [addFormData];
+      } else if (selectedItem.label == "Award") {
+        uploadData["award"] = [addFormData];
+      }
+      console.log(uploadData);
+      const response = await uploadCv(uploadData);
+      setCvData({
+        Education: response.cv.resume.education,
+        Experiance: response.cv.resume.experiance,
+        Award: response.cv.resume.award,
+        Project: response.cv.resume.project,
+      });
+      console.log(response);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setAdd(false);
+      setAddFormData(null);
+      setSelectedItem(null);
+    }
+  };
   return (
     <div className="flex justify-center m-5">
       <div className="w-4/5 min-w-sm flex flex-col items-center">
-        <h1 className="text-2xl font-bold mb-5 text-center">
+        <h1 className="text-2xl font-bold mb-10 text-center">
           You can add your education, experiance and projects here{" "}
         </h1>
         <div className="w-full  mb-3">
           <div
             className="p-5 bg-brand-dark text-white rounded-xl"
             onClick={() =>
-              SetCvIcons({
-                ...cvIcons,
-                education: !cvIcons.education,
+              setExpand({
+                ...expand,
+                education: !expand.education,
               })
             }
           >
@@ -155,11 +194,11 @@ export default function AgentCV() {
                 <GraduationCap />
                 <p className="font-bold">Education</p>
               </div>
-              {!cvIcons.education && <ArrowDown />}
-              {cvIcons.education && <ArrowUp />}
+              {!expand.education && <ArrowDown />}
+              {expand.education && <ArrowUp />}
             </div>
           </div>
-          {cvIcons.education && (
+          {expand.education && (
             <AgentCvCard
               setAdd={setAdd}
               setDelete={setDeleteEle}
@@ -175,9 +214,9 @@ export default function AgentCV() {
           <div
             className="p-5 bg-brand-dark text-white rounded-xl"
             onClick={() =>
-              SetCvIcons({
-                ...cvIcons,
-                experiance: !cvIcons.experiance,
+              setExpand({
+                ...expand,
+                experiance: !expand.experiance,
               })
             }
           >
@@ -186,11 +225,11 @@ export default function AgentCV() {
                 <Briefcase />
                 <p className="font-bold">Experiance</p>
               </div>
-              {!cvIcons.experiance && <ArrowDown />}
-              {cvIcons.experiance && <ArrowUp />}
+              {!expand.experiance && <ArrowDown />}
+              {expand.experiance && <ArrowUp />}
             </div>
           </div>
-          {cvIcons.experiance && (
+          {expand.experiance && (
             <AgentCvCard
               setAdd={setAdd}
               setDelete={setDeleteEle}
@@ -206,9 +245,9 @@ export default function AgentCV() {
           <div
             className=" p-5  bg-brand-dark text-white rounded-xl"
             onClick={() =>
-              SetCvIcons({
-                ...cvIcons,
-                project: !cvIcons.project,
+              setExpand({
+                ...expand,
+                project: !expand.project,
               })
             }
           >
@@ -217,11 +256,11 @@ export default function AgentCV() {
                 <Folder />
                 <p className="font-bold">Project</p>
               </div>
-              {!cvIcons.project && <ArrowDown />}
-              {cvIcons.project && <ArrowUp />}
+              {!expand.project && <ArrowDown />}
+              {expand.project && <ArrowUp />}
             </div>
           </div>
-          {cvIcons.project && (
+          {expand.project && (
             <AgentCvCard
               setAdd={setAdd}
               setDelete={setDeleteEle}
@@ -237,9 +276,9 @@ export default function AgentCV() {
           <div
             className="p-5 bg-brand-dark text-white rounded-xl"
             onClick={() =>
-              SetCvIcons({
-                ...cvIcons,
-                award: !cvIcons.award,
+              setExpand({
+                ...expand,
+                award: !expand.award,
               })
             }
           >
@@ -248,11 +287,11 @@ export default function AgentCV() {
                 <Medal />
                 <p className="font-bold">Awards</p>
               </div>
-              {!cvIcons.award && <ArrowDown />}
-              {cvIcons.award && <ArrowUp />}
+              {!expand.award && <ArrowDown />}
+              {expand.award && <ArrowUp />}
             </div>
           </div>
-          {cvIcons.award && (
+          {expand.award && (
             <AgentCvCard
               setAdd={setAdd}
               setDelete={setDeleteEle}
@@ -283,11 +322,12 @@ export default function AgentCV() {
                 key={field.key}
                 label={field.label}
                 type="edit"
+                field={field}
                 item={editFormData[field.key]}
                 editChange={(value) =>
                   setEditFormData((prev) => ({
                     ...prev,
-                    [field.key]: value,
+                    [field.key]: value.trim(),
                   }))
                 }
               />
@@ -347,14 +387,14 @@ export default function AgentCV() {
 
             {selectedItem.config.map((field) => (
               <AgentCvElement
+                field={field}
                 key={field.key}
                 label={field.label}
                 type="add"
-                item={editFormData[field.key]}
                 addChange={(value) =>
                   setAddFormData((prev) => ({
                     ...prev,
-                    [field.key]: value,
+                    [field.key]: value.trim(),
                   }))
                 }
               />

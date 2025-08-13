@@ -1,8 +1,6 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
 class ApiService {
   async request(endpoint, options = {}) {
-    const url = `${API_BASE_URL}${endpoint}`;
+    const url = `${endpoint}`;
 
     // Create base headers
     const baseHeaders = {
@@ -15,6 +13,7 @@ class ApiService {
         ...baseHeaders,
         ...options.headers,
       },
+      credentials: "include",
       ...options,
     };
 
@@ -22,20 +21,27 @@ class ApiService {
     if (options.body instanceof FormData) {
       delete config.headers["Content-Type"];
     }
-
-    console.log("Headers:", config.headers);
-
     try {
       const response = await fetch(url, config);
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          errorData.message || `HTTP error! status: ${response.status}`
-        );
+        const contentType = response.headers.get("content-type");
+        let errorMessage = `HTTP error! status: ${response.status}`;
+        if (contentType && contentType.includes("application/json")) {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+        } else {
+          const errorText = await response.text();
+          errorMessage = errorText || errorMessage;
+        }
+        throw new Error(errorMessage);
       }
-
-      return await response.json();
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        return await response.json();
+      } else {
+        return await response.text();
+      }
     } catch (error) {
       console.error("API request failed:", error);
       throw error;
@@ -43,94 +49,151 @@ class ApiService {
   }
 
   // Job-related API calls
-  async getAllJobPosts() {
-    return this.request(`/jobpost`);
+  async getAllJobs(params = "") {
+    return this.request(`/job${params}`);
   }
 
   async getJobById(id) {
-    return this.request(`/jobs/${id}`);
+    return this.request(`/job/${id}`);
   }
 
   async createJob(jobData) {
-    return this.request("/jobs", {
+    return this.request("/job/addJob", {
       method: "POST",
       body: JSON.stringify(jobData),
     });
   }
 
-  async updateJob(id, jobData) {
-    return this.request(`/jobs/${id}`, {
-      method: "PUT",
+  async updateJobDetails(jobData) {
+    return this.request(`/job/updateJobDetails`, {
+      method: "POST",
       body: JSON.stringify(jobData),
     });
   }
 
-  async deleteJob(id) {
-    return this.request(`/jobs/${id}`, {
+  async updateSubcatagory(subData) {
+    return this.request(`/job/updateSubcatagory`, {
+      method: "POST",
+      body: JSON.stringify(subData),
+    });
+  }
+
+  async addSubcatagory(subData) {
+    return this.request(`/job/addSubcatagories`, {
+      method: "POST",
+      body: JSON.stringify(subData),
+    });
+  }
+
+  async deleteaJob(id) {
+    return this.request(`/job/${id}`, {
       method: "DELETE",
+    });
+  }
+
+  async deleteSubcat(subData) {
+    return this.request(`/job/removeSubcatagories`, {
+      method: "POST",
+      body: JSON.stringify(subData),
+    });
+  }
+
+  // job post related api calls
+
+  async getAllJobPostsCompany(params = "") {
+    return this.request(`/jobpost/company${params}`);
+  }
+
+  async getJobPostById(id) {
+    return this.request(`/jobpost/${id}`);
+  }
+
+  async createJobPost(jobData) {
+    return this.request("/jobpost/create", {
+      method: "POST",
+      body: JSON.stringify(jobData),
+    });
+  }
+
+  async updateJobPost(jobData, id) {
+    return this.request(`/jobpost/update/${id}`, {
+      method: "POST",
+      body: JSON.stringify(jobData),
+    });
+  }
+
+  async deleteJobPost(id) {
+    return this.request(`/jobpost/${id}`, {
+      method: "DELETE",
+    });
+  }
+
+  async getAllApplications(id) {
+    return this.request(`/jobpost/${id}/jobApplication`);
+  }
+
+  async getanApplication(postid, appid) {
+    return this.request(`/jobpost/${postid}/jobApplication/${appid}`);
+  }
+
+  async updateStatesofApplication(postid, appid, update) {
+    return this.request(`/jobpost/${postid}/jobApplication/${appid}`, {
+      method: "PUT",
+      body: JSON.stringify(update),
     });
   }
 
   // Application-related API calls
-  async submitApplication(formData) {
-    return this.request("/applications", {
+  async getAllJobPosts(params = "") {
+    return this.request(`/jobApplication/jobpost${params}`);
+  }
+  async getJobPost(id) {
+    return this.request(`/jobApplication/jobpost/${id}`);
+  }
+  async apply(application, postid) {
+    return this.request(`/jobApplication/${postid}/apply`, {
       method: "POST",
-      body: formData, // FormData will be handled correctly by fetch without Content-Type header
+      body: application,
     });
   }
-
-  async getAllApplications() {
-    return this.request("/applications");
+  async getMyApplications(params = "") {
+    return this.request(`/jobApplication${params}`);
   }
 
-  async getApplicationById(id) {
-    return this.request(`/applications/${id}`);
+  async getApplicationById(appid) {
+    return this.request(`/jobApplication/${appid}`);
   }
 
-  async getJobApplications(jobId) {
-    return this.request(`/jobs/${jobId}/applications`);
-  }
-
-  async updateApplicationStatus(id, status) {
-    return this.request(`/applications/${id}/status`, {
-      method: "PUT",
-      body: JSON.stringify({ status }),
-    });
-  }
-
-  // User-related API calls
-  async getAllUsers() {
-    return this.request("/auth/users");
-  }
-
-  async getUserById(id) {
-    return this.request(`/auth/users/${id}`);
-  }
-
-  async createUser(userData) {
-    return this.request("/auth/users", {
-      method: "POST",
-      body: JSON.stringify(userData),
-    });
-  }
-
-  async updateUser(id, userData) {
-    return this.request(`/auth/users/${id}`, {
-      method: "PUT",
-      body: JSON.stringify(userData),
-    });
-  }
-
-  async deleteUser(id) {
-    return this.request(`/auth/users/${id}`, {
+  async deleteApplication(appid) {
+    return this.request(`/jobApplication/${appid}`, {
       method: "DELETE",
     });
   }
 
-  async getMyApplications() {
-    console.log("API Service - getMyApplications called");
+  async updateApplication(updateData, appid) {
+    return this.request(`/jobApplication/update/${appid}`, {
+      method: "POST",
+      body: JSON.stringify(updateData),
+    });
+  }
+  async uploadCv(Cvdata) {
+    return this.request(`/users/agent/uploadCv`, {
+      method: "POST",
+      body: JSON.stringify(Cvdata),
+    });
+  }
+  async updateCv(Cvdata) {
+    return this.request(`/users/agent/updateCv`, {
+      method: "POST",
+      body: JSON.stringify(Cvdata),
+    });
+  }
 
-    return this.request("/my-applications");
+  async deleteCv(deleteid, deletename) {
+    return this.request(`/users/agent/deleteCv/${deleteid}`, {
+      method: "Delete",
+      body: deletename,
+    });
   }
 }
 

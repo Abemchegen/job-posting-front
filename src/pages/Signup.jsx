@@ -86,13 +86,15 @@ export default function Signup() {
         name: formData.fullName.trim(),
         email: formData.email.trim(),
         role: isAgent ? "AGENT" : "COMPANY",
-        phonenumber: formData.phonenumber.trim(),
+        phonenumber: Number(formData.phonenumber.toString().trim()),
         birthdate: formData.birthdate.trim(),
         password: formData.pas.trim(),
       };
       if (!isAgent) {
-        submitData.companyName = formData.companyName;
-        submitData.companyPhonenumber = formData.companyPhonenumber;
+        submitData.companyName = formData.companyName.trim();
+        submitData.companyPhonenumber = Number(
+          formData.companyPhonenumber.toString().trim()
+        );
       }
       await register(submitData);
       setsubmitted(true);
@@ -140,7 +142,7 @@ export default function Signup() {
                     className="w-full border border-gray-300 shadow-sm rounded-lg  focus:outline-none focus:border-gray-400 py-1 px-2"
                   />
                   {errors.fullname && (
-                    <p className="text-red-500">{errors.fullname}</p>
+                    <p className="text-red-500">{errors.fullName}</p>
                   )}
                 </div>
                 <div className="w-1/2 flex flex-col ">
@@ -175,7 +177,7 @@ export default function Signup() {
                   <label htmlFor="phonenumber">Phone number: </label>
                   <input
                     id="phonenumber"
-                    type="text"
+                    type="number"
                     required={true}
                     onChange={handleInput}
                     className="border border-gray-300 shadow-sm rounded-lg  focus:outline-none focus:border-gray-400 py-1 px-2"
@@ -206,7 +208,7 @@ export default function Signup() {
                     </label>
                     <input
                       id="companyPhonenumber"
-                      type="text"
+                      type="number"
                       required={true}
                       onChange={handleInput}
                       className="border border-gray-300 shadow-sm rounded-lg  focus:outline-none focus:border-gray-400 py-1 px-2"

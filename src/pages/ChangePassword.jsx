@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import Button from "../components/Button";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/authContext";
 
 export default function ChangePassword() {
-  const user = {
-    role: "company",
-  };
+  const { user, updatePass } = useAuth();
+  const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     oldpas: "",
     newpas: "",
   });
-
   const [errors, setErrors] = useState({
     email: null,
     oldpas: null,
@@ -31,24 +31,11 @@ export default function ChangePassword() {
       [id]: null,
     });
   }
-  const [submitted, setSubmitted] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   function validateFormData() {
     let newerrors = {};
-    if (!formData.email.trim()) {
-      newerrors.email = "Email can not be empty";
-    } else if (
-      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(formData.email)
-    ) {
+    if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(formData.email)) {
       newerrors.email = "Invalid Email address.";
-    }
-
-    if (!formData.oldpas.trim()) {
-      newerrors.oldpas = "Old Password can not be empty";
-    }
-    if (!formData.newpas.trim()) {
-      newerrors.newpas = "New Password can not be empty";
     }
 
     setErrors(newerrors);
@@ -57,42 +44,40 @@ export default function ChangePassword() {
   useEffect(() => {
     if (submitted == 1) {
       const timer = setTimeout(() => {
-        if (user.role == "agent") {
+        if (user.role == "AGENT") {
           navigate("/home/agent");
-        } else if (user.role == "company") {
+        } else if (user.role == "COMPANY") {
           navigate("/home/company");
+        } else if (user.role == "ADMIN") {
+          navigate("/home/admin");
         }
       }, 1000);
       return () => clearTimeout(timer);
     }
   }, [submitted]);
-  function handlesubmit(e) {
+
+  const handlesubmit = async (e) => {
     e.preventDefault();
     if (!validateFormData()) return;
-
     setIsSubmitting(true);
 
     try {
-      const submitData = new FormData();
-      submitData.append("email", formData.email.trim());
-      submitData.append("oldpas", formData.oldpas.trim());
-      submitData.append("newpas", formData.newpas.trim());
+      const submitData = {
+        email: formData.email.trim(),
+        oldPassword: formData.oldpas.trim(),
+        newPassword: formData.newpas.trim(),
+      };
 
       // api call
-
+      await updatePass(user.id, submitData);
       setIsSubmitting(false);
       setSubmitted(1);
-      setFormData({
-        email: "",
-        oldpas: "",
-        newpas: "",
-      });
     } catch (e) {
       console.error("error changing password ", e);
       setIsSubmitting(false);
       setSubmitted(2);
     }
-  }
+  };
   return (
     <div className="h-full bg-muted">
       <div className="flex justify-center mt-15 ">

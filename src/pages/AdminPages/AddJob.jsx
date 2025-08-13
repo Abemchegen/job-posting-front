@@ -2,8 +2,10 @@ import { Check, Pen, Plus, Trash, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import Button from "../../components/Button";
 import { useNavigate } from "react-router-dom";
+import { useJob, useJobs } from "../../hook/useJobs";
 
 export default function AddJob() {
+  const { createJob } = useJobs();
   const [addSub, setAddSub] = useState(false);
   const [subValues, setSubValues] = useState({ name: "", description: "" });
   const [jobAdded, setJobAdded] = useState(false);
@@ -22,19 +24,33 @@ export default function AddJob() {
   useEffect(() => {
     const timer = setTimeout(() => {
       if (jobAdded) {
-        navigate("/jobs");
+        navigate("/pageJob");
       }
     }, 1000);
 
     return () => clearTimeout(timer);
   }, [jobAdded]);
 
-  const handleAddJob = (e) => {
+  const handleAddJob = async (e) => {
     e.preventDefault();
     if (!jobData.name.trim() || !jobData.description.trim()) return;
     // api call
 
-    setJobAdded(true);
+    const submitData = {
+      name: jobData.name.trim(),
+      description: jobData.description.trim(),
+    };
+
+    if (jobData.subcatagories && jobData.subcatagories.length > 0) {
+      submitData["subcatagories"] = jobData.subcatagories.trim();
+    }
+
+    try {
+      await createJob(submitData);
+      setJobAdded(true);
+    } catch (e) {
+      console.log(e);
+    }
   };
   const handleAddSub = (e) => {
     e.preventDefault();
@@ -191,7 +207,13 @@ export default function AddJob() {
 
           <div className="flex justify-center my-10  space-x-8">
             <div className="w-25">
-              <Button onClick={() => {}} variant="dark" text={"Cancle"} />
+              <Button
+                onClick={() => {
+                  navigate("/pageJob");
+                }}
+                variant="dark"
+                text={"Cancle"}
+              />
             </div>
             <div className="w-25">
               <Button type="submit" text={"Save"} />

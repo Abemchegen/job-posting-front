@@ -1,18 +1,22 @@
-import { Check, Pen, Plus, Trash, User, WorkflowIcon, X } from "lucide-react";
+import { Check, Pen, Plus, Trash, X } from "lucide-react";
 import Button from "../Button";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useJobs } from "../../hook/useJobs";
 
-export default function JobCard({ detail = false }) {
+export default function JobCard({ detail = false, jobItem }) {
+  const {
+    updateJobDetails,
+    updateSubcatagory,
+    addSubcatagory,
+    deleteaJob,
+    deleteSubcat,
+  } = useJobs();
   const [job, setJob] = useState({
-    id: 1,
-    name: "Waiter",
-    description:
-      "Serves people in different public or private establishments like Hotels, Restaurants, Cafe",
-    subcatagories: [
-      { name: "Cafe Waiter", description: "Serves in the cafe" },
-      { name: "Restaurant Waiter", description: "Serves in the Restaurant" },
-    ],
+    id: jobItem.id,
+    name: jobItem.name,
+    description: jobItem.description,
+    subcatagory: jobItem.subcatagory,
   });
   const [addSub, setAddSub] = useState(false);
   const [editingIdx, setEditingIdx] = useState(null);
@@ -27,66 +31,100 @@ export default function JobCard({ detail = false }) {
   const [deleteProccede, setDeleteProccede] = useState(null);
   const [jobDeleted, setJobDeleted] = useState(false);
 
-  function handleAdd(e) {
+  const handleAddSub = async (e) => {
     e.preventDefault();
     if (!addValues.name.trim() || !addValues.description.trim()) return;
-
-    setJob({
-      ...job,
-      subcatagories: [
-        ...job.subcatagories,
-        { name: addValues.name, description: addValues.description },
-      ],
-    });
-
-    // api call
-    setAddValues({ name: "", description: "" });
-    setAddSub(false);
-  }
-
-  const handleSaveSub = (idx) => {
-    setJob((prev) => {
-      const updated = [...prev.subcatagories];
-      updated[idx] = { ...updated[idx], ...editValues };
-      return { ...prev, subcatagories: updated };
-    });
-
-    /// api call
-    setEditingIdx(null);
+    try {
+      const subData = {
+        jobName: job.name.trim(),
+        subcatagories: [
+          {
+            name: addValues.name.trim(),
+            description: addValues.description.trim(),
+          },
+        ],
+      };
+      const response = await addSubcatagory(subData);
+      setJob(response);
+      setAddValues({ name: "", description: "" });
+      setAddSub(false);
+    } catch (e) {
+      console.log(e);
+    } finally {
+    }
   };
 
-  const handleEditJob = () => {
+  const handleUpdateSub = async (idx) => {
+    try {
+      const subData = {
+        jobName: job.name.trim(),
+        subcatagory: {
+          existingName: job.subcatagory[idx].name.trim(),
+          updatedName: editValues.name.trim(),
+          description: editValues.description.trim(),
+        },
+      };
+      const response = await updateSubcatagory(subData);
+      setJob(response);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setEditingIdx(null);
+    }
+  };
+  const handleDeleteSub = async (idx) => {
+    try {
+      const deleteData = {
+        jobName: job.name.trim(),
+        subcatagories: [
+          {
+            name: job.subcatagory[idx].name.trim(),
+            description: job.subcatagory[idx].description.trim(),
+          },
+        ],
+      };
+      const response = await deleteSubcat(deleteData);
+      setJob(response);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setDeleteProccede(null);
+    }
+  };
+  const handleEditJob = async () => {
     if (!editJobValues.name.trim() || !editJobValues.description.trim()) return;
 
-    setJob({
-      ...job,
-      name: editJobValues.name.trim(),
-      description: editJobValues.description.trim(),
-    });
-    /// api call
-    setEditJob(false);
+    try {
+      const updateData = {
+        existingJobname: job.name.trim(),
+        updatedJobName: editJobValues.name.trim(),
+        description: editJobValues.description.trim(),
+      };
+      const response = await updateJobDetails(updateData);
+      setJob(response);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setEditJob(false);
+    }
   };
 
-  function handleDeleteSub(idx) {
-    setJob({
-      ...job,
-      subcatagories: job.subcatagories.filter((_, i) => i != idx),
-    });
-
-    // api call
-    setDeleteProccede(null);
-  }
-  function handleDeleteJob() {
-    // api call to delete job
-    setDeleteJob(false);
-    setJobDeleted(true);
-  }
+  const handleDeleteJob = async () => {
+    try {
+      const response = await deleteaJob(job.id);
+      setJobDeleted(true);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setDeleteJob(false);
+    }
+  };
   const navigate = useNavigate();
 
   useEffect(() => {
     const timer = setTimeout(() => {
       if (jobDeleted) {
-        navigate("/jobs");
+        navigate("/pageJob");
       }
     }, 1000);
 
@@ -94,7 +132,7 @@ export default function JobCard({ detail = false }) {
   }, [jobDeleted]);
 
   return (
-    <div>
+    <div className="w-full">
       {!detail && (
         <div className="bg-white shadow-sm rounded-lg my-5 ">
           <div className="flex w-full justify-between p-8 items-center">
@@ -108,7 +146,7 @@ export default function JobCard({ detail = false }) {
             <div className="w-30">
               <Button
                 text={"View Details"}
-                onClick={() => navigate(`/jobdetail?id={job.id}`)}
+                onClick={() => navigate(`/detailjob?id=${job.id}`)}
               />
             </div>
           </div>
@@ -143,78 +181,79 @@ export default function JobCard({ detail = false }) {
               ></textarea>
             </div>
             <div className="text-gray-500">
-              <p className="font-semibold m-3">Subcatagories:</p>
-              {job.subcatagories.map((sub, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-center justify-between rounded p-5 m-3 shadow-sm"
-                >
-                  <div className="space-y-2">
-                    {editingIdx === idx ? (
-                      <>
-                        <input
-                          className="border rounded p-1 mb-1 w-full"
-                          name="name"
-                          value={editValues.name}
-                          onChange={(e) => {
-                            setEditValues({
-                              ...editValues,
-                              [e.target.name]: e.target.value,
-                            });
-                          }}
-                        />
-                        <input
-                          className="border rounded p-1 w-full"
-                          name="description"
-                          value={editValues.description}
-                          onChange={(e) => {
-                            setEditValues({
-                              ...editValues,
-                              [e.target.name]: e.target.value,
-                            });
-                          }}
-                        />
-                      </>
-                    ) : (
-                      <>
-                        <p className="font-semibold">{sub.name}</p>
-                        <p>{sub.description}</p>
-                      </>
-                    )}
+              <p className="font-semibold m-3">Subcatagory:</p>
+              {job.subcatagory &&
+                job.subcatagory.map((sub, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center justify-between rounded p-5 m-3 shadow-sm"
+                  >
+                    <div className="space-y-2">
+                      {editingIdx === idx ? (
+                        <>
+                          <input
+                            className="border rounded p-1 mb-1 w-full"
+                            name="name"
+                            value={editValues.name}
+                            onChange={(e) => {
+                              setEditValues({
+                                ...editValues,
+                                [e.target.name]: e.target.value,
+                              });
+                            }}
+                          />
+                          <input
+                            className="border rounded p-1 w-full"
+                            name="description"
+                            value={editValues.description}
+                            onChange={(e) => {
+                              setEditValues({
+                                ...editValues,
+                                [e.target.name]: e.target.value,
+                              });
+                            }}
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <p className="font-semibold">{sub.name}</p>
+                          <p>{sub.description}</p>
+                        </>
+                      )}
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      {editingIdx === idx ? (
+                        <>
+                          <Check
+                            className="text-green-500 cursor-pointer"
+                            onClick={() => handleUpdateSub(idx)}
+                          />
+                          <X
+                            className="text-gray-500 cursor-pointer"
+                            onClick={() => setEditingIdx(null)}
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <Pen
+                            className="text-green-500 hover:cursor-pointer"
+                            onClick={() => {
+                              setEditingIdx(idx);
+                              setEditValues({
+                                name: job.subcatagory[idx].name,
+                                description: job.subcatagory[idx].description,
+                              });
+                            }}
+                          />
+                          <Trash
+                            className="text-red-500 hover:cursor-pointer"
+                            onClick={() => setDeleteProccede(idx)}
+                          />
+                        </>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-3">
-                    {editingIdx === idx ? (
-                      <>
-                        <Check
-                          className="text-green-500 cursor-pointer"
-                          onClick={() => handleSaveSub(idx)}
-                        />
-                        <X
-                          className="text-gray-500 cursor-pointer"
-                          onClick={() => setEditingIdx(null)}
-                        />
-                      </>
-                    ) : (
-                      <>
-                        <Pen
-                          className="text-green-500 hover:cursor-pointer"
-                          onClick={() => {
-                            setEditingIdx(idx);
-                            setEditValues({
-                              name: job.subcatagories[idx].name,
-                              description: job.subcatagories[idx].description,
-                            });
-                          }}
-                        />
-                        <Trash
-                          className="text-red-500 hover:cursor-pointer"
-                          onClick={() => setDeleteProccede(idx)}
-                        />
-                      </>
-                    )}
-                  </div>
-                </div>
-              ))}
+                ))}
             </div>
             <div className="flex justify-center">
               <div
@@ -224,7 +263,7 @@ export default function JobCard({ detail = false }) {
                 className="border-2 m-5 border-brand-light bg-white p-3 rounded-xl flex text-gray-500 space-x-2 hover:font-semibold hover:border-brand hover:cursor-pointer"
               >
                 <Plus />
-                <p>Add Subcatagories</p>
+                <p>Add Subcatagory</p>
               </div>
             </div>
           </div>
@@ -366,7 +405,7 @@ export default function JobCard({ detail = false }) {
             <h1 className="text-center text-xl mb-5 font-bold">
               Add a subcatagory for job {job.name}
             </h1>
-            <form onSubmit={handleAdd}>
+            <form onSubmit={handleAddSub}>
               <div className="space-y-2 mb-4 flex flex-col">
                 <label htmlFor="name">Sub catagory name: </label>
                 <input

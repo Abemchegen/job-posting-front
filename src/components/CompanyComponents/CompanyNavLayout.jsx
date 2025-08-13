@@ -4,7 +4,7 @@ import Nav from "../Nav";
 export default function CompanyNavLayout() {
   return (
     <div className="flex flex-col">
-      <Nav auth={true} role="company" />
+      <Nav />
       <Outlet />
     </div>
   );

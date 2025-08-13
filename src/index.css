@@ -18,3 +18,11 @@ body,
   height: 100%;
   width: 100%;
 }
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}

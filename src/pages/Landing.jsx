@@ -80,8 +80,8 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className="flex  w-full max-w-7xl flex-col items-center mt-50">
-        <p className="text-gray-500 text-2xl mb-10 ">
+      <div className="flex  w-full max-w-7xl flex-col items-center mt-20">
+        <p className="text-gray-500 text-2xl mb-15 ">
           We make job posting efficient and simple
         </p>
         <div className="flex flex-col gap-6 p-6 md:flex-row ">

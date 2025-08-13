@@ -1,30 +1,83 @@
 import Button from "../../components/Button";
-import JobPostCard from "../../components/CompanyComponents/CompanyJobPostCard";
-import { ArrowDown, ArrowUp, Filter, Search, XIcon } from "lucide-react";
-import { useState } from "react";
+import { ArrowDown, ArrowUp, Filter, Search, Users, XIcon } from "lucide-react";
+import { useEffect, useState } from "react";
 import UserCard from "../../components/AdminComponents/UserCard";
+import { useAuth } from "../../context/authContext";
+import { Spinner } from "../../components/Spinner";
 export default function AdminHome() {
   const [filter, setFilter] = useState(false);
-
-  const role = ["company", "agent"];
-
+  const role = ["Company", "Agent", "Admin"];
   const [filters, setFlters] = useState({
     role: false,
   });
-
   const [selectedFilters, setSelectedFilters] = useState({
-    role: [],
+    role: "",
+    request: false,
+    search: "",
   });
+  const { user, getAllUsers, fetchUsersWithFilters } = useAuth();
 
-  function applyFilters() {
-    setFilter(!filter);
+  const [users, setusers] = useState(null);
+  const [loading, setLoading] = useState(null);
+  const [filteredUsers, setFilteredUsers] = useState([]);
+
+  useEffect(() => {
+    async function fetchuser() {
+      setLoading(true);
+      if (user) {
+        try {
+          const response = await getAllUsers();
+          setusers(response.users);
+        } catch (e) {
+          console.log(e);
+        } finally {
+          setLoading(false);
+        }
+      }
+    }
+    fetchuser();
+  }, [user]);
+  function checkFilterNull() {
+    const isRoleNull =
+      !selectedFilters.role.trim() || selectedFilters.role.trim() === "";
+    const searchValueNull =
+      !selectedFilters.search === "" || selectedFilters.search.trim() === "";
+
+    return isRoleNull && searchValueNull;
   }
+  const applyFilters = async () => {
+    if (checkFilterNull()) {
+      console.log("no filters selected !!!");
+      setFilter(false);
+      return;
+    }
+    try {
+      const filterData = {
+        role: selectedFilters.role.trim(),
+        search: selectedFilters.search.trim(),
+      };
+      const response = await fetchUsersWithFilters(filterData);
+      setFilteredUsers(response.users);
+      console.log(response);
+      setSelectedFilters({
+        ...selectedFilters,
+        request: true,
+      });
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setFilter(false);
+    }
+  };
 
   function clearFilters() {
-    setFilter(!filter);
+    setFilteredUsers([]);
     setSelectedFilters({
-      role: [],
+      request: false,
+      role: "",
+      search: "",
     });
+    setFilter(false);
   }
   return (
     <div>
@@ -42,11 +95,24 @@ export default function AdminHome() {
                 <input
                   className="w-full flex-1 focus:outline-none text-gray-700 p-2"
                   placeholder="User names, emails or company names"
+                  onChange={(e) =>
+                    setSelectedFilters({
+                      ...selectedFilters,
+                      search: e.target.value,
+                      request: false,
+                    })
+                  }
+                  value={selectedFilters.search}
                 />
               </div>
             </div>
             <div className="w-full md:w-30">
-              <Button text={"Search Users"}></Button>
+              <Button
+                text={"Search Users"}
+                onClick={() => {
+                  applyFilters();
+                }}
+              ></Button>
             </div>
           </div>
 
@@ -84,14 +150,12 @@ export default function AdminHome() {
                       {role.map((type) => (
                         <li key={type} className="flex items-center space-x-2">
                           <input
-                            type="checkbox"
-                            checked={selectedFilters.role.includes(type)}
+                            type="radio"
+                            checked={selectedFilters.role == type}
                             onChange={() => {
                               setSelectedFilters((prev) => ({
                                 ...prev,
-                                role: prev.role.includes(type)
-                                  ? prev.role.filter((t) => t !== type)
-                                  : [...prev.role, type],
+                                role: type,
                               }));
                             }}
                           />
@@ -124,15 +188,44 @@ export default function AdminHome() {
         </div>
       </div>
       <div className="flex justify-center">
-        <div className="p-2 w-full max-w-5xl mt-10">
+        <div className="p-2 w-full max-w-4xl mt-10">
           <h2 className="m-5 text-2xl font-bold">Users Found</h2>
-          <div className="w-full">
-            <UserCard />
-            <UserCard />
-            <UserCard />
-            <UserCard />
-            <UserCard />
-          </div>
+          {loading ? (
+            <div className="flex justify-center items-center m-5 space-x-5">
+              <Spinner />
+              <p className="text-xl font-semibold text-gray-500">Loading...</p>
+            </div>
+          ) : (
+            <div className="w-full">
+              {!checkFilterNull() && selectedFilters.request === true ? (
+                filteredUsers.length === 0 ? (
+                  <div className="w-full flex justify-center">
+                    <p className="mt-8 font-semibold text-gray-500">
+                      No users found..
+                    </p>
+                  </div>
+                ) : (
+                  <div className="w-full  flex flex-col items-center">
+                    {filteredUsers.map((item, idx) => (
+                      <UserCard user={item} key={idx} />
+                    ))}
+                  </div>
+                )
+              ) : !users || users.length === 0 ? (
+                <div className="w-full flex justify-center">
+                  <p className="mt-8 font-semibold text-gray-500">
+                    No users found..
+                  </p>
+                </div>
+              ) : (
+                <div className="w-full   flex flex-col items-center">
+                  {users.map((item, idx) => (
+                    <UserCard user={item} key={idx} />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

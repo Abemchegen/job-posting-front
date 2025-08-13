@@ -99,7 +99,7 @@ export default function Nav() {
 
               <Link
                 className="hover:text-brand hover:font-bold w-10"
-                to="/jobs"
+                to="/pageJob"
               >
                 Jobs
               </Link>

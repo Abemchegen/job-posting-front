@@ -11,9 +11,9 @@ export default function Button({
   if (variant == "default") {
     other = "bg-brand hover:bg-brand-light text-white";
   } else if (variant == "dark") {
-    other = "bg-gray-400 hover:bg-gray-300 text-black";
+    other = "bg-gray-500 hover:bg-[#858A98] text-white";
   } else if (variant == "danger") {
-    other = "bg-red-500 hover:bg-red-400 text-white";
+    other = "bg-red-500 hover:bg-[#F15B5B] text-white";
   }
   return (
     <button

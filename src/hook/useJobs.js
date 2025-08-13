@@ -1,124 +1,156 @@
-import { useState, useEffect } from 'react'
-import apiService from '../services/api'
+import { useState, useEffect } from "react";
+import apiService from "../service/api";
+import { useAuth } from "../context/authContext";
 
 export const useJobs = () => {
-  const [jobs, setJobs] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const { user, isAdmin } = useAuth();
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchJobs = async () => {
     try {
-      setLoading(true)
-      setError(null)
-      const data = await apiService.getAllJobs()
-      setJobs(data.jobs || [])
+      setLoading(true);
+      setError(null);
+      const data = await apiService.getAllJobs();
+      console.log(data);
+      setJobs(data || []);
     } catch (err) {
-      setError(err.message)
-      console.error('Error fetching jobs:', err)
+      setError(err.message);
+      console.error("Error fetching jobs:", err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
-
-  const fetchJobsWithFilters = async (filters) => {
-    try {
-      setLoading(true)
-      setError(null)
-      const params = new URLSearchParams()
-      if (filters.keyword) params.append('keyword', filters.keyword)
-      if (filters.location) params.append('location', filters.location)
-      if (filters.jobType && filters.jobType.length > 0) params.append('jobType', filters.jobType.join(','))
-      if (filters.experience && filters.experience.length > 0) params.append('experience', filters.experience.join(','))
-      if (filters.salary && filters.salary.length === 2) {
-        params.append('salaryMin', filters.salary[0])
-        params.append('salaryMax', filters.salary[1])
-      }
-      if (filters.datePosted) params.append('datePosted', filters.datePosted)
-      if (filters.sortBy) params.append('sortBy', filters.sortBy)
-      const data = await apiService.getAllJobs(params.toString() ? `?${params.toString()}` : '')
-      setJobs(data.jobs || [])
-    } catch (err) {
-      setError(err.message)
-      console.error('Error fetching jobs with filters:', err)
-    } finally {
-      setLoading(false)
-    }
-  }
-
+  };
   useEffect(() => {
-    fetchJobs()
-  }, [])
+    if (user) {
+      fetchJobs();
+    }
+  }, [user]);
 
   const createJob = async (jobData) => {
     try {
-      await apiService.createJob(jobData)
-      await fetchJobs() // Refresh the list
-      return { success: true }
+      await apiService.createJob(jobData);
+      await fetchJobs(); // Refresh the list
+      return { success: true };
     } catch (err) {
-      setError(err.message)
-      return { success: false, error: err.message }
+      setError(err.message);
+      return { success: false, error: err.message };
     }
-  }
-
-  const updateJob = async (id, jobData) => {
+  };
+  const updateJobDetails = async (jobData) => {
     try {
-      await apiService.updateJob(id, jobData)
-      await fetchJobs() // Refresh the list
-      return { success: true }
+      const response = await apiService.updateJobDetails(jobData);
+      await fetchJobs(); // Refresh the list
+      return response;
     } catch (err) {
-      setError(err.message)
-      return { success: false, error: err.message }
+      setError(err.message);
+      return { success: false, error: err.message };
     }
-  }
-
-  const deleteJob = async (id) => {
+  };
+  const updateSubcatagory = async (subData) => {
     try {
-      await apiService.deleteJob(id)
-      await fetchJobs() // Refresh the list
-      return { success: true }
+      const response = await apiService.updateSubcatagory(subData);
+      await fetchJobs(); // Refresh the list
+      console.log(response);
+      return response;
     } catch (err) {
-      setError(err.message)
-      return { success: false, error: err.message }
+      setError(err.message);
+      return { success: false, error: err.message };
     }
-  }
+  };
+
+  const addSubcatagory = async (subData) => {
+    try {
+      const response = await apiService.addSubcatagory(subData);
+      await fetchJobs(); // Refresh the list
+      return response;
+    } catch (err) {
+      setError(err.message);
+      return { success: false, error: err.message };
+    }
+  };
+
+  const deleteaJob = async (id) => {
+    try {
+      const response = await apiService.deleteaJob(id);
+      await fetchJobs(); // Refresh the list
+      return response;
+    } catch (err) {
+      setError(err.message);
+      return { success: false, error: err.message };
+    }
+  };
+  const deleteSubcat = async (subData) => {
+    try {
+      const response = await apiService.deleteSubcat(subData);
+      await fetchJobs(); // Refresh the list
+      return response;
+    } catch (err) {
+      setError(err.message);
+      return { success: false, error: err.message };
+    }
+  };
+  const fetchJobsWithFilters = async (filters) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const params = new URLSearchParams();
+      if (filters.search) params.append("search", filters.search);
+      const data = await apiService.getAllJobs(
+        params.toString() ? `?${params.toString()}` : ""
+      );
+      return data;
+    } catch (err) {
+      setError(err.message);
+      console.error("Error fetching jobs with filters:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return {
     jobs,
     loading,
+    updateJobDetails,
+    updateSubcatagory,
+    addSubcatagory,
     error,
+    deleteSubcat,
     fetchJobs,
     fetchJobsWithFilters,
     createJob,
-    updateJob,
-    deleteJob,
-  }
-}
+    deleteaJob,
+  };
+};
 
 export const useJob = (id) => {
-  const [job, setJob] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [job, setJob] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchJob = async () => {
-      if (!id) return
+      if (!id) {
+        console.log("no id");
+        return;
+      }
 
       try {
-        setLoading(true)
-        setError(null)
-        const data = await apiService.getJobById(id)
-        setJob(data)
+        setLoading(true);
+        setError(null);
+        const data = await apiService.getJobById(id);
+        setJob(data);
       } catch (err) {
-        setError(err.message)
-        console.error('Error fetching job:', err)
+        setError(err.message);
+        console.error("Error fetching job:", err);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchJob()
-  }, [id])
+    fetchJob();
+  }, [id]);
 
-  return { job, loading, error }
-}
-
+  return { job, loading, error };
+};

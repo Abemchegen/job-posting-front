@@ -8,132 +8,98 @@ import {
   Calendar,
   TimerIcon,
   File,
+  House,
 } from "lucide-react";
 import Button from "../Button";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import CloudImage from "../CloudImage";
 import CompanyCvCard from "../CompanyComponents/CompanyCVCard";
+import { useApplications } from "../../hook/useApplications";
 
-export default function AgentApplicationCard({ detail = false }) {
-  const [searchParams] = useSearchParams();
-  const applicationID = searchParams.get("id");
+export default function AgentApplicationCard({
+  applicationItem,
+  detail = false,
+}) {
   const navigate = useNavigate();
   const [deleteProccede, SetDeleteProccede] = useState(false);
-
-  const [deleteApplication, setDeleteApplication] = useState(false);
-
-  const application = {
-    jobtitle: "Frontend Developer",
-    company: "Tech Corp",
-    id: 1,
-    date: "12-11-2022",
-    status: "Not reviewed",
+  const [deleteApp, setDeleteApp] = useState(false);
+  const { deleteApplication } = useApplications();
+  const [application, setApplication] = useState({
+    jobtitle: applicationItem.jobName,
+    subcat: applicationItem.subcatName,
+    company: applicationItem.CompanyName,
+    id: applicationItem.jobApplicationID,
+    date: applicationItem.appliedAt,
+    status: applicationItem.status,
+    coverLetter: applicationItem.coverLetter,
+    cvURL: applicationItem.cvURL,
+    cv: null,
     user: {
-      id: 1,
-      fullname: "Abem Tigist",
-      email: "abem@gmail.com",
-      coverLetter:
-        "My name is Abem Tigist, and I am from Addis Ababa Ethiopia. I believe I am the right fit for this job. I have a lot of experiances regarding this field and i am very educated and respected",
-      pfp: "cld-sample-5",
-      cv: {
-        Education: [
-          {
-            educationLevel: "Highschool",
-            educationInstitution: "Don bosco",
-            gpa: "3.8",
-          },
-          {
-            educationLevel: "Degree",
-            educationInstitution:
-              "Addis Ababa Science and Technology University",
-            gpa: "3.5",
-          },
-        ],
-        Experiance: [
-          {
-            experianceName: "Atlas Computer Technology",
-            experianceDescription: "Java Developer",
-            experianceYear: 2,
-          },
-        ],
-        Award: [
-          {
-            awardname: "hackaton leader",
-            awardDescription: "won hackathon",
-            awardUrl: "url",
-          },
-        ],
-        Project: [
-          {
-            projectName: "Food ordering Site",
-            projectDescription: "Made with react and Golang",
-            projectUrl: "url",
-          },
-        ],
-      },
+      id: applicationItem.userInfo.id,
+      fullname: applicationItem.userInfo.name,
+      email: applicationItem.userInfo.email,
+      pfp: applicationItem.userInfo.pfp,
     },
-    coverletter:
-      "I am the right fit for this job. I have many experiances that make me qualified for this position. I believe that i'll do exceptionally well under time pressure and collaborate with my team...",
-  };
+  });
+  console.log(applicationItem, "Dfdfd");
+
+  useEffect(() => {
+    if (applicationItem.cv != null) {
+      setApplication((prev) => ({
+        ...prev,
+        cv: {
+          Education: applicationItem.cv.resume.education,
+          Experiance: applicationItem.cv.resume.experiance,
+          Award: applicationItem.cv.resume.award,
+          Project: applicationItem.cv.resume.project,
+        },
+      }));
+    }
+  }, [applicationItem.userInfo.cv]);
+  const options = [
+    { value: "PENDING", label: "Pending" },
+    { value: "REVIEWING", label: "Reviewing" },
+    { value: "INTERVIEW", label: "Interview" },
+    { value: "ACCEPTED", label: "Accepted" },
+    { value: "REJECTED", label: "Rejected" },
+  ];
+  const statusLabel =
+    options.find((opt) => opt.value === application.status)?.label ||
+    application.status;
   const educationConfig = [
-    { key: "educationLevel", label: "Education" },
-    { key: "educationInstitution", label: "Institution" },
+    { key: "level", label: "Education" },
+    { key: "institution", label: "Institution" },
     { key: "gpa", label: "Gpa" },
   ];
 
   const experianceConfig = [
-    { key: "experianceName", label: "Experiance" },
-    { key: "experianceDescription", label: "Description" },
-    { key: "experianceYear", label: "Year" },
+    { key: "name", label: "Experiance" },
+    { key: "description", label: "Description" },
+    { key: "year", label: "Year" },
   ];
   const projectConfig = [
-    { key: "projectName", label: "Project" },
-    { key: "projectDescription", label: "Description" },
-    { key: "projectUrl", label: "Link" },
+    { key: "name", label: "Project" },
+    { key: "description", label: "Description" },
+    { key: "url", label: "Link" },
   ];
   const awardConfig = [
-    { key: "awardname", label: "Award" },
-    { key: "awardDescription", label: "Description" },
-    { key: "awardUrl", label: "Link" },
+    { key: "name", label: "Award" },
+    { key: "description", label: "Description" },
+    { key: "url", label: "Link" },
   ];
-  const [cvData, setCvData] = useState({
-    Education: [
-      {
-        educationLevel: "Highschool",
-        educationInstitution: "Don bosco",
-        gpa: "3.8",
-      },
-      {
-        educationLevel: "Degree",
-        educationInstitution: "Addis Ababa Science and Technology University",
-        gpa: "3.5",
-      },
-    ],
-    Experiance: [
-      {
-        experianceName: "Atlas Computer Technology",
-        experianceDescription: "Java Developer",
-        experianceYear: 2,
-      },
-    ],
-    Award: [
-      {
-        awardname: "hackaton leader",
-        awardDescription: "won hackathon",
-        awardUrl: "url",
-      },
-    ],
-    Project: [
-      {
-        projectName: "Food ordering Site",
-        projectDescription: "Made with react and Golang",
-        projectUrl: "url",
-      },
-    ],
-  });
-
-  const [Icons, SetIcons] = useState({
+  const handleDeleteApp = async () => {
+    try {
+      const response = await deleteApplication(application.id);
+      console.log(response);
+      SetDeleteProccede(true);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setDeleteApp(false);
+    }
+  };
+  const [expand, setExpand] = useState({
     coverLetter: false,
     education: false,
     project: false,
@@ -152,8 +118,8 @@ export default function AgentApplicationCard({ detail = false }) {
   }, [deleteProccede]);
 
   return (
-    <div className="w-full ">
-      <div className="bg-white  text-black min-w-sm  m-5 space-y-2 rounded-xl shadow-sm p-7">
+    <div className="w-full  max-w-4xl ">
+      <div className="bg-white  text-black min-w-sm space-y-2 rounded-xl shadow-sm p-7">
         <div className="flex justify-between">
           <div className="flex items-center mb-3 space-x-3 cursor-pointer ">
             {detail && (
@@ -173,7 +139,11 @@ export default function AgentApplicationCard({ detail = false }) {
               <p className="text-blue-600 text-xl font-bold hover:text-blue-800">
                 {application.jobtitle}
               </p>
-              <p className="text-lg">{application.company}</p>
+              {application.subcat && (
+                <p className="text-gray-600 font-semibold ">
+                  {application.subcat}
+                </p>
+              )}
             </div>
           </div>
           {!detail && (
@@ -192,7 +162,7 @@ export default function AgentApplicationCard({ detail = false }) {
                 <Button
                   variant="danger"
                   text={"Delete Application"}
-                  onClick={() => setDeleteApplication(true)}
+                  onClick={() => setDeleteApp(true)}
                 />
               </div>
             </div>
@@ -206,10 +176,14 @@ export default function AgentApplicationCard({ detail = false }) {
           </div>
           <div className="flex">
             <TimerIcon className="w-4 font-light text-gray-500"></TimerIcon>
-            <span className="text-gray-500"> Status: {application.status}</span>
+            <span className="text-gray-500"> Status: {statusLabel}</span>
+          </div>
+          <div className="flex">
+            <House className="w-4 font-light text-gray-500"></House>
+            <span className="text-gray-500">{application.company}</span>
           </div>
         </div>
-        {detail && (
+        {detail && application.cv && (
           <div className="flex w-full  flex-col">
             <div className="flex justify-center my-5 mx-3">
               <div className=" min-w-sm w-full flex flex-col items-center">
@@ -217,9 +191,9 @@ export default function AgentApplicationCard({ detail = false }) {
                   <div
                     className="p-5 bg-brand-dark text-white rounded-xl"
                     onClick={() =>
-                      SetIcons({
-                        ...Icons,
-                        coverLetter: !Icons.coverLetter,
+                      setExpand({
+                        ...expand,
+                        coverLetter: !expand.coverLetter,
                       })
                     }
                   >
@@ -228,128 +202,147 @@ export default function AgentApplicationCard({ detail = false }) {
                         <File />
                         <p className="font-bold">Cover Letter</p>
                       </div>
-                      {!Icons.coverLetter && <ArrowDown />}
-                      {Icons.coverLetter && <ArrowUp />}
+                      {!expand.coverLetter && <ArrowDown />}
+                      {expand.coverLetter && <ArrowUp />}
                     </div>
                   </div>
-                  {Icons.coverLetter && (
+                  {expand.coverLetter && (
                     <div className="flex mt-2 min-w-sm justify-center">
                       <div className="w-19/20 p-3 ">
                         <div className="p-4 border-2 border-muted rounded-2xl">
-                          <p>{application.coverletter}</p>
+                          <p>{application.coverLetter}</p>
                         </div>
                       </div>
                     </div>
                   )}
                 </div>
-                <div className="w-full mb-3">
-                  <div
-                    className="p-5 bg-brand-dark text-white rounded-xl"
-                    onClick={() =>
-                      SetIcons({
-                        ...Icons,
-                        education: !Icons.education,
-                      })
-                    }
-                  >
-                    <div className="flex justify-between">
-                      <div className="flex space-x-2">
-                        <GraduationCap />
-                        <p className="font-bold">Education</p>
+                {application.cv.Education &&
+                  application.cv.Education.length > 0 && (
+                    <div className="w-full mb-3">
+                      <div
+                        className="p-5 bg-brand-dark text-white rounded-xl"
+                        onClick={() =>
+                          setExpand({
+                            ...expand,
+                            education: !expand.education,
+                          })
+                        }
+                      >
+                        <div className="flex justify-between">
+                          <div className="flex space-x-2">
+                            <GraduationCap />
+                            <p className="font-bold">Education</p>
+                          </div>
+                          {!expand.education && <ArrowDown />}
+                          {expand.education && <ArrowUp />}
+                        </div>
                       </div>
-                      {!Icons.education && <ArrowDown />}
-                      {Icons.education && <ArrowUp />}
+                      {expand.education && (
+                        <CompanyCvCard
+                          list={application.cv.Education}
+                          config={educationConfig}
+                        />
+                      )}
                     </div>
-                  </div>
-                  {Icons.education && (
-                    <CompanyCvCard
-                      list={cvData.Education}
-                      config={educationConfig}
-                    />
                   )}
-                </div>
-                <div className="w-full mb-3">
-                  <div
-                    className="p-5 bg-brand-dark text-white rounded-xl"
-                    onClick={() =>
-                      SetIcons({
-                        ...Icons,
-                        experiance: !Icons.experiance,
-                      })
-                    }
-                  >
-                    <div className="flex justify-between">
-                      <div className="flex space-x-2">
-                        <Briefcase />
-                        <p className="font-bold">Experiance</p>
+                {application.cv.Experiance &&
+                  application.cv.Experiance.length > 0 && (
+                    <div className="w-full mb-3">
+                      <div
+                        className="p-5 bg-brand-dark text-white rounded-xl"
+                        onClick={() =>
+                          setExpand({
+                            ...expand,
+                            experiance: !expand.experiance,
+                          })
+                        }
+                      >
+                        <div className="flex justify-between">
+                          <div className="flex space-x-2">
+                            <Briefcase />
+                            <p className="font-bold">Experiance</p>
+                          </div>
+                          {!expand.experiance && <ArrowDown />}
+                          {expand.experiance && <ArrowUp />}
+                        </div>
                       </div>
-                      {!Icons.experiance && <ArrowDown />}
-                      {Icons.experiance && <ArrowUp />}
+                      {expand.experiance && (
+                        <CompanyCvCard
+                          list={application.cv.Experiance}
+                          config={experianceConfig}
+                        />
+                      )}
                     </div>
-                  </div>
-                  {Icons.experiance && (
-                    <CompanyCvCard
-                      list={cvData.Experiance}
-                      config={experianceConfig}
-                    />
                   )}
-                </div>
-                <div className="w-full mb-3">
-                  <div
-                    className=" p-5  bg-brand-dark text-white rounded-xl"
-                    onClick={() =>
-                      SetIcons({
-                        ...Icons,
-                        project: !Icons.project,
-                      })
-                    }
-                  >
-                    <div className="flex justify-between">
-                      <div className="flex space-x-2">
-                        <Folder />
-                        <p className="font-bold">Project</p>
+                {application.cv.Project &&
+                  application.cv.Project.length > 0 && (
+                    <div className="w-full mb-3">
+                      <div
+                        className=" p-5  bg-brand-dark text-white rounded-xl"
+                        onClick={() =>
+                          setExpand({
+                            ...expand,
+                            project: !expand.project,
+                          })
+                        }
+                      >
+                        <div className="flex justify-between">
+                          <div className="flex space-x-2">
+                            <Folder />
+                            <p className="font-bold">Project</p>
+                          </div>
+                          {!expand.project && <ArrowDown />}
+                          {expand.project && <ArrowUp />}
+                        </div>
                       </div>
-                      {!Icons.project && <ArrowDown />}
-                      {Icons.project && <ArrowUp />}
+                      {expand.project && (
+                        <CompanyCvCard
+                          list={application.cv.Project}
+                          config={projectConfig}
+                        />
+                      )}
                     </div>
-                  </div>
-                  {Icons.project && (
-                    <CompanyCvCard
-                      list={cvData.Project}
-                      config={projectConfig}
-                    />
                   )}
-                </div>
-                <div className="w-full ">
-                  <div
-                    className="p-5 bg-brand-dark text-white rounded-xl"
-                    onClick={() =>
-                      SetIcons({
-                        ...Icons,
-                        award: !Icons.award,
-                      })
-                    }
-                  >
-                    <div className="flex justify-between">
-                      <div className="flex space-x-2">
-                        <Medal />
-                        <p className="font-bold">Awards</p>
+                {application.cv.Award && application.cv.Award.length > 0 && (
+                  <div className="w-full ">
+                    <div
+                      className="p-5 bg-brand-dark text-white rounded-xl"
+                      onClick={() =>
+                        setExpand({
+                          ...expand,
+                          award: !expand.award,
+                        })
+                      }
+                    >
+                      <div className="flex justify-between">
+                        <div className="flex space-x-2">
+                          <Medal />
+                          <p className="font-bold">Awards</p>
+                        </div>
+                        {!expand.award && <ArrowDown />}
+                        {expand.award && <ArrowUp />}
                       </div>
-                      {!Icons.award && <ArrowDown />}
-                      {Icons.award && <ArrowUp />}
                     </div>
+                    {expand.award && (
+                      <CompanyCvCard
+                        list={application.cv.Award}
+                        config={awardConfig}
+                      />
+                    )}
                   </div>
-                  {Icons.award && (
-                    <CompanyCvCard list={cvData.Award} config={awardConfig} />
-                  )}
-                </div>
+                )}
               </div>
             </div>
           </div>
         )}
+        {detail && application.cvURL && (
+          <a href={application.cvURL} target="_blank" rel="noopener noreferrer">
+            View CV
+          </a>
+        )}
       </div>
 
-      {deleteApplication && (
+      {deleteApp && (
         <div className="flex justify-center fixed inset-0 z-10 items-center">
           <div className="w-4/7 bg-white shadow-2xl rounded-2xl">
             {!deleteProccede && (
@@ -364,15 +357,15 @@ export default function AgentApplicationCard({ detail = false }) {
                 <div className="flex space-x-3">
                   <div>
                     <Button
-                      text={"Cancle"}
-                      onClick={() => setDeleteApplication(false)}
+                      text={"Cancel"}
+                      onClick={() => setDeleteApp(false)}
                     />
                   </div>
                   <div>
                     <Button
-                      text={"Proccede"}
+                      text={"Procede"}
                       variant="danger"
-                      onClick={() => SetDeleteProccede(true)}
+                      onClick={() => handleDeleteApp()}
                     />
                   </div>
                 </div>

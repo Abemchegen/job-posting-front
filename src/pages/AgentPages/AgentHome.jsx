@@ -1,92 +1,100 @@
 import Button from "../../components/Button";
 import Slider from "@mui/material/Slider";
 import { ArrowDown, ArrowUp, Filter, Search, XIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import AgentJobPostCard from "../../components/AgentComponents/AgentJobPostCard";
-import { useAuth } from "../../context/authContext";
-import apiService from "../../service/api";
+import { Spinner } from "../../components/Spinner";
+import { useApplications } from "../../hook/useApplications";
 export default function AgentHome() {
-  const { user, isAuthenticated } = useAuth();
   const [filter, setFilter] = useState(false);
-  const [job, setJob] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const { jobPosts, loading, fetchJobsWithFilters } = useApplications();
   const [error, setError] = useState(null);
+  const [filteredposts, setFilteredPosts] = useState([]);
 
-  const jobTypes = [
-    "Full-time",
-    "Part-time",
-    "Contract",
-    "Temporary",
-    "Internship",
-  ];
-  const experienceLevels = [
-    "Entry Level",
-    "Mid Level",
-    "Senior Level",
-    "Executive",
-  ];
-
-  const salaryRanges = [
-    "Any",
-    "$0 - $50,000",
-    "$50,000 - $100,000",
-    "$100,000 - $150,000",
-    "$150,000+",
-  ];
-
-  const datePostedOptions = [
-    "Any Time",
-    "Past 24 hours",
-    "Past Week",
-    "Past Month",
-  ];
-
-  const sortResults = ["Relevance", "Date Posted (newest)", "Salary (highest)"];
+  const datePostedOptions = ["Past 24 hours", "Past Week", "Past Month"];
+  const appliedOptions = ["Applied", "Not Applied"];
+  const sortResults = ["Latest Posts", "Highest Salary"];
   const [filters, setFlters] = useState({
-    jobType: false,
-    experienceLevel: false,
     salaryRange: false,
     datePosted: false,
     sortResult: false,
+    applied: false,
   });
 
   const [selectedFilters, setSelectedFilters] = useState({
-    jobTypes: [],
-    experienceLevel: [],
-    salaryRange: [],
-    datePosted: [],
-    sortResult: [],
+    request: false,
+    salaryRange: {
+      initial: null,
+      final: null,
+    },
+    datePosted: "",
+    sortResult: "",
+    applied: "",
+    search: "",
   });
+  function checkFilterNull() {
+    const isSalaryNull =
+      selectedFilters.salaryRange.initial == null &&
+      selectedFilters.salaryRange.final == null;
+    const isDateNull =
+      !selectedFilters.datePosted || selectedFilters.datePosted.trim() === "";
+    const isSortNull =
+      !selectedFilters.sortResult || selectedFilters.sortResult.trim() === "";
+    const isAppliedNull =
+      !selectedFilters.applied || selectedFilters.applied.trim() === "";
+    const searchValueNull =
+      !selectedFilters.search || selectedFilters.search.trim() === "";
 
-  function applyFilters() {
-    setFilter(!filter);
+    return (
+      isSalaryNull &&
+      isDateNull &&
+      isSortNull &&
+      isAppliedNull &&
+      searchValueNull
+    );
   }
 
-  function clearFilters() {
-    setFilter(!filter);
+  const applyFilters = async () => {
+    if (checkFilterNull()) {
+      console.log("no filters selected !!!");
+      setFilter(false);
+      return;
+    }
+    try {
+      const filterData = {
+        salary: selectedFilters.salaryRange,
+        date: selectedFilters.datePosted.trim(),
+        sort: selectedFilters.sortResult.trim(),
+        applied: selectedFilters.applied.trim(),
+        search: selectedFilters.search.trim(),
+      };
+      const response = await fetchJobsWithFilters(filterData);
+      setFilteredPosts(response);
+      console.log(response);
+      setSelectedFilters({
+        ...selectedFilters,
+        request: true,
+      });
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setFilter(false);
+    }
+  };
+
+  const clearFilters = async () => {
+    setFilteredPosts([]);
     setSelectedFilters({
-      jobTypes: [],
-      experienceLevel: [],
-      salaryRange: [],
-      datePosted: [],
-      sortResult: [],
+      request: false,
+      salaryRange: { initial: null, final: null },
+      datePosted: "",
+      sortResult: "",
+      applied: "",
+      search: "",
     });
-  }
+    setFilter(false);
+  };
 
-  useEffect(() => {
-    const fetchJobPosts = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const data = await apiService.getAllJobPosts();
-        setJob(data || []);
-      } catch (err) {
-        setError("Failed to load job posts");
-      } finally {
-        setLoading(false);
-      }
-    };
-  }, [user]);
   return (
     <div>
       <div className=" space-y-4 bg-brand-dark flex flex-col mt-15 items-center text-white">
@@ -99,15 +107,27 @@ export default function AgentHome() {
             <div className="flex md:w-4/5 w-full md:mb-0 mb-4 md:mr-2">
               <div className="flex border   hover:border-gray-400 rounded-lg shadow-sm border-gray-300 items-center w-full">
                 <Search className="text-gray-500 w-5 mx-2 "></Search>
-
                 <input
                   className="w-full flex-1 focus:outline-none text-gray-700 p-2"
-                  placeholder="Job title, keywords, or company"
+                  placeholder="Search by job name or company..."
+                  onChange={(e) =>
+                    setSelectedFilters({
+                      ...selectedFilters,
+                      search: e.target.value,
+                      request: false,
+                    })
+                  }
+                  value={selectedFilters.search}
                 />
               </div>
             </div>
             <div className="w-full md:w-30">
-              <Button text={"Search Jobs"}></Button>
+              <Button
+                text={"Search Jobs"}
+                onClick={() => {
+                  applyFilters();
+                }}
+              ></Button>
             </div>
           </div>
 
@@ -128,152 +148,49 @@ export default function AgentHome() {
               <div className="">
                 <ul>
                   <div className="flex space-x-4">
-                    <div className="flex flex-col w-full">
-                      <div className="flex flex-col w-full mb-3 items-center">
-                        <div
-                          onClick={() => {
-                            setFlters({
-                              ...filters,
-                              jobType: !filters.jobType,
-                            });
-                          }}
-                          className="flex justify-between w-full rounded-xl p-2 border-2 border-gray-400"
-                        >
-                          <li>Job Type</li>
-                          {filters.jobType && (
-                            <ArrowUp className="text-gray-500" />
-                          )}
-                          {!filters.jobType && (
-                            <ArrowDown className="text-gray-500" />
-                          )}
-                        </div>
-                        {filters.jobType && (
-                          <ul className="w-11/12 p-3 rounded-b-xl my-2">
-                            {jobTypes.map((type) => (
-                              <li
-                                key={type}
-                                className="flex items-center space-x-2"
-                              >
-                                <input
-                                  type="checkbox"
-                                  checked={selectedFilters.jobTypes.includes(
-                                    type
-                                  )}
-                                  onChange={() => {
-                                    setSelectedFilters((prev) => ({
-                                      ...prev,
-                                      jobTypes: prev.jobTypes.includes(type)
-                                        ? prev.jobTypes.filter(
-                                            (t) => t !== type
-                                          )
-                                        : [...prev.jobTypes, type],
-                                    }));
-                                  }}
-                                />
-                                <span>{type}</span>
-                              </li>
-                            ))}
-                          </ul>
+                    <div className="flex mb-3 flex-col w-full">
+                      <div
+                        onClick={() => {
+                          setFlters({
+                            ...filters,
+                            datePosted: !filters.datePosted,
+                          });
+                        }}
+                        className="flex w-full justify-between rounded-xl p-2  border-2 border-gray-400"
+                      >
+                        <li>Date Posted</li>
+                        {filters.datePosted && (
+                          <ArrowUp className="text-gray-500" />
+                        )}
+                        {!filters.datePosted && (
+                          <ArrowDown className="text-gray-500" />
                         )}
                       </div>
-                      <div className="flex flex-col mb-3 w-full">
-                        <div
-                          onClick={() => {
-                            setFlters({
-                              ...filters,
-                              experienceLevel: !filters.experienceLevel,
-                            });
-                          }}
-                          className="flex w-full justify-between rounded-xl p-2 border-2 border-gray-400"
-                        >
-                          <li>Experience Level</li>
-                          {filters.experienceLevel && (
-                            <ArrowUp className="text-gray-500" />
-                          )}
-                          {!filters.experienceLevel && (
-                            <ArrowDown className="text-gray-500" />
-                          )}
-                        </div>
-                        {filters.experienceLevel && (
-                          <ul className="w-11/12 p-3 rounded-b-xl my-2">
-                            {experienceLevels.map((type) => (
-                              <li
-                                key={type}
-                                className="flex items-center space-x-2"
-                              >
-                                <input
-                                  type="checkbox"
-                                  checked={selectedFilters.experienceLevel.includes(
-                                    type
-                                  )}
-                                  onChange={() => {
-                                    setSelectedFilters((prev) => ({
-                                      ...prev,
-                                      experienceLevel:
-                                        prev.experienceLevel.includes(type)
-                                          ? prev.experienceLevel.filter(
-                                              (t) => t !== type
-                                            )
-                                          : [...prev.experienceLevel, type],
-                                    }));
-                                  }}
-                                />
-                                <span>{type}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                      </div>
+                      {filters.datePosted && (
+                        <ul className="w-11/12 p-3 rounded-b-xl my-2">
+                          {datePostedOptions.map((type) => (
+                            <li
+                              key={type}
+                              className="flex items-center space-x-2"
+                            >
+                              <input
+                                type="radio"
+                                checked={selectedFilters.datePosted === type}
+                                onChange={() => {
+                                  setSelectedFilters((prev) => ({
+                                    ...prev,
+                                    datePosted: type,
+                                  }));
+                                }}
+                              />
+                              <span>{type}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
                     </div>
                     <div className="flex flex-col w-full">
                       <div className="flex mb-3 flex-col w-full">
-                        <div
-                          onClick={() => {
-                            setFlters({
-                              ...filters,
-                              datePosted: !filters.datePosted,
-                            });
-                          }}
-                          className="flex w-full justify-between rounded-xl p-2  border-2 border-gray-400"
-                        >
-                          <li>Date Posted</li>
-                          {filters.datePosted && (
-                            <ArrowUp className="text-gray-500" />
-                          )}
-                          {!filters.datePosted && (
-                            <ArrowDown className="text-gray-500" />
-                          )}
-                        </div>
-                        {filters.datePosted && (
-                          <ul className="w-11/12 p-3 rounded-b-xl my-2">
-                            {datePostedOptions.map((type) => (
-                              <li
-                                key={type}
-                                className="flex items-center space-x-2"
-                              >
-                                <input
-                                  type="checkbox"
-                                  checked={selectedFilters.datePosted.includes(
-                                    type
-                                  )}
-                                  onChange={() => {
-                                    setSelectedFilters((prev) => ({
-                                      ...prev,
-                                      datePosted: prev.datePosted.includes(type)
-                                        ? prev.datePosted.filter(
-                                            (t) => t !== type
-                                          )
-                                        : [...prev.datePosted, type],
-                                    }));
-                                  }}
-                                />
-                                <span>{type}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                      </div>
-                      <div className="flex flex-col w-full">
                         <div
                           onClick={() => {
                             setFlters({
@@ -299,18 +216,12 @@ export default function AgentHome() {
                                 className="flex items-center space-x-2"
                               >
                                 <input
-                                  type="checkbox"
-                                  checked={selectedFilters.sortResult.includes(
-                                    type
-                                  )}
+                                  type="radio"
+                                  checked={selectedFilters.sortResult === type}
                                   onChange={() => {
                                     setSelectedFilters((prev) => ({
                                       ...prev,
-                                      sortResult: prev.sortResult.includes(type)
-                                        ? prev.sortResult.filter(
-                                            (t) => t !== type
-                                          )
-                                        : [...prev.sortResult, type],
+                                      sortResult: type,
                                     }));
                                   }}
                                 />
@@ -322,62 +233,112 @@ export default function AgentHome() {
                       </div>
                     </div>
                   </div>
-
-                  <div
-                    onClick={() => {
-                      setFlters({
-                        ...filters,
-                        salaryRange: !filters.salaryRange,
-                      });
-                    }}
-                    className="flex justify-between rounded-xl p-2 border-2 border-gray-400"
-                  >
-                    <li>Salary Range</li>
-                    {filters.salaryRange && (
-                      <ArrowUp className="text-gray-500" />
-                    )}
-                    {!filters.salaryRange && (
-                      <ArrowDown className="text-gray-500" />
-                    )}
-                  </div>
-                  {filters.salaryRange && (
-                    <div className="p-4">
-                      <Slider
-                        sx={{
-                          color: "#00a896",
-                          "& .MuiSlider-thumb": {
-                            // borderColor: "#00a896",
-                            backgroundColor: "#00a896",
-                          },
-                          "& .MuiSlider-rail": {
-                            backgroundColor: "#02c39a",
-                          },
-                          "& .MuiSlider-track": {
-                            backgroundColor: "#00a896",
-                          },
+                  <div className="flex space-x-4">
+                    <div className="flex mb-3 flex-col w-full">
+                      <div
+                        onClick={() => {
+                          setFlters({
+                            ...filters,
+                            salaryRange: !filters.salaryRange,
+                          });
                         }}
-                        value={
-                          selectedFilters.salaryRange.length
-                            ? selectedFilters.salaryRange
-                            : [0, 0]
-                        }
-                        onChange={(_, value) =>
-                          setSelectedFilters((prev) => ({
-                            ...prev,
-                            salaryRange: value,
-                          }))
-                        }
-                        valueLabelDisplay="auto"
-                        min={0}
-                        max={200000}
-                        step={1000}
-                      />
-                      <div>
-                        Selected: ${selectedFilters.salaryRange[0] || 0} - $
-                        {selectedFilters.salaryRange[1] || 100000}
+                        className="flex justify-between rounded-xl p-2 border-2 border-gray-400"
+                      >
+                        <li>Salary Range</li>
+                        {filters.salaryRange && (
+                          <ArrowUp className="text-gray-500" />
+                        )}
+                        {!filters.salaryRange && (
+                          <ArrowDown className="text-gray-500" />
+                        )}
                       </div>
+                      {filters.salaryRange && (
+                        <div className="p-4">
+                          <Slider
+                            sx={{
+                              color: "#00a896",
+                              "& .MuiSlider-thumb": {
+                                // borderColor: "#00a896",
+                                backgroundColor: "#00a896",
+                              },
+                              "& .MuiSlider-rail": {
+                                backgroundColor: "#02c39a",
+                              },
+                              "& .MuiSlider-track": {
+                                backgroundColor: "#00a896",
+                              },
+                            }}
+                            value={
+                              selectedFilters.salaryRange
+                                ? [
+                                    selectedFilters.salaryRange.initial,
+                                    selectedFilters.salaryRange.final,
+                                  ]
+                                : [0, 0]
+                            }
+                            onChange={(_, value) =>
+                              setSelectedFilters((prev) => ({
+                                ...prev,
+                                salaryRange: {
+                                  initial: value[0],
+                                  final: value[1],
+                                },
+                              }))
+                            }
+                            valueLabelDisplay="auto"
+                            min={0}
+                            max={200000}
+                            step={1000}
+                          />
+                          <div>
+                            ${selectedFilters.salaryRange.initial || 0} - $
+                            {selectedFilters.salaryRange.final || 100000}
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  )}
+                    <div className="flex mb-3 flex-col w-full">
+                      <div
+                        onClick={() => {
+                          setFlters({
+                            ...filters,
+                            applied: !filters.applied,
+                          });
+                        }}
+                        className="flex w-full justify-between rounded-xl p-2  border-2 border-gray-400"
+                      >
+                        <li>Applied</li>
+                        {filters.datePosted && (
+                          <ArrowUp className="text-gray-500" />
+                        )}
+                        {!filters.datePosted && (
+                          <ArrowDown className="text-gray-500" />
+                        )}
+                      </div>{" "}
+                      {filters.applied && (
+                        <ul className="w-11/12 p-3 rounded-b-xl my-2">
+                          {appliedOptions.map((type) => (
+                            <li
+                              key={type}
+                              className="flex items-center space-x-2"
+                            >
+                              <input
+                                type="radio"
+                                checked={selectedFilters.applied === type}
+                                onChange={() => {
+                                  setSelectedFilters((prev) => ({
+                                    ...prev,
+                                    applied: type,
+                                  }));
+                                }}
+                              />
+                              <span>{type}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  </div>
                 </ul>
                 <div className="flex space-x-2 justify-center mt-5">
                   <div>
@@ -404,16 +365,42 @@ export default function AgentHome() {
       <div className="flex justify-center">
         <div className="p-2 w-full max-w-5xl mt-10">
           <h2 className="m-5 text-2xl font-bold">Jobs Found</h2>
-          {job &&
-            job.map((job, idx) => {
-              <AgentJobPostCard key={idx} job={job} />;
-            })}
-          {!job && (
-            <div>
-              <div className="h-30 text-brand-dark">
-                <p>No Job posts found at the moment...</p>
-              </div>
+          {loading ? (
+            <div className="flex justify-center items-center m-5 space-x-5">
+              <Spinner />
+              <p className="text-xl font-semibold text-gray-500">Loading...</p>
             </div>
+          ) : (
+            <>
+              {/* Only show filtered results if filters are active and request is done */}
+              {!checkFilterNull() && selectedFilters.request === true ? (
+                filteredposts.length === 0 ? (
+                  <div className="w-full flex justify-center">
+                    <p className="mt-8 font-semibold text-gray-500">
+                      No jobs found..
+                    </p>
+                  </div>
+                ) : (
+                  <div className="w-full flex flex-col items-center">
+                    {filteredposts.map((item, idx) => (
+                      <AgentJobPostCard jobPost={item} key={idx} />
+                    ))}
+                  </div>
+                )
+              ) : jobPosts.length === 0 ? (
+                <div className="w-full flex justify-center">
+                  <p className="mt-8 font-semibold text-gray-500">
+                    No jobs found..
+                  </p>
+                </div>
+              ) : (
+                <div className="w-full flex flex-col items-center">
+                  {jobPosts.map((item, idx) => (
+                    <AgentJobPostCard jobPost={item} key={idx} />
+                  ))}
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>

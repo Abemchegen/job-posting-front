@@ -30,7 +30,7 @@ export default function Sidebar({ active, setactive, role }) {
               {role == "agent" && (
                 <NavLink
                   onClick={() => {}}
-                  to={`/account/agent?id=${user.id}`}
+                  to={`/account/agent`}
                   className={({ isActive }) =>
                     "flex p-2 mb-3 rounded-sm " +
                     (isActive
@@ -47,7 +47,7 @@ export default function Sidebar({ active, setactive, role }) {
               {role == "company" && (
                 <NavLink
                   onClick={() => {}}
-                  to={`/account/company?id=${user.id}`}
+                  to={`/account/company`}
                   className={({ isActive }) =>
                     "flex p-2 mb-3 rounded-sm " +
                     (isActive
@@ -115,7 +115,7 @@ export default function Sidebar({ active, setactive, role }) {
                     "flex p-2 mb-1 rounded-sm  " +
                     (isActive ? "bg-brand" : "hover:bg-[#00a896]")
                   }
-                  to={`/account/company?id=${user.id}`}
+                  to={`/account/company`}
                 >
                   <User className="mr-2" />
                 </NavLink>
@@ -126,7 +126,7 @@ export default function Sidebar({ active, setactive, role }) {
                     "flex p-2 mb-1 rounded-sm  " +
                     (isActive ? "bg-brand" : "hover:bg-[#00a896]")
                   }
-                  to={`/account/agent?id=${user.id}`}
+                  to={`/account/agent`}
                 >
                   <User className="mr-2" />
                 </NavLink>
@@ -154,15 +154,14 @@ export default function Sidebar({ active, setactive, role }) {
               >
                 <LockIcon className="mr-2" />
               </NavLink>
-              <NavLink
-                className={({ isActive }) =>
-                  "flex p-2 mb-1 rounded-sm " +
-                  (isActive ? "bg-brand" : "  hover:bg-[#00a896]")
-                }
-                to={"/"}
+              <button
+                className="flex w-full p-2 rounded-sm focus:bg-brand hover:bg-[#00a896] hover:font-bold"
+                onClick={() => {
+                  handleLogout();
+                }}
               >
                 <LogOut className="mr-2" />
-              </NavLink>
+              </button>
             </ul>
           </div>
         </div>

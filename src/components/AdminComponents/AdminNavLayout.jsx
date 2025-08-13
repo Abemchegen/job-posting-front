@@ -4,7 +4,7 @@ import Nav from "../Nav";
 export default function AdminNavLayout() {
   return (
     <div className="flex flex-col">
-      <Nav role="admin" auth={true} />
+      <Nav />
       <Outlet />
     </div>
   );

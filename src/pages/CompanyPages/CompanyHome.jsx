@@ -2,38 +2,21 @@ import { Slider } from "@mui/material";
 import Button from "../../components/Button";
 import CompanyJobPostCard from "../../components/CompanyComponents/CompanyJobPostCard";
 import { ArrowDown, ArrowUp, Filter, Search, XIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useJobPosts } from "../../hook/useJobPost";
+import { Spinner } from "../../components/Spinner";
+
 export default function CompanyHome() {
   const [filter, setFilter] = useState(false);
-  const job = {
-    title: "Frontend Developer",
-    company: "Tech Corp",
-    salary: "80,000",
-    date: "2025-07-22",
-    description: "Build and maintain web applications using React.",
-  };
-  const jobTypes = [
-    "Full-time",
-    "Part-time",
-    "Contract",
-    "Temporary",
-    "Internship",
-  ];
-  const experienceLevels = [
-    "Entry Level",
-    "Mid Level",
-    "Senior Level",
-    "Executive",
-  ];
-
-  const salaryRanges = [
-    "Any",
-    "$0 - $50,000",
-    "$50,000 - $100,000",
-    "$100,000 - $150,000",
-    "$150,000+",
-  ];
-
+  const { jobPosts, loading, fetchJobPost, fetchJobsWithFilters } =
+    useJobPosts();
+  const [error, setError] = useState(null);
+  const [posts, setPosts] = useState([]);
+  useEffect(() => {
+    if (jobPosts) {
+      setPosts(jobPosts);
+    }
+  }, [jobPosts]);
   const datePostedOptions = [
     "Any Time",
     "Past 24 hours",
@@ -41,37 +24,76 @@ export default function CompanyHome() {
     "Past Month",
   ];
 
-  const sortResults = ["Relevance", "Date Posted (newest)", "Salary (highest)"];
+  const sortResults = ["Latest Posts", "Highest Salary"];
   const [filters, setFlters] = useState({
-    jobType: false,
-    experienceLevel: false,
     salaryRange: false,
     datePosted: false,
     sortResult: false,
   });
 
   const [selectedFilters, setSelectedFilters] = useState({
-    jobTypes: [],
-    experienceLevel: [],
-    salaryRange: [],
-    datePosted: [],
-    sortResult: [],
+    salaryRange: {
+      initial: null,
+      final: null,
+    },
+    datePosted: "",
+    sortResult: "",
   });
 
-  function applyFilters() {
-    setFilter(!filter);
-  }
+  const applyFilters = async () => {
+    const isSalaryNull =
+      selectedFilters.salaryRange.initial == null &&
+      selectedFilters.salaryRange.final == null;
+    const isDateNull =
+      !selectedFilters.datePosted || selectedFilters.datePosted.trim() === "";
+    const isSortNull =
+      !selectedFilters.sortResult || selectedFilters.sortResult.trim() === "";
+    const searchValueNull =
+      !selectedFilters.search || selectedFilters.search.trim() === "";
 
-  function clearFilters() {
-    setFilter(!filter);
-    setSelectedFilters({
-      jobTypes: [],
-      experienceLevel: [],
-      salaryRange: [],
-      datePosted: [],
-      sortResult: [],
-    });
-  }
+    if (isSalaryNull && isDateNull && isSortNull && searchValueNull) {
+      console.log("no filters selected !!!");
+      setFilter(false);
+      return;
+    }
+    try {
+      const filterData = {
+        salary: selectedFilters.salaryRange,
+        date: selectedFilters.datePosted.trim(),
+        sort: selectedFilters.sortResult.trim(),
+        search: selectedFilters.search.trim(),
+      };
+      console.log(filterData);
+
+      const response = await fetchJobsWithFilters(filterData);
+      setPosts(response);
+      console.log(response);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setFilter(false);
+    }
+  };
+
+  const clearFilters = async () => {
+    try {
+      const response = await fetchJobPost();
+      setPosts(response);
+      setSelectedFilters({
+        salaryRange: {
+          initial: null,
+          final: null,
+        },
+        datePosted: "",
+        sortResult: "",
+      });
+      console.log(response);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setFilter(false);
+    }
+  };
   return (
     <div>
       <div className=" space-y-4 bg-brand-dark flex flex-col mt-15 mb-15  items-center text-white">
@@ -86,15 +108,26 @@ export default function CompanyHome() {
             <div className="flex md:w-4/5 w-full md:mb-0 mb-4 md:mr-2">
               <div className="flex border   hover:border-gray-400 rounded-lg shadow-sm border-gray-300 items-center w-full">
                 <Search className="text-gray-500 w-5 mx-2 "></Search>
-
                 <input
                   className="w-full flex-1 focus:outline-none text-gray-700 p-2"
-                  placeholder="Job post title, or keyword..."
+                  placeholder="Job post name, or job speciallity ..."
+                  onChange={(e) =>
+                    setSelectedFilters({
+                      ...selectedFilters,
+                      search: e.target.value,
+                    })
+                  }
+                  value={selectedFilters.search}
                 />
               </div>
             </div>
             <div className="w-full md:w-30">
-              <Button text={"Search Posts"}></Button>
+              <Button
+                text={"Search Posts"}
+                onClick={() => {
+                  applyFilters();
+                }}
+              ></Button>
             </div>
           </div>
 
@@ -115,152 +148,49 @@ export default function CompanyHome() {
               <div className="">
                 <ul>
                   <div className="flex space-x-4">
-                    <div className="flex flex-col w-full">
-                      <div className="flex flex-col w-full mb-3 items-center">
-                        <div
-                          onClick={() => {
-                            setFlters({
-                              ...filters,
-                              jobType: !filters.jobType,
-                            });
-                          }}
-                          className="flex justify-between w-full rounded-xl p-2 border-2 border-gray-400"
-                        >
-                          <li>Job Type</li>
-                          {filters.jobType && (
-                            <ArrowUp className="text-gray-500" />
-                          )}
-                          {!filters.jobType && (
-                            <ArrowDown className="text-gray-500" />
-                          )}
-                        </div>
-                        {filters.jobType && (
-                          <ul className="w-11/12 p-3 rounded-b-xl my-2">
-                            {jobTypes.map((type) => (
-                              <li
-                                key={type}
-                                className="flex items-center space-x-2"
-                              >
-                                <input
-                                  type="checkbox"
-                                  checked={selectedFilters.jobTypes.includes(
-                                    type
-                                  )}
-                                  onChange={() => {
-                                    setSelectedFilters((prev) => ({
-                                      ...prev,
-                                      jobTypes: prev.jobTypes.includes(type)
-                                        ? prev.jobTypes.filter(
-                                            (t) => t !== type
-                                          )
-                                        : [...prev.jobTypes, type],
-                                    }));
-                                  }}
-                                />
-                                <span>{type}</span>
-                              </li>
-                            ))}
-                          </ul>
+                    <div className="flex mb-3 flex-col w-full">
+                      <div
+                        onClick={() => {
+                          setFlters({
+                            ...filters,
+                            datePosted: !filters.datePosted,
+                          });
+                        }}
+                        className="flex w-full justify-between rounded-xl p-2  border-2 border-gray-400"
+                      >
+                        <li>Date Posted</li>
+                        {filters.datePosted && (
+                          <ArrowUp className="text-gray-500" />
+                        )}
+                        {!filters.datePosted && (
+                          <ArrowDown className="text-gray-500" />
                         )}
                       </div>
-                      <div className="flex flex-col mb-3 w-full">
-                        <div
-                          onClick={() => {
-                            setFlters({
-                              ...filters,
-                              experienceLevel: !filters.experienceLevel,
-                            });
-                          }}
-                          className="flex w-full justify-between rounded-xl p-2 border-2 border-gray-400"
-                        >
-                          <li>Experience Level</li>
-                          {filters.experienceLevel && (
-                            <ArrowUp className="text-gray-500" />
-                          )}
-                          {!filters.experienceLevel && (
-                            <ArrowDown className="text-gray-500" />
-                          )}
-                        </div>
-                        {filters.experienceLevel && (
-                          <ul className="w-11/12 p-3 rounded-b-xl my-2">
-                            {experienceLevels.map((type) => (
-                              <li
-                                key={type}
-                                className="flex items-center space-x-2"
-                              >
-                                <input
-                                  type="checkbox"
-                                  checked={selectedFilters.experienceLevel.includes(
-                                    type
-                                  )}
-                                  onChange={() => {
-                                    setSelectedFilters((prev) => ({
-                                      ...prev,
-                                      experienceLevel:
-                                        prev.experienceLevel.includes(type)
-                                          ? prev.experienceLevel.filter(
-                                              (t) => t !== type
-                                            )
-                                          : [...prev.experienceLevel, type],
-                                    }));
-                                  }}
-                                />
-                                <span>{type}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                      </div>
+                      {filters.datePosted && (
+                        <ul className="w-11/12 p-3 rounded-b-xl my-2">
+                          {datePostedOptions.map((type) => (
+                            <li
+                              key={type}
+                              className="flex items-center space-x-2"
+                            >
+                              <input
+                                type="radio"
+                                checked={selectedFilters.datePosted === type}
+                                onChange={() => {
+                                  setSelectedFilters((prev) => ({
+                                    ...prev,
+                                    datePosted: type,
+                                  }));
+                                }}
+                              />
+                              <span>{type}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
                     </div>
                     <div className="flex flex-col w-full">
                       <div className="flex mb-3 flex-col w-full">
-                        <div
-                          onClick={() => {
-                            setFlters({
-                              ...filters,
-                              datePosted: !filters.datePosted,
-                            });
-                          }}
-                          className="flex w-full justify-between rounded-xl p-2  border-2 border-gray-400"
-                        >
-                          <li>Date Posted</li>
-                          {filters.datePosted && (
-                            <ArrowUp className="text-gray-500" />
-                          )}
-                          {!filters.datePosted && (
-                            <ArrowDown className="text-gray-500" />
-                          )}
-                        </div>
-                        {filters.datePosted && (
-                          <ul className="w-11/12 p-3 rounded-b-xl my-2">
-                            {datePostedOptions.map((type) => (
-                              <li
-                                key={type}
-                                className="flex items-center space-x-2"
-                              >
-                                <input
-                                  type="checkbox"
-                                  checked={selectedFilters.datePosted.includes(
-                                    type
-                                  )}
-                                  onChange={() => {
-                                    setSelectedFilters((prev) => ({
-                                      ...prev,
-                                      datePosted: prev.datePosted.includes(type)
-                                        ? prev.datePosted.filter(
-                                            (t) => t !== type
-                                          )
-                                        : [...prev.datePosted, type],
-                                    }));
-                                  }}
-                                />
-                                <span>{type}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                      </div>
-                      <div className="flex flex-col w-full">
                         <div
                           onClick={() => {
                             setFlters({
@@ -286,18 +216,12 @@ export default function CompanyHome() {
                                 className="flex items-center space-x-2"
                               >
                                 <input
-                                  type="checkbox"
-                                  checked={selectedFilters.sortResult.includes(
-                                    type
-                                  )}
+                                  type="radio"
+                                  checked={selectedFilters.sortResult === type}
                                   onChange={() => {
                                     setSelectedFilters((prev) => ({
                                       ...prev,
-                                      sortResult: prev.sortResult.includes(type)
-                                        ? prev.sortResult.filter(
-                                            (t) => t !== type
-                                          )
-                                        : [...prev.sortResult, type],
+                                      sortResult: type,
                                     }));
                                   }}
                                 />
@@ -309,62 +233,71 @@ export default function CompanyHome() {
                       </div>
                     </div>
                   </div>
-
-                  <div
-                    onClick={() => {
-                      setFlters({
-                        ...filters,
-                        salaryRange: !filters.salaryRange,
-                      });
-                    }}
-                    className="flex justify-between rounded-xl p-2 border-2 border-gray-400"
-                  >
-                    <li>Salary Range</li>
-                    {filters.salaryRange && (
-                      <ArrowUp className="text-gray-500" />
-                    )}
-                    {!filters.salaryRange && (
-                      <ArrowDown className="text-gray-500" />
-                    )}
-                  </div>
-                  {filters.salaryRange && (
-                    <div className="p-4">
-                      <Slider
-                        sx={{
-                          color: "#00a896",
-                          "& .MuiSlider-thumb": {
-                            // borderColor: "#00a896",
-                            backgroundColor: "#00a896",
-                          },
-                          "& .MuiSlider-rail": {
-                            backgroundColor: "#02c39a",
-                          },
-                          "& .MuiSlider-track": {
-                            backgroundColor: "#00a896",
-                          },
+                  <div className="flex space-x-4">
+                    <div className="flex mb-3 flex-col w-full">
+                      <div
+                        onClick={() => {
+                          setFlters({
+                            ...filters,
+                            salaryRange: !filters.salaryRange,
+                          });
                         }}
-                        value={
-                          selectedFilters.salaryRange.length
-                            ? selectedFilters.salaryRange
-                            : [0, 0]
-                        }
-                        onChange={(_, value) =>
-                          setSelectedFilters((prev) => ({
-                            ...prev,
-                            salaryRange: value,
-                          }))
-                        }
-                        valueLabelDisplay="auto"
-                        min={0}
-                        max={200000}
-                        step={1000}
-                      />
-                      <div>
-                        Selected: ${selectedFilters.salaryRange[0] || 0} - $
-                        {selectedFilters.salaryRange[1] || 100000}
+                        className="flex justify-between rounded-xl p-2 border-2 border-gray-400"
+                      >
+                        <li>Salary Range</li>
+                        {filters.salaryRange && (
+                          <ArrowUp className="text-gray-500" />
+                        )}
+                        {!filters.salaryRange && (
+                          <ArrowDown className="text-gray-500" />
+                        )}
                       </div>
+                      {filters.salaryRange && (
+                        <div className="p-4">
+                          <Slider
+                            sx={{
+                              color: "#00a896",
+                              "& .MuiSlider-thumb": {
+                                // borderColor: "#00a896",
+                                backgroundColor: "#00a896",
+                              },
+                              "& .MuiSlider-rail": {
+                                backgroundColor: "#02c39a",
+                              },
+                              "& .MuiSlider-track": {
+                                backgroundColor: "#00a896",
+                              },
+                            }}
+                            value={
+                              selectedFilters.salaryRange
+                                ? [
+                                    selectedFilters.salaryRange.initial,
+                                    selectedFilters.salaryRange.final,
+                                  ]
+                                : [0, 0]
+                            }
+                            onChange={(_, value) =>
+                              setSelectedFilters((prev) => ({
+                                ...prev,
+                                salaryRange: {
+                                  initial: value[0],
+                                  final: value[1],
+                                },
+                              }))
+                            }
+                            valueLabelDisplay="auto"
+                            min={0}
+                            max={200000}
+                            step={1000}
+                          />
+                          <div>
+                            ${selectedFilters.salaryRange.initial || 0} - $
+                            {selectedFilters.salaryRange.final || 100000}
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  )}
+                  </div>
                 </ul>
                 <div className="flex space-x-2 justify-center mt-5">
                   <div>
@@ -388,15 +321,30 @@ export default function CompanyHome() {
           )}
         </div>
       </div>
-      <div className="flex justify-center">
+      <div className="flex mb-10 justify-center">
         <div className="p-2 w-full max-w-5xl">
           <h2 className="m-5 text-2xl font-bold">Job Posts Found</h2>
 
-          <CompanyJobPostCard job={job} />
-          <CompanyJobPostCard job={job} />
-          <CompanyJobPostCard job={job} />
-          <CompanyJobPostCard job={job} />
-          <CompanyJobPostCard job={job} />
+          {posts.length == 0 && !loading && (
+            <div className="w-full">
+              <p className="mt-8 font-semibold text-gray-500">
+                No posts found...
+              </p>
+            </div>
+          )}
+          {posts.length == 0 && loading && (
+            <div className="flex justify-center items-center m-5 space-x-5">
+              <Spinner />
+              <p className="text-xl font-semibold text-gray-500">Loading...</p>
+            </div>
+          )}
+          {posts.length > 0 && (
+            <div className="w-full">
+              {posts.map((item, idx) => {
+                return <CompanyJobPostCard jobPost={item} key={idx} />;
+              })}
+            </div>
+          )}
         </div>
       </div>
     </div>

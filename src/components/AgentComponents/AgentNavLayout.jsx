@@ -4,7 +4,7 @@ import Nav from "../Nav";
 export default function AgentNavLayout() {
   return (
     <div className="flex flex-col">
-      <Nav role="agent" auth={true} />
+      <Nav />
       <Outlet />
     </div>
   );

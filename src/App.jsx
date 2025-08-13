@@ -27,7 +27,6 @@ import EditPost from "./pages/CompanyPages/EditPOst";
 import AdminNavLayout from "./components/AdminComponents/AdminNavLayout";
 import AdminHome from "./pages/AdminPages/AdminHome";
 import UserDetail from "./pages/AdminPages/UserDetail";
-import Jobs from "./pages/AdminPages/Jobs";
 import AdminAccount from "./pages/AdminPages/AdminAccount";
 import AdminSidebarLayout from "./components/AdminComponents/AdminSidebarLayout";
 import JobDetail from "./pages/AdminPages/JobDetail";
@@ -36,6 +35,7 @@ import { AuthProvider } from "./context/authContext";
 import { ErrorBoundary } from "react-error-boundary";
 import Button from "./components/Button";
 import { useLocation } from "react-router-dom";
+import JobPage from "./pages/AdminPages/JobPage";
 
 function MyFallback({ error, resetErrorBoundary }) {
   const location = useLocation();
@@ -44,7 +44,9 @@ function MyFallback({ error, resetErrorBoundary }) {
       <div className="w-3/4 mt-15 bg-white p-5 rounded flex flex-col justify-center items-center ">
         <p className="text-2xl font-bold m-3">Something Went Wrong</p>
         <pre>Error: {error.message}</pre>
-        <pre className="text-xs text-left w-full overflow-x-auto bg-gray-100 p-2 rounded mt-2">{error.stack}</pre>
+        <pre className="text-xs text-left w-full overflow-x-auto bg-gray-100 p-2 rounded mt-2">
+          {error.stack}
+        </pre>
         <div className="m-3">
           <Button text="Try Again" onClick={resetErrorBoundary} />
         </div>
@@ -73,11 +75,11 @@ function App() {
               <Route path="/editPost" element={<EditPost />} />
 
               <Route
-                path="/jobpostdetail/company"
+                path="/detailjobpost/company"
                 element={<CompanyJobPostDetail />}
               />
               <Route
-                path="/companyapplicationdetail"
+                path="/applicationdetailcompany"
                 element={<CompanyApplicationDetail />}
               />
 
@@ -88,8 +90,8 @@ function App() {
             <Route element={<AdminNavLayout />}>
               <Route path="/home/admin" element={<AdminHome />} />
               <Route path="/userdetail" element={<UserDetail />} />
-              <Route path="/jobs" element={<Jobs />} />
-              <Route path="/jobdetail" element={<JobDetail />} />
+              <Route path="/pageJob" element={<JobPage />} />
+              <Route path="/detailjob" element={<JobDetail />} />
               <Route path="/addjob" element={<AddJob />} />
 
               <Route element={<AdminSidebarLayout />}>
@@ -99,7 +101,7 @@ function App() {
             <Route element={<AgentNavLayout />}>
               <Route path="/home/agent" element={<AgentHome />} />
               <Route
-                path="/jobpostdetail/agent"
+                path="/detailjobpost/agent"
                 element={<AgentJobPostDetail />}
               />
               <Route path="/apply" element={<Apply />} />

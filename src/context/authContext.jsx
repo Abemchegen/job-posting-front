@@ -9,33 +9,31 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [loggedIn, setLoggedIn] = useState(null);
 
   useEffect(() => {
     const initAuth = async () => {
       try {
         setLoading(true);
         setError(null);
-        if (loggedIn == true) {
-          const userData = await authService.getCurrentUser();
-          console.log("Server verification successful:", userData);
-          setUser(userData);
-        }
+        const userData = await authService.getCurrentUser();
+        console.log("Server verification successful:", userData);
+        setUser(userData);
       } catch (err) {
         setError(err.message);
         setUser(null);
+        console.error(err);
       } finally {
         setLoading(false);
       }
     };
     initAuth();
-  }, [loggedIn]);
+  }, []);
 
   const register = async (userData) => {
     try {
       setError(null);
       const data = await authService.register(userData);
-      setLoggedIn(true);
+      setUser(data);
       return data;
     } catch (err) {
       setError(err.message);
@@ -48,21 +46,40 @@ export const AuthProvider = ({ children }) => {
     try {
       setError(null);
       const data = await authService.login(credentials);
-      setLoggedIn(true);
+      setUser(data);
       return data;
     } catch (err) {
       setError(err.message);
       throw err;
     }
   };
-
+  const uploadPfp = async (userid, formData) => {
+    try {
+      setError(null);
+      const data = await authService.uploadPfp(userid, formData);
+      return data;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
+  };
+  const deletePic = async (userid) => {
+    try {
+      setError(null);
+      const data = await authService.deletePic(userid);
+      return data;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
+  };
   // Logout user
   const logout = async () => {
     try {
-      authService.logout();
+      const response = await authService.logout();
       setUser(null);
       setError(null);
-      setLoggedIn(false);
+      console.log(response);
     } catch (e) {
       console.log(e);
     }
@@ -70,7 +87,7 @@ export const AuthProvider = ({ children }) => {
   // delete account
   const deleteAccount = async (userid) => {
     try {
-      authService.deleteUser(userid);
+      await authService.deleteUser(userid);
       setUser(null);
       setError(null);
     } catch (e) {
@@ -80,20 +97,78 @@ export const AuthProvider = ({ children }) => {
 
   const updateAccount = async (userid, updateData) => {
     try {
-      authService.updateUser(userid, updateData);
+      const response = await authService.updateUser(userid, updateData);
+      setUser(response);
     } catch (e) {
       console.log(e);
     }
   };
 
+  const getAllUsers = async () => {
+    try {
+      const response = await authService.getAllUsers();
+      console.log("users: " + response);
+      return response;
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  const getUser = async (id) => {
+    try {
+      const response = await authService.getUser(id);
+      console.log("user: " + response);
+      return response;
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  const updateCompanyDetails = async (updateData) => {
+    try {
+      const response = await authService.updateCompanyDetails(updateData);
+      setUser({
+        ...user,
+        companyName: response.companyName,
+        companyPhonenumber: response.companyPhonenumber,
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  const updatePass = async (userid, updateData) => {
+    try {
+      await authService.updatePass(userid, updateData);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  const fetchUsersWithFilters = async (filters) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const params = new URLSearchParams();
+      if (filters.role) params.append("role", filters.role);
+      if (filters.search) params.append("search", filters.search);
+
+      const data = await authService.fetchUsersWithFilters(
+        params.toString() ? `?${params.toString()}` : ""
+      );
+      return data;
+    } catch (err) {
+      setError(err.message);
+      console.error("Error fetching users with filters:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Check if user is admin
   const isAdmin = () => {
-    return user.role === "ADMIN";
+    return !!user && user.role === "ADMIN";
   };
 
   // Check if user is authenticated
   const isAuthenticated = () => {
-    return !!user && loggedIn;
+    return !!user;
   };
 
   // Context value
@@ -101,13 +176,20 @@ export const AuthProvider = ({ children }) => {
     user,
     loading,
     error,
+    fetchUsersWithFilters,
     isAuthenticated: isAuthenticated(),
     isAdmin: isAdmin(),
     deleteAccount,
+    uploadPfp,
+    deletePic,
+    getUser,
     updateAccount,
     register,
+    getAllUsers,
     login,
     logout,
+    updateCompanyDetails,
+    updatePass,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

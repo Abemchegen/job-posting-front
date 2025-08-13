@@ -34,6 +34,7 @@ export default function AgentCvCard({
                   setEdit(true);
                   setSelectedItem({
                     label: sectionLable,
+                    id: item.id,
                     itemIndex: idx,
                     config: config,
                   });
@@ -46,6 +47,7 @@ export default function AgentCvCard({
                   setSelectedItem({
                     label: sectionLable,
                     itemIndex: idx,
+                    id: item.id,
                     config: config,
                   });
                 }}
@@ -71,7 +73,7 @@ export default function AgentCvCard({
           >
             <div className="flex">
               <Plus className="text-brand mr-1" />
-              <span className="mr-3">Add Experiance</span>
+              <span className="mr-3">Add {sectionLable} </span>
             </div>
           </div>
         </div>

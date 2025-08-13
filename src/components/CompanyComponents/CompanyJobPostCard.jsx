@@ -2,11 +2,53 @@ import { Calendar, DollarSign } from "lucide-react";
 import Button from "../Button";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useJobPosts } from "../../hook/useJobPost";
+import PostJobComp from "./PostJobComp";
+import { BsPerson } from "react-icons/bs";
+export default function CompanyJobPostCard({ jobPost, detail = false }) {
+  const [jobPostData, setJobPostData] = useState({
+    salary: jobPost.salary,
+    peopleNeeded: jobPost.peopleNeeded,
+    subcatDesc: jobPost.subcatDesc,
+    subcatName: jobPost.subcatName,
+    jobName: jobPost.jobName,
+    description: jobPost.description,
+    date: jobPost.date,
+    id: jobPost.id,
+  });
+  const [updatedJobpost, setUpdatedJobpost] = useState(null);
+  useEffect(() => {
+    if (updatedJobpost) {
+      setJobPostData({
+        salary: updatedJobpost.salary,
+        peopleNeeded: updatedJobpost.peopleNeeded,
+        subcatDesc: updatedJobpost.subcatDesc,
+        subcatName: updatedJobpost.subcatName,
+        jobName: updatedJobpost.jobName,
+        description: updatedJobpost.description,
+        date: updatedJobpost.date,
+        id: updatedJobpost.id,
+      });
+    }
+  }, [updatedJobpost]);
+  const { deleteJobPost } = useJobPosts();
 
-export default function CompanyJobPostCard({ job, detail = false }) {
+  console.log("jobpostdata", jobPostData);
   const navigate = useNavigate();
-  const [deletePost, setDeletePost] = useState(false);
+  const [editPost, setEditPost] = useState(false);
   const [deleteProccede, setDeleteProccede] = useState(false);
+  const [deletePost, setDeletePost] = useState(false);
+  const handleDeletePost = async () => {
+    try {
+      const response = deleteJobPost(jobPostData.id);
+      console.log(response);
+      setDeleteProccede(true);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setDeletePost(false);
+    }
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -22,16 +64,22 @@ export default function CompanyJobPostCard({ job, detail = false }) {
       <div className="bg-white text-black m-5 space-y-2 rounded-xl shadow-sm p-7">
         <div className="flex mb-3 justify-between">
           <div className="flex flex-col">
-            <p className="text-blue-600 text-xl mb-3 font-bold hover:text-blue-800">
-              {job.title}
+            <p className="text-blue-600 text-2xl mb-1 font-bold hover:text-blue-800">
+              {jobPostData.jobName}
             </p>
-            <p className="text-lg">{job.company}</p>
+            {jobPostData.subcatName && (
+              <p className="text-gray-600 font-semibold">
+                {jobPostData.subcatName}
+              </p>
+            )}
           </div>
           {!detail && (
             <div>
               <Button
                 text={"View Details"}
-                onClick={() => navigate(`/jobpostdetail/company?id=${job.id}`)}
+                onClick={() =>
+                  navigate(`/detailjobpost/company?id=${jobPostData.id}`)
+                }
               />
             </div>
           )}
@@ -40,14 +88,14 @@ export default function CompanyJobPostCard({ job, detail = false }) {
               <div>
                 <Button
                   text={"View Applications"}
-                  onClick={() => navigate(`/application?id=${job.id}`)}
+                  onClick={() => navigate(`/application?id=${jobPostData.id}`)}
                 />
               </div>
               <div>
                 <Button
                   variant="dark"
                   text={"Edit Job Post"}
-                  onClick={() => navigate(`/editPost?id=${job.id}`)}
+                  onClick={() => setEditPost(true)}
                 />
               </div>
               <div>
@@ -63,14 +111,34 @@ export default function CompanyJobPostCard({ job, detail = false }) {
         <div className="space-x-4 flex">
           <div className="flex">
             <DollarSign className="w-4 font-light text-gray-500"></DollarSign>
-            <span className="text-gray-500"> {job.salary}</span>
+            <span className="text-gray-500"> {jobPostData.salary}</span>
           </div>
           <div className="flex">
             <Calendar className="w-4 font-light mr-1 text-gray-500"></Calendar>
-            <span className="text-gray-500"> {job.date}</span>
+            <span className="text-gray-500"> {jobPostData.date}</span>
+          </div>
+          <div className="flex items-center">
+            <BsPerson className="w-4 font-light mr-1 text-gray-500"></BsPerson>
+            <span className="text-gray-500"> {jobPostData.peopleNeeded}</span>
           </div>
         </div>
-        {!detail && <p>{job.description}</p>}
+        {!detail && (
+          <p className="whitespace-pre-wrap line-clamp-2">
+            {jobPostData.description}
+          </p>
+        )}
+        {detail && (
+          <div className="text-black mt-10 space-y-2">
+            <div className="flex justify-between">
+              <div className="flex flex-col">
+                <p className="text-lg mb-4 ">Description</p>
+                <p className="text-gray-600 whitespace-pre-wrap">
+                  {jobPostData.description}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
       {detail && deletePost && (
         <div className="fixed inset-0 z-10 flex justify-center items-center">
@@ -91,12 +159,23 @@ export default function CompanyJobPostCard({ job, detail = false }) {
                   text={"Delete"}
                   variant="danger"
                   onClick={() => {
-                    setDeletePost(false);
-                    setDeleteProccede(true);
+                    handleDeletePost();
                   }}
                 />
               </div>
             </div>
+          </div>
+        </div>
+      )}
+      {detail && editPost && (
+        <div className="fixed inset-0 z-10 flex items-center justify-center">
+          <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-xl bg-white">
+            <PostJobComp
+              create={false}
+              Post={jobPostData}
+              EditPost={setEditPost}
+              updated={setUpdatedJobpost}
+            />
           </div>
         </div>
       )}

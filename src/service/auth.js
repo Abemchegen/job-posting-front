@@ -79,7 +79,6 @@ class AuthService {
         credentials: "include",
       });
       console.log("Server response status:", response.status);
-
       return response;
     } catch (e) {
       console.log(e);
@@ -92,7 +91,6 @@ class AuthService {
         credentials: "include",
       });
 
-      console.log("Server response status:", response.status);
       const contentType = response.headers.get("content-type");
 
       if (!response.ok) {
@@ -100,7 +98,7 @@ class AuthService {
           console.log("invalid, logging out");
           this.logout();
         }
-        let errorMessage = "Failed to get user profile";
+        let errorMessage = "Failed to get user ";
         if (contentType && contentType.includes("application/json")) {
           const errorData = await response.json();
           errorMessage = errorData.message || errorMessage;
@@ -115,7 +113,37 @@ class AuthService {
       } else {
         userData = await response.text();
       }
-      console.log("Server returned user data:", userData);
+      return userData;
+    } catch (error) {
+      console.error("GET USER " + error);
+      throw error;
+    }
+  }
+  //admin
+  async getUser(userid) {
+    try {
+      const response = await fetch(`/users/${userid}`, {
+        credentials: "include",
+      });
+
+      const contentType = response.headers.get("content-type");
+
+      if (!response.ok) {
+        let errorMessage = "Failed to get user ";
+        if (contentType && contentType.includes("application/json")) {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+        } else {
+          errorMessage = await response.text();
+        }
+        throw new Error(errorMessage);
+      }
+      let userData;
+      if (contentType && contentType.includes("application/json")) {
+        userData = await response.json();
+      } else {
+        userData = await response.text();
+      }
       return userData;
     } catch (error) {
       console.error("GET USER " + error);
@@ -186,6 +214,103 @@ class AuthService {
     }
   }
 
+  async updateCompanyDetails(userData) {
+    try {
+      const response = await fetch(`/company/updateDetails`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+        credentials: "include",
+      });
+      const contentType = response.headers.get("content-type");
+
+      if (!response.ok) {
+        let errorMessage = "Failed to update Company Details";
+        if (contentType && contentType.includes("application/json")) {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+        } else {
+          errorMessage = await response.text();
+        }
+        throw new Error(errorMessage);
+      }
+      if (contentType && contentType.includes("application/json")) {
+        return await response.json();
+      } else {
+        return await response.text();
+      }
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async uploadPfp(userId, formData) {
+    try {
+      const response = await fetch(`/users/uploadImage/${userId}`, {
+        method: "POST",
+        body: formData,
+        credentials: "include",
+      });
+      const contentType = response.headers.get("content-type");
+
+      if (!response.ok) {
+        let errorMessage = "Failed to upload profile pic for user";
+        if (contentType && contentType.includes("application/json")) {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+        } else {
+          errorMessage = await response.text();
+        }
+        throw new Error(errorMessage);
+      }
+      if (contentType && contentType.includes("application/json")) {
+        return await response.json();
+      } else {
+        return await response.text();
+      }
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+  async updatePass(userid, submitData) {
+    try {
+      const response = await fetch(`/users/updatePas/${userid}`, {
+        method: "PUT",
+        body: JSON.stringify(submitData),
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const contentType = response.headers.get("content-type");
+
+      if (!response.ok) {
+        let errorMessage = "Failed to change Password";
+        if (contentType && contentType.includes("application/json")) {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+        } else {
+          errorMessage = await response.text();
+        }
+
+        throw new Error(errorMessage);
+      }
+
+      if (contentType && contentType.includes("application/json")) {
+        return await response.json();
+      } else {
+        return await response.text();
+      }
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
   // Delete user
   async deleteUser(userId) {
     try {
@@ -197,6 +322,62 @@ class AuthService {
 
       if (!response.ok) {
         let errorMessage = "Failed to delete user";
+        if (contentType && contentType.includes("application/json")) {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+        } else {
+          errorMessage = await response.text();
+        }
+        throw new Error(errorMessage);
+      }
+      if (contentType && contentType.includes("application/json")) {
+        return await response.json();
+      } else {
+        return await response.text();
+      }
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+  async fetchUsersWithFilters(params = "") {
+    try {
+      const response = await fetch(`/users${params}`, {
+        credentials: "include",
+      });
+      const contentType = response.headers.get("content-type");
+
+      if (!response.ok) {
+        let errorMessage = "Failed to delete user";
+        if (contentType && contentType.includes("application/json")) {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+        } else {
+          errorMessage = await response.text();
+        }
+        throw new Error(errorMessage);
+      }
+      if (contentType && contentType.includes("application/json")) {
+        return await response.json();
+      } else {
+        return await response.text();
+      }
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+  s;
+  async deletePic(userId) {
+    try {
+      const response = await fetch(`/users/deletePfp/${userId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      const contentType = response.headers.get("content-type");
+
+      if (!response.ok) {
+        let errorMessage = "Failed to delete profilepic";
         if (contentType && contentType.includes("application/json")) {
           const errorData = await response.json();
           errorMessage = errorData.message || errorMessage;
