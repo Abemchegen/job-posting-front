@@ -60,10 +60,20 @@ export default function CompanyJobPostCard({ jobPost, detail = false }) {
     return () => clearTimeout(timer);
   }, [deleteProccede]);
   return (
-    <div>
+    <div className="w-full">
       <div className="bg-white text-black m-5 space-y-2 rounded-xl shadow-sm p-7">
-        <div className="flex mb-3 justify-between">
-          <div className="flex flex-col">
+        <div
+          className={`flex mb-3 ${
+            detail
+              ? "flex-col items-center md:flex-row md:justify-between"
+              : "justify-between"
+          }`}
+        >
+          <div
+            className={`flex flex-col  ${
+              detail ? "md:items-start items-center " : "items-start"
+            } space-x-5 mb-5`}
+          >
             <p className="text-blue-600 text-2xl mb-1 font-bold hover:text-blue-800">
               {jobPostData.jobName}
             </p>
@@ -87,21 +97,21 @@ export default function CompanyJobPostCard({ jobPost, detail = false }) {
             <div className="flex space-x-5">
               <div>
                 <Button
-                  text={"View Applications"}
+                  text={"Applications"}
                   onClick={() => navigate(`/application?id=${jobPostData.id}`)}
                 />
               </div>
               <div>
                 <Button
                   variant="dark"
-                  text={"Edit Job Post"}
+                  text={"Edit Post"}
                   onClick={() => setEditPost(true)}
                 />
               </div>
               <div>
                 <Button
                   variant="danger"
-                  text={"Delete Job Post"}
+                  text={"Delete  Post"}
                   onClick={() => setDeletePost(true)}
                 />
               </div>
@@ -130,8 +140,8 @@ export default function CompanyJobPostCard({ jobPost, detail = false }) {
         {detail && (
           <div className="text-black mt-10 space-y-2">
             <div className="flex justify-between">
-              <div className="flex flex-col">
-                <p className="text-lg mb-4 ">Description</p>
+              <div className="flex  w-full  flex-col">
+                <p className="text-lg mb-4 text-center">Description</p>
                 <p className="text-gray-600 whitespace-pre-wrap">
                   {jobPostData.description}
                 </p>
@@ -181,7 +191,7 @@ export default function CompanyJobPostCard({ jobPost, detail = false }) {
       )}
       {detail && deleteProccede && (
         <div className="fixed inset-0 z-10 flex justify-center items-center">
-          <div className="w-2/3 flex flex-col items-center bg-white shadow-sm rounded-sm p-5">
+          <div className="w-2/3 flex flex-col items-center text-center bg-white shadow-sm rounded-sm p-5">
             <h1 className="text-2xl font-bold mb-3">
               Job post Deleted Successfully
             </h1>

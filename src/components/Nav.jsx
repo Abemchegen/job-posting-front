@@ -5,10 +5,10 @@ import { useAuth } from "../context/authContext";
 
 export default function Nav() {
   const navigate = useNavigate();
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, loading } = useAuth();
   return (
-    <nav className="bg-muted flex h-15 z-10 px-2 w-full justify-between items-center fixed top-0 left-0 ">
-      <div>
+    <nav className="bg-muted flex h-15 z-10 px-2 w-full justify-between items-center fixed top-0 left-0 space-x-3">
+      <div className="">
         {isAuthenticated && user.role == "AGENT" && (
           <div>
             <Link to="/home/agent" className="flex space-x-3 items-center">
@@ -57,36 +57,53 @@ export default function Nav() {
                 to="/myapplications"
               >
                 My Applications
+              </Link>{" "}
+              <Link
+                className="hover:text-brand hover:font-bold w-10"
+                to="myChats"
+              >
+                Chat
               </Link>
               <Link
                 className="hover:text-brand hover:font-bold w-10"
-                to={`/account/agent?id=${User.id}`}
+                to={`/account/agent`}
               >
                 Account
               </Link>
             </>
           )}
           {user.role == "COMPANY" && (
-            <>
-              <Link
-                className="hover:text-brand hover:font-bold w-10"
-                to="/home/company"
-              >
-                Home
-              </Link>
-              <Link
-                className="hover:text-brand hover:font-bold w-17"
-                to="/postJob"
-              >
-                Post Job
-              </Link>
-              <Link
-                className="hover:text-brand hover:font-bold w-10"
-                to={`/account/company?id=${User.id}`}
-              >
-                Account
-              </Link>
-            </>
+            <div className="flex justify-between w-75">
+              <div>
+                <Link
+                  className="hover:text-brand hover:font-bold "
+                  to="/home/company"
+                >
+                  Home
+                </Link>
+              </div>
+              <div>
+                <Link
+                  className="hover:text-brand hover:font-bold "
+                  to="/postJob"
+                >
+                  Post Job
+                </Link>
+              </div>
+              <div>
+                <Link className="hover:text-brand hover:font-bold" to="myChats">
+                  Chat
+                </Link>
+              </div>
+              <div>
+                <Link
+                  className="hover:text-brand hover:font-bold"
+                  to={`/account/company`}
+                >
+                  Account
+                </Link>
+              </div>
+            </div>
           )}
           {user.role == "ADMIN" && (
             <>
@@ -111,7 +128,7 @@ export default function Nav() {
               </Link>
               <Link
                 className="hover:text-brand hover:font-bold w-10"
-                to={`/account/admin?id=${User.id}`}
+                to={`/account/admin`}
               >
                 Account
               </Link>

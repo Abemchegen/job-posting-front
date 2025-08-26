@@ -16,7 +16,7 @@ export default function Sidebar({ active, setactive, role }) {
     <div>
       {active && (
         <div className="flex flex-shrink-0 fixed top-0 left-0 h-[calc(100vh-60px)] mt-15 ">
-          <div className="flex flex-col justify-between w-55 bg-brand-dark h-full text-white p-5">
+          <div className="flex flex-col justify-between w-55 rounded-tr-lg bg-brand-dark h-full text-white p-5">
             <ul className="space-y-3 ">
               <div className="flex justify-between mb-7">
                 <div className="flex">
@@ -102,7 +102,7 @@ export default function Sidebar({ active, setactive, role }) {
       )}
       {!active && (
         <div className="flex fixed top-0 left-0 h-[calc(100vh-60px)] mt-15 flex-shrink-0">
-          <div className="flex flex-col justify-between w-15 bg-brand-dark text-white p-2">
+          <div className="flex flex-col justify-between w-15 rounded-tr-lg bg-brand-dark text-white p-2">
             <ul className="space-y-3">
               <div className="flex justify-between p-2 mb-7">
                 <button onClick={() => setactive(!active)}>

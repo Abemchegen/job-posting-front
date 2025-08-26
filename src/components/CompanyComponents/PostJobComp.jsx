@@ -16,6 +16,7 @@ export default function PostJobComp({
   const { jobs, createJob, addSubcatagory } = useJobs();
   const { user } = useAuth();
   const { createJobPost, updateJobPost } = useJobPosts();
+  const [loading, setLoading] = useState(false);
   const [jobPost, setJobPost] = useState({
     salary: null,
     peopleNeeded: null,
@@ -119,6 +120,7 @@ export default function PostJobComp({
   const handlePost = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true);
       const jobData = {
         companyName: user.companyName.trim(),
         description: jobPost.description.trim(),
@@ -137,11 +139,14 @@ export default function PostJobComp({
       }, 1000);
     } catch (e) {
       console.log(e);
+    } finally {
+      setLoading(false);
     }
   };
   const handleEditPost = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true);
       const submitData = {
         jobName: jobPost.jobName.trim(),
         description: jobPost.description.trim(),
@@ -158,6 +163,7 @@ export default function PostJobComp({
       console.log(e);
     } finally {
       EditPost(false);
+      setLoading(false);
     }
   };
 
@@ -311,8 +317,16 @@ export default function PostJobComp({
                   )}
                 </div>
                 <div className="w-30">
-                  {create && <Button text="Create" type="submit" />}
-                  {!create && <Button text="Update" type="submit" />}
+                  {create && !loading && <Button text="Create" type="submit" />}
+                  {create && loading && (
+                    <Button text="Creating..." type="submit" />
+                  )}
+                  {!create && !loading && (
+                    <Button text="Update" type="submit" />
+                  )}{" "}
+                  {!create && loading && (
+                    <Button text="Updating..." type="submit" />
+                  )}
                 </div>
               </div>
             </form>

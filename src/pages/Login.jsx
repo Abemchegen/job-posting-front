@@ -116,7 +116,7 @@ export default function Login() {
             </div>
 
             {!isSubmitting && <Button text={"Sign in"} type="submit"></Button>}
-            {isSubmitting && <Button text={"Submitting..."}></Button>}
+            {isSubmitting && <Button text={"Signing in..."}></Button>}
 
             {submitted == 2 && (
               <div>

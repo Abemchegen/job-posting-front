@@ -51,11 +51,16 @@ class AuthService {
 
       if (!response.ok) {
         let errorMessage = "Login failed";
+
         if (contentType && contentType.includes("application/json")) {
           const errorData = await response.json();
           errorMessage = errorData.message || errorMessage;
         } else {
           errorMessage = await response.text();
+        }
+
+        if (errorMessage === "User is disabled") {
+          window.location.href = "/verifyEmail";
         }
         throw new Error(errorMessage);
       }
@@ -179,7 +184,68 @@ class AuthService {
       throw error;
     }
   }
+  async verifyEmail(verifyBody) {
+    try {
+      const response = await fetch(`/users/public/verifyEmail`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(verifyBody),
+        credentials: "include",
+      });
+      const contentType = response.headers.get("content-type");
 
+      if (!response.ok) {
+        let errorMessage = "Failed to verify email";
+        if (contentType && contentType.includes("application/json")) {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+        } else {
+          errorMessage = await response.text();
+        }
+        throw new Error(errorMessage);
+      }
+      if (contentType && contentType.includes("application/json")) {
+        return await response.json();
+      } else {
+        return await response.text();
+      }
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+  async resendVerCode(email) {
+    try {
+      const response = await fetch(
+        `/users/public/resendCode?email=${encodeURIComponent(email)}`,
+        {
+          credentials: "include",
+        }
+      );
+      const contentType = response.headers.get("content-type");
+
+      if (!response.ok) {
+        let errorMessage = "Failed to send verification code";
+        if (contentType && contentType.includes("application/json")) {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+        } else {
+          errorMessage = await response.text();
+        }
+        throw new Error(errorMessage);
+      }
+      if (contentType && contentType.includes("application/json")) {
+        return await response.json();
+      } else {
+        return await response.text();
+      }
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
   // Update user
   async updateUser(userId, userData) {
     try {
@@ -367,7 +433,7 @@ class AuthService {
       throw error;
     }
   }
-  s;
+
   async deletePic(userId) {
     try {
       const response = await fetch(`/users/deletePfp/${userId}`, {

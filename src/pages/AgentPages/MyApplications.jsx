@@ -95,8 +95,8 @@ export default function MyApplications() {
       console.log(filterData);
 
       const response = await fetchApplicationsWithFilters(filterData);
-      setFilteredApplications(response);
       console.log(response);
+      setFilteredApplications(response);
       setSelectedFilters({
         ...selectedFilters,
         request: true,

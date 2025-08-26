@@ -258,7 +258,7 @@ export default function Apply() {
                   </p>
                 </div>
                 <div className="mt-6 flex justify-center gap-2">
-                  <div>
+                  <div className="w-40">
                     <Button
                       onClick={() => {}}
                       text="Cancle"
@@ -266,12 +266,15 @@ export default function Apply() {
                       disabled={isSubmitting}
                     ></Button>
                   </div>
-                  <div>
-                    <Button
-                      type="submit"
-                      disabled={isSubmitting}
-                      text={isSubmitting ? <Spinner /> : "Submit Application"}
-                    ></Button>
+                  <div className="w-40 flex justify-center">
+                    {!isSubmitting && (
+                      <Button
+                        type="submit"
+                        disabled={isSubmitting}
+                        text={"Submit Application"}
+                      ></Button>
+                    )}
+                    {isSubmitting && <Spinner />}
                   </div>
                 </div>
                 {submitted == 2 && (

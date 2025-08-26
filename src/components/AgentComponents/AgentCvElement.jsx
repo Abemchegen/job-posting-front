@@ -25,7 +25,7 @@ export default function AgentCvElement({
             <textarea
               id="item"
               required={true}
-              value={item}
+              value={item ?? ""}
               onChange={(e) => editChange && editChange(e.target.value)}
               rows={5}
               className=" flex-1 text-gray-500 border-2 outline-none focus:border-gray-400  py-1 px-2 border-gray-300 rounded-sm"
@@ -36,7 +36,7 @@ export default function AgentCvElement({
               id="item"
               required={true}
               type="number"
-              value={item}
+              value={item ?? 0}
               onChange={(e) => editChange && editChange(e.target.value)}
               className=" flex-1 text-gray-500 border-2 outline-none focus:border-gray-400  py-1 px-2 border-gray-300 rounded-sm"
             />
@@ -44,7 +44,7 @@ export default function AgentCvElement({
             <input
               id="item"
               required={true}
-              value={item}
+              value={item ?? ""}
               onChange={(e) => editChange && editChange(e.target.value)}
               className=" flex-1 text-gray-500 border-2 outline-none focus:border-gray-400  py-1 px-2 border-gray-300 rounded-sm"
             />
@@ -107,8 +107,7 @@ export default function AgentCvElement({
               required={true}
               type="number"
               step="any"
-              value={item}
-              onChange={(e) => editChange && editChange(e.target.value)}
+              onChange={(e) => addChange && addChange(e.target.value)}
               className=" flex-1 text-gray-500 border-2 outline-none focus:border-gray-400  py-1 px-2 border-gray-300 rounded-sm"
             />
           ) : (

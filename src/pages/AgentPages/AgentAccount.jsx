@@ -6,8 +6,15 @@ import CloudImage from "../../components/CloudImage";
 import { useAuth } from "../../context/authContext";
 import { Spinner } from "../../components/Spinner";
 export default function AgentAccount() {
-  const { user, deleteAccount, updateAccount, deletePic, uploadPfp, loading } =
-    useAuth();
+  const {
+    user,
+    setUser,
+    deleteAccount,
+    updateAccount,
+    deletePic,
+    uploadPfp,
+    loading,
+  } = useAuth();
   const navigate = useNavigate();
   const [userData, setUserData] = useState({
     name: null,
@@ -36,7 +43,7 @@ export default function AgentAccount() {
   const [deletePfp, setDeletePfp] = useState(false);
   const [deleteAccountConform, setDeleteAccountConform] = useState(false);
   const [deleteAccountProccede, setDeleteAccountProccede] = useState(false);
-
+  const [pfpLoading, setPfpLoading] = useState(false);
   useEffect(() => {
     if (deleteAccountProccede) {
       const timer = setTimeout(() => {
@@ -96,29 +103,34 @@ export default function AgentAccount() {
       const formData = new FormData();
       formData.append("file", file);
       try {
+        setPfpLoading(true);
         const url = await uploadPfp(user.id, formData);
         console.log(url);
-        setUserData({
-          ...userData,
+        setUser({
+          ...user,
           pfp: url,
         });
       } catch (e) {
         console.log(e);
       } finally {
         setChangePfp(false);
+        setPfpLoading(false);
       }
     }
   };
 
   const handleDelete = async () => {
     try {
+      setPfpLoading(true);
       await deletePic(user.id);
-      setUserData({
-        ...userData,
+      setUser({
+        ...user,
         pfp: "",
       });
     } catch (e) {
       console.log(e);
+    } finally {
+      setPfpLoading(false);
     }
   };
 
@@ -140,73 +152,77 @@ export default function AgentAccount() {
           <div className="flex justify-center min-h-[calc(100vh-80px)]">
             <div className="w-full max-w-4xl m-3 p-6 bg-white rounded-lg flex flex-col items-center">
               <div className="w-full p-3">
-                <div className="flex justify-between mb-10">
-                  <div className="flex flex-col">
-                    <h1 className="text-2xl text-brand">
-                      Welcome, {user.name.split(" ")[0]}
-                    </h1>
+                <div className="flex md:flex-row flex-col justify-between items-center mb-10">
+                  <div className="flex items-center mb-3 ">
+                    <div className="mr-3" onClick={() => {}}>
+                      {!pfpLoading && userData.pfp && (
+                        <div
+                          className="rounded-full w-30 h-30 flex flex-col items-center justify-center  cursor-pointer transition"
+                          onClick={() => {
+                            setChangePfp(true);
+                          }}
+                        >
+                          <CloudImage
+                            className="rounded-full"
+                            publicId={userData.pfp}
+                            width={120}
+                            height={120}
+                          />
+                        </div>
+                      )}
+                      {!pfpLoading && !userData.pfp && (
+                        <div
+                          className="rounded-full border-2 border-dashed border-gray-300 w-30 h-30 flex flex-col items-center justify-center bg-gray-50 cursor-pointer hover:bg-muted transition"
+                          onClick={() => {
+                            document.getElementById("pfp").click();
+                          }}
+                        >
+                          <Plus className="text-gray-400 w-8 h-8 mb-1" />
+                          <span className="text-gray-500 text-sm">
+                            Upload Image
+                          </span>
+                          <input
+                            id="pfp"
+                            type="file"
+                            hidden={true}
+                            accept="image/*"
+                            onChange={handleUpload}
+                          ></input>
+                        </div>
+                      )}
+                      {pfpLoading && (
+                        <div className="rounded-full border-2 border-dashed border-gray-100 w-30 h-30 flex flex-col items-center justify-center bg-gray-50 cursor-pointer hover:bg-muted transition">
+                          <Spinner />
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex flex-col">
+                      <h1 className="text-2xl text-brand">
+                        Welcome, {user.name.split(" ")[0]}
+                      </h1>
 
-                    <p className="text-gray-500 text-lg">
-                      {new Date().toLocaleDateString()}
-                    </p>
+                      <p className="text-gray-500 text-lg">
+                        {new Date().toLocaleDateString()}
+                      </p>
+                    </div>
                   </div>
-                  <div className="mr-3" onClick={() => {}}>
-                    {userData.pfp && (
-                      <div
-                        className="rounded-full w-30 h-30 flex flex-col items-center justify-center  cursor-pointer transition"
-                        onClick={() => {
-                          setChangePfp(true);
-                        }}
-                      >
-                        <CloudImage
-                          className="rounded-full"
-                          publicId={userData.pfp}
-                          width={120}
-                          height={120}
-                        />
-                      </div>
-                    )}
-                    {!userData.pfp && (
-                      <div
-                        className="rounded-full border-2 border-dashed border-gray-300 w-30 h-30 flex flex-col items-center justify-center bg-gray-50 cursor-pointer hover:bg-muted transition"
-                        onClick={() => {
-                          document.getElementById("pfp").click();
-                        }}
-                      >
-                        <Plus className="text-gray-400 w-8 h-8 mb-1" />
-                        <span className="text-gray-500 text-sm">
-                          Upload Image
-                        </span>
-                        <input
-                          id="pfp"
-                          type="file"
-                          hidden={true}
-                          accept="image/*"
-                          onChange={handleUpload}
-                        ></input>
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <div className="flex justify-end mb-7">
-                  <div>
-                    <div className="flex space-x-3">
-                      <div>
-                        <Button
-                          text={"Edit Account"}
-                          onClick={() => setEdit(true)}
-                        />
-                      </div>
-                      <div>
-                        <Button
-                          variant="danger"
-                          text={"Delete Account"}
-                          onClick={() => setDeleteAccount(true)}
-                        />
-                      </div>
+                  <div className="flex space-x-3">
+                    <div>
+                      <Button
+                        text={"Edit Account"}
+                        onClick={() => setEdit(true)}
+                      />
+                    </div>
+                    <div>
+                      <Button
+                        variant="danger"
+                        text={"Delete Account"}
+                        onClick={() => setDeleteAccountConform(true)}
+                      />
                     </div>
                   </div>
                 </div>
+
                 <form onSubmit={submitform}>
                   <div className="flex justify-center flex-col space-y-2 ">
                     <div className="flex items-center md:justify-between md:flex-row flex-col md:gap-10">
@@ -342,8 +358,8 @@ export default function AgentAccount() {
                           type="file"
                           accept="image/*"
                           hidden={true}
-                          onChange={() => {
-                            handleUpload;
+                          onChange={(e) => {
+                            handleUpload(e);
                             setChangePfp(false);
                           }}
                         ></input>

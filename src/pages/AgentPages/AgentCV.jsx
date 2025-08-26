@@ -16,7 +16,7 @@ import { useAuth } from "../../context/authContext";
 import { useApplications } from "../../hook/useApplications";
 
 export default function AgentCV() {
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
   const { uploadCv, updateCv, deleteCv } = useApplications();
   const educationConfig = [
     { key: "level", label: "Education" },
@@ -98,11 +98,9 @@ export default function AgentCV() {
       }
       console.log(uploadData);
       const response = await updateCv(uploadData);
-      setCvData({
-        Education: response.cv.resume.education,
-        Experiance: response.cv.resume.experiance,
-        Award: response.cv.resume.award,
-        Project: response.cv.resume.project,
+      setUser({
+        ...user,
+        cv: response.cv,
       });
       console.log(response);
     } catch (e) {
@@ -128,11 +126,9 @@ export default function AgentCV() {
       }
       console.log(deletename, selectedItem.id);
       const response = await deleteCv(selectedItem.id, deletename);
-      setCvData({
-        Education: response.cv.resume.education,
-        Experiance: response.cv.resume.experiance,
-        Award: response.cv.resume.award,
-        Project: response.cv.resume.project,
+      setUser({
+        ...user,
+        cv: response.cv,
       });
       console.log(response);
     } catch (e) {
@@ -158,11 +154,9 @@ export default function AgentCV() {
       }
       console.log(uploadData);
       const response = await uploadCv(uploadData);
-      setCvData({
-        Education: response.cv.resume.education,
-        Experiance: response.cv.resume.experiance,
-        Award: response.cv.resume.award,
-        Project: response.cv.resume.project,
+      setUser({
+        ...user,
+        cv: response.cv,
       });
       console.log(response);
     } catch (e) {
@@ -353,7 +347,7 @@ export default function AgentCV() {
       )}
       {deleteEle && selectedItem !== null && (
         <div className="fixed inset-0 z-10 flex items-center justify-center">
-          <div className="w-1/2 ml-15 max-w-120 bg-white shadow-2xl rounded-2xl p-7">
+          <div className="w-1/2 ml-15 min-w-90 bg-white shadow-2xl rounded-2xl p-7">
             <h1 className="font-bold text-xl text-center">
               Are you sure you want to delete this Entry?
             </h1>
@@ -380,7 +374,7 @@ export default function AgentCV() {
       )}
       {add && selectedItem !== null && (
         <div className="fixed inset-0 z-10 flex items-center justify-center">
-          <div className="w-1/2 ml-15 max-w-120 bg-white shadow-2xl rounded-2xl p-7">
+          <div className="w-1/2 ml-15 min-w-100 bg-white shadow-2xl rounded-2xl p-7">
             <h1 className="font-bold text-xl mb-7 text-center">
               Add your {selectedItem.label} here.
             </h1>
@@ -394,7 +388,8 @@ export default function AgentCV() {
                 addChange={(value) =>
                   setAddFormData((prev) => ({
                     ...prev,
-                    [field.key]: value.trim(),
+                    [field.key]:
+                      typeof value === "string" ? value.trim() : value,
                   }))
                 }
               />

@@ -39,9 +39,9 @@ export default function AdminHome() {
   }, [user]);
   function checkFilterNull() {
     const isRoleNull =
-      !selectedFilters.role.trim() || selectedFilters.role.trim() === "";
+      !selectedFilters.role || selectedFilters.role.trim() === "";
     const searchValueNull =
-      !selectedFilters.search === "" || selectedFilters.search.trim() === "";
+      !selectedFilters.search || selectedFilters.search.trim() === "";
 
     return isRoleNull && searchValueNull;
   }
@@ -58,7 +58,7 @@ export default function AdminHome() {
       };
       const response = await fetchUsersWithFilters(filterData);
       setFilteredUsers(response.users);
-      console.log(response);
+      console.log(response.users);
       setSelectedFilters({
         ...selectedFilters,
         request: true,

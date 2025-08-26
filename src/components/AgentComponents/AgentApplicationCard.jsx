@@ -16,47 +16,18 @@ import { useEffect, useState } from "react";
 import CloudImage from "../CloudImage";
 import CompanyCvCard from "../CompanyComponents/CompanyCVCard";
 import { useApplications } from "../../hook/useApplications";
-
+import { Spinner } from "../Spinner";
 export default function AgentApplicationCard({
   applicationItem,
   detail = false,
 }) {
+  const [showPdf, setShowPdf] = useState(false);
+
   const navigate = useNavigate();
   const [deleteProccede, SetDeleteProccede] = useState(false);
   const [deleteApp, setDeleteApp] = useState(false);
   const { deleteApplication } = useApplications();
-  const [application, setApplication] = useState({
-    jobtitle: applicationItem.jobName,
-    subcat: applicationItem.subcatName,
-    company: applicationItem.CompanyName,
-    id: applicationItem.jobApplicationID,
-    date: applicationItem.appliedAt,
-    status: applicationItem.status,
-    coverLetter: applicationItem.coverLetter,
-    cvURL: applicationItem.cvURL,
-    cv: null,
-    user: {
-      id: applicationItem.userInfo.id,
-      fullname: applicationItem.userInfo.name,
-      email: applicationItem.userInfo.email,
-      pfp: applicationItem.userInfo.pfp,
-    },
-  });
-  console.log(applicationItem, "Dfdfd");
-
-  useEffect(() => {
-    if (applicationItem.cv != null) {
-      setApplication((prev) => ({
-        ...prev,
-        cv: {
-          Education: applicationItem.cv.resume.education,
-          Experiance: applicationItem.cv.resume.experiance,
-          Award: applicationItem.cv.resume.award,
-          Project: applicationItem.cv.resume.project,
-        },
-      }));
-    }
-  }, [applicationItem.userInfo.cv]);
+  const [loading, setLoading] = useState(null);
   const options = [
     { value: "PENDING", label: "Pending" },
     { value: "REVIEWING", label: "Reviewing" },
@@ -65,8 +36,8 @@ export default function AgentApplicationCard({
     { value: "REJECTED", label: "Rejected" },
   ];
   const statusLabel =
-    options.find((opt) => opt.value === application.status)?.label ||
-    application.status;
+    options.find((opt) => opt.value === applicationItem.status)?.label ||
+    applicationItem.status;
   const educationConfig = [
     { key: "level", label: "Education" },
     { key: "institution", label: "Institution" },
@@ -90,13 +61,17 @@ export default function AgentApplicationCard({
   ];
   const handleDeleteApp = async () => {
     try {
-      const response = await deleteApplication(application.id);
+      setLoading(true);
+      const response = await deleteApplication(
+        applicationItem.jobApplicationID
+      );
       console.log(response);
       SetDeleteProccede(true);
     } catch (e) {
       console.log(e);
     } finally {
       setDeleteApp(false);
+      setLoading(false);
     }
   };
   const [expand, setExpand] = useState({
@@ -105,6 +80,7 @@ export default function AgentApplicationCard({
     project: false,
     award: false,
     experiance: false,
+    fileCV: false,
   });
 
   useEffect(() => {
@@ -118,9 +94,9 @@ export default function AgentApplicationCard({
   }, [deleteProccede]);
 
   return (
-    <div className="w-full  max-w-4xl ">
+    <div className="w-full  max-w-4xl mb-2">
       <div className="bg-white  text-black min-w-sm space-y-2 rounded-xl shadow-sm p-7">
-        <div className="flex justify-between">
+        <div className="flex justify-between items-center">
           <div className="flex items-center mb-3 space-x-3 cursor-pointer ">
             {detail && (
               <div
@@ -129,7 +105,7 @@ export default function AgentApplicationCard({
               >
                 <CloudImage
                   className="rounded-full"
-                  publicId={application.user.pfp}
+                  publicId={applicationItem.userInfo.pfp}
                   width={100}
                   height={100}
                 />
@@ -137,11 +113,11 @@ export default function AgentApplicationCard({
             )}
             <div className="flex flex-col">
               <p className="text-blue-600 text-xl font-bold hover:text-blue-800">
-                {application.jobtitle}
+                {applicationItem.jobName}
               </p>
-              {application.subcat && (
+              {applicationItem.subcatName && (
                 <p className="text-gray-600 font-semibold ">
-                  {application.subcat}
+                  {applicationItem.subcatName}
                 </p>
               )}
             </div>
@@ -151,7 +127,9 @@ export default function AgentApplicationCard({
               <Button
                 text={"View Details"}
                 onClick={() =>
-                  navigate(`/agentapplicationdetail?id=${application.id}`)
+                  navigate(
+                    `/agentapplicationdetail?id=${applicationItem.jobApplicationID}`
+                  )
                 }
               />
             </div>
@@ -168,11 +146,10 @@ export default function AgentApplicationCard({
             </div>
           )}
         </div>
-
         <div className="space-x-4 flex">
           <div className="flex">
             <Calendar className="w-4 font-light mr-1 text-gray-500"></Calendar>
-            <span className="text-gray-500"> {application.date}</span>
+            <span className="text-gray-500"> {applicationItem.appliedAt}</span>
           </div>
           <div className="flex">
             <TimerIcon className="w-4 font-light text-gray-500"></TimerIcon>
@@ -180,44 +157,86 @@ export default function AgentApplicationCard({
           </div>
           <div className="flex">
             <House className="w-4 font-light text-gray-500"></House>
-            <span className="text-gray-500">{application.company}</span>
+            <span className="text-gray-500">{applicationItem.companyName}</span>
           </div>
         </div>
-        {detail && application.cv && (
-          <div className="flex w-full  flex-col">
+        {detail && (
+          <div className="flex w-full flex-col">
             <div className="flex justify-center my-5 mx-3">
               <div className=" min-w-sm w-full flex flex-col items-center">
-                <div className="w-full  mb-3">
-                  <div
-                    className="p-5 bg-brand-dark text-white rounded-xl"
-                    onClick={() =>
-                      setExpand({
-                        ...expand,
-                        coverLetter: !expand.coverLetter,
-                      })
-                    }
-                  >
-                    <div className="flex justify-between">
-                      <div className="flex space-x-2">
-                        <File />
-                        <p className="font-bold">Cover Letter</p>
+                {applicationItem.coverLetter && (
+                  <div className="w-full  mb-3">
+                    <div
+                      className="p-5 bg-brand-dark text-white rounded-xl"
+                      onClick={() =>
+                        setExpand({
+                          ...expand,
+                          coverLetter: !expand.coverLetter,
+                        })
+                      }
+                    >
+                      <div className="flex justify-between">
+                        <div className="flex space-x-2">
+                          <File />
+                          <p className="font-bold">Cover Letter</p>
+                        </div>
+                        {!expand.coverLetter && <ArrowDown />}
+                        {expand.coverLetter && <ArrowUp />}
                       </div>
-                      {!expand.coverLetter && <ArrowDown />}
-                      {expand.coverLetter && <ArrowUp />}
                     </div>
-                  </div>
-                  {expand.coverLetter && (
-                    <div className="flex mt-2 min-w-sm justify-center">
-                      <div className="w-19/20 p-3 ">
-                        <div className="p-4 border-2 border-muted rounded-2xl">
-                          <p>{application.coverLetter}</p>
+                    {expand.coverLetter && (
+                      <div className="flex mt-2 min-w-sm justify-center">
+                        <div className="w-19/20 p-3 ">
+                          <div className="p-4 border-2 border-muted rounded-2xl">
+                            <p>{applicationItem.coverLetter}</p>
+                          </div>
                         </div>
                       </div>
+                    )}
+                  </div>
+                )}
+                {applicationItem.cvURL && (
+                  <div className="w-full  mb-3">
+                    <div
+                      className="p-5 bg-brand-dark text-white rounded-xl"
+                      onClick={() =>
+                        setExpand({
+                          ...expand,
+                          fileCV: !expand.fileCV,
+                        })
+                      }
+                    >
+                      <div className="flex justify-between">
+                        <div className="flex space-x-2">
+                          <File />
+                          <p className="font-bold">CV</p>
+                        </div>
+                        {!expand.fileCV && <ArrowDown />}
+                        {expand.fileCV && <ArrowUp />}
+                      </div>
                     </div>
-                  )}
-                </div>
-                {application.cv.Education &&
-                  application.cv.Education.length > 0 && (
+                    {expand.fileCV && (
+                      <div className="flex mt-2 min-w-sm justify-center">
+                        <div className="w-19/20 p-3 ">
+                          <div className="p-4 border-2 border-muted rounded-2xl bg-white">
+                            <iframe
+                              src={`https://docs.google.com/gview?url=${encodeURIComponent(
+                                applicationItem.cvURL
+                              )}&embedded=true`}
+                              width="100%"
+                              height="600px"
+                              title="CV PDF"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+                {applicationItem.cv &&
+                  applicationItem.cv.resume.education &&
+                  applicationItem.cv.resume.education.length > 0 &&
+                  !applicationItem.cvURL && (
                     <div className="w-full mb-3">
                       <div
                         className="p-5 bg-brand-dark text-white rounded-xl"
@@ -239,14 +258,16 @@ export default function AgentApplicationCard({
                       </div>
                       {expand.education && (
                         <CompanyCvCard
-                          list={application.cv.Education}
+                          list={applicationItem.cv.resume.education}
                           config={educationConfig}
                         />
                       )}
                     </div>
                   )}
-                {application.cv.Experiance &&
-                  application.cv.Experiance.length > 0 && (
+                {applicationItem.cv &&
+                  applicationItem.cv.resume.experiance &&
+                  applicationItem.cv.resume.experiance.length > 0 &&
+                  !applicationItem.cvURL && (
                     <div className="w-full mb-3">
                       <div
                         className="p-5 bg-brand-dark text-white rounded-xl"
@@ -268,14 +289,16 @@ export default function AgentApplicationCard({
                       </div>
                       {expand.experiance && (
                         <CompanyCvCard
-                          list={application.cv.Experiance}
+                          list={applicationItem.cv.resume.experiance}
                           config={experianceConfig}
                         />
                       )}
                     </div>
                   )}
-                {application.cv.Project &&
-                  application.cv.Project.length > 0 && (
+                {applicationItem.cv &&
+                  applicationItem.cv.resume.project &&
+                  applicationItem.cv.resume.project.length > 0 &&
+                  !applicationItem.cvURL && (
                     <div className="w-full mb-3">
                       <div
                         className=" p-5  bg-brand-dark text-white rounded-xl"
@@ -297,48 +320,46 @@ export default function AgentApplicationCard({
                       </div>
                       {expand.project && (
                         <CompanyCvCard
-                          list={application.cv.Project}
+                          list={applicationItem.cv.resume.project}
                           config={projectConfig}
                         />
                       )}
                     </div>
                   )}
-                {application.cv.Award && application.cv.Award.length > 0 && (
-                  <div className="w-full ">
-                    <div
-                      className="p-5 bg-brand-dark text-white rounded-xl"
-                      onClick={() =>
-                        setExpand({
-                          ...expand,
-                          award: !expand.award,
-                        })
-                      }
-                    >
-                      <div className="flex justify-between">
-                        <div className="flex space-x-2">
-                          <Medal />
-                          <p className="font-bold">Awards</p>
+                {applicationItem.cv &&
+                  applicationItem.cv.resume.award &&
+                  applicationItem.cv.resume.award.length > 0 &&
+                  !applicationItem.cvURL && (
+                    <div className="w-full ">
+                      <div
+                        className="p-5 bg-brand-dark text-white rounded-xl"
+                        onClick={() =>
+                          setExpand({
+                            ...expand,
+                            award: !expand.award,
+                          })
+                        }
+                      >
+                        <div className="flex justify-between">
+                          <div className="flex space-x-2">
+                            <Medal />
+                            <p className="font-bold">Awards</p>
+                          </div>
+                          {!expand.award && <ArrowDown />}
+                          {expand.award && <ArrowUp />}
                         </div>
-                        {!expand.award && <ArrowDown />}
-                        {expand.award && <ArrowUp />}
                       </div>
+                      {expand.award && (
+                        <CompanyCvCard
+                          list={applicationItem.cv.resume.award}
+                          config={awardConfig}
+                        />
+                      )}
                     </div>
-                    {expand.award && (
-                      <CompanyCvCard
-                        list={application.cv.Award}
-                        config={awardConfig}
-                      />
-                    )}
-                  </div>
-                )}
+                  )}
               </div>
             </div>
           </div>
-        )}
-        {detail && application.cvURL && (
-          <a href={application.cvURL} target="_blank" rel="noopener noreferrer">
-            View CV
-          </a>
         )}
       </div>
 
@@ -362,11 +383,14 @@ export default function AgentApplicationCard({
                     />
                   </div>
                   <div>
-                    <Button
-                      text={"Procede"}
-                      variant="danger"
-                      onClick={() => handleDeleteApp()}
-                    />
+                    {!loading && (
+                      <Button
+                        text={"Procede"}
+                        variant="danger"
+                        onClick={() => handleDeleteApp()}
+                      />
+                    )}
+                    {loading && <Spinner />}
                   </div>
                 </div>
               </div>

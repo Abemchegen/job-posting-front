@@ -2,6 +2,7 @@ import { useSearchParams } from "react-router-dom";
 import AgentApplicationCard from "../../components/AgentComponents/AgentApplicationCard";
 import { useApplication } from "../../hook/useApplications";
 import { Spinner } from "../../components/Spinner";
+import { useState } from "react";
 
 export default function AgentApplicationDetail() {
   const [searchParams] = useSearchParams();

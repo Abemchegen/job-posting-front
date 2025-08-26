@@ -42,7 +42,7 @@ export default function Application() {
         </div>
       )}
       {applications.length > 0 && (
-        <div className="flex flex-col items-center w-9/10">
+        <div className="flex flex-col items-center w-full">
           {applications.map((item, idx) => {
             return <CompanyApplicationCard applicationItem={item} key={idx} />;
           })}

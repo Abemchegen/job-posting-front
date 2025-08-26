@@ -36,6 +36,8 @@ import { ErrorBoundary } from "react-error-boundary";
 import Button from "./components/Button";
 import { useLocation } from "react-router-dom";
 import JobPage from "./pages/AdminPages/JobPage";
+import VerifyEmail from "./pages/verifyEmail";
+import Chats from "./pages/Chats";
 
 function MyFallback({ error, resetErrorBoundary }) {
   const location = useLocation();
@@ -67,10 +69,13 @@ function App() {
               <Route path="/signup" element={<Signup />} />
               <Route path="/registerType" element={<RegisterType />} />
               <Route path="/changePassword" element={<ChangePassword />} />
+              <Route path="/verifyEmail" element={<VerifyEmail />} />
             </Route>
             <Route element={<CompanyNavLayout />}>
               <Route path="/home/company" element={<CompanyHome />} />
               <Route path="/postJob" element={<PostJob />} />
+              <Route path="/myChats" element={<Chats />} />
+
               <Route path="/application" element={<Application />} />
               <Route path="/editPost" element={<EditPost />} />
 
@@ -112,6 +117,7 @@ function App() {
               />
               <Route element={<AgentSidebarLayout />}>
                 <Route path="/account/agent" element={<AgentAccount />} />
+                <Route path="/chats" element={<Chats />} />
                 <Route path="/cv" element={<AgentCV />} />
               </Route>
             </Route>

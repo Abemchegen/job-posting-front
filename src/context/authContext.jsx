@@ -10,22 +10,31 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const initAuth = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const userData = await authService.getCurrentUser();
-        console.log("Server verification successful:", userData);
-        setUser(userData);
-      } catch (err) {
-        setError(err.message);
-        setUser(null);
-        console.error(err);
-      } finally {
-        setLoading(false);
+  const initAuth = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const userData = await authService.getCurrentUser();
+      console.log("Server verification successful:", userData);
+      setUser(userData);
+    } catch (err) {
+      setError(err.message);
+      setUser(null);
+      console.error(err);
+      if (
+        window.location.pathname !== "/" &&
+        window.location.pathname !== "/login" &&
+        window.location.pathname !== "/signup" &&
+        window.location.pathname !== "/registerType" &&
+        window.location.pathname !== "/verifyEmail"
+      ) {
+        window.location.replace("/");
       }
-    };
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
     initAuth();
   }, []);
 
@@ -116,7 +125,7 @@ export const AuthProvider = ({ children }) => {
   const getUser = async (id) => {
     try {
       const response = await authService.getUser(id);
-      console.log("user: " + response);
+      console.log("user: ", response);
       return response;
     } catch (e) {
       console.log(e);
@@ -136,7 +145,24 @@ export const AuthProvider = ({ children }) => {
   };
   const updatePass = async (userid, updateData) => {
     try {
-      await authService.updatePass(userid, updateData);
+      const response = await authService.updatePass(userid, updateData);
+      return response;
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  const verifyEmail = async (userid, updateData) => {
+    try {
+      const response = await authService.verifyEmail(userid, updateData);
+      return response;
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  const resendVerCode = async (verifyBody) => {
+    try {
+      const response = await authService.resendVerCode(verifyBody);
+      return response;
     } catch (e) {
       console.log(e);
     }
@@ -174,6 +200,7 @@ export const AuthProvider = ({ children }) => {
   // Context value
   const value = {
     user,
+    setUser,
     loading,
     error,
     fetchUsersWithFilters,
@@ -190,6 +217,8 @@ export const AuthProvider = ({ children }) => {
     logout,
     updateCompanyDetails,
     updatePass,
+    verifyEmail,
+    resendVerCode,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

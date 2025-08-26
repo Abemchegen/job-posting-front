@@ -15,6 +15,7 @@ export const useJobPosts = () => {
       const data = await apiService.getAllJobPostsCompany();
       console.log(data);
       setJobPosts(data || []);
+      return data;
     } catch (err) {
       setError(err.message);
       console.error("Error fetching job post:", err);
@@ -112,8 +113,8 @@ export const useJobPosts = () => {
         params.append("salaryMin", filters.salary.initial);
         params.append("salaryMax", filters.salary.final);
       }
-      if (filters.date) params.append("datePosted", filters.datePosted);
-      if (filters.sort) params.append("sortBy", filters.sortBy);
+      if (filters.date) params.append("date", filters.date);
+      if (filters.sort) params.append("sort", filters.sort);
       const data = await apiService.getAllJobPostsCompany(
         params.toString() ? `?${params.toString()}` : ""
       );

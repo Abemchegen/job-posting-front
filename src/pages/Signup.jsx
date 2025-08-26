@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../context/authContext";
 
 export default function Signup() {
-  const { register, user, error } = useAuth();
+  const { register, error } = useAuth();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const type = searchParams.get("type");
@@ -47,18 +47,14 @@ export default function Signup() {
     });
   }
   useEffect(() => {
-    if (user) {
+    if (submitted) {
       const timer = setTimeout(() => {
-        if (user.role === "AGENT") {
-          navigate("/home/agent");
-        } else if (user.role === "COMPANY") {
-          navigate("/home/company");
-        }
+        navigate("/verifyEmail");
       }, 1000);
 
       return () => clearTimeout(timer);
     }
-  }, [user, navigate]);
+  }, [submitted, navigate]);
 
   function validateFormData() {
     let newErrors = {};
@@ -107,18 +103,18 @@ export default function Signup() {
   };
   return (
     <div>
-      <div className="flex items-center mt-15 justify-center ">
-        <div className="w-2/3 flex flex-col items-center space-y-3 shadow-sm bg-white p-7 rounded-2xl mb-10 max-w-lg">
-          {submitted == true && (
-            <div className="flex w-full justify-end">
-              <h1 className="font-bold text-gray-500">
-                Account created successfully!
-              </h1>
-            </div>
-          )}
+      <div className="flex items-center h-full mt-15 justify-center ">
+        <div className="w-full flex flex-col items-center space-y-3 shadow-sm bg-white p-7 rounded-2xl mb-10 max-w-lg">
           <h2 className="text-2xl text-center font-bold mb-5">
             Create an account!
           </h2>
+          {submitted == true && (
+            <div className="flex z-50 fixed inset-0  items-center justify-center w-full">
+              <div className="bg-white text-center shadow-2xl rounded-lg text-black p-5 w-2/3 max-w-xl  ">
+                <p className="text-2xl">Account created Successfully</p>
+              </div>{" "}
+            </div>
+          )}
           {isAgent && (
             <p className="text-center text-gray-500 mb-5">
               Let's find your next opportunity!
@@ -265,7 +261,7 @@ export default function Signup() {
           {submitted === false && (
             <p className="text-red-500">Submission failed</p>
           )}
-          {error && <div className="text-red-500">{error}</div>}
+          {/* {error && <div className="text-red-500">{error}</div>} */}
 
           <p className="text-center">
             Already have an account?

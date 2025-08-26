@@ -28,7 +28,7 @@ export default function CompanyApplicationDetail() {
   }, [aid, pid]);
 
   return (
-    <div className="flex mt-15 justify-center">
+    <div className="flex w-full mt-15 justify-center">
       {!application && !loading && (
         <div className="w-full flex justify-center">
           <p className="mt-8 font-semibold text-gray-500">
@@ -43,7 +43,7 @@ export default function CompanyApplicationDetail() {
         </div>
       )}
       {application && (
-        <div className="w-9/10 flex flex-col items-center">
+        <div className=" w-full flex flex-col items-center">
           <CompanyApplicationCard detail={true} applicationItem={application} />
         </div>
       )}

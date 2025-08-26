@@ -45,16 +45,26 @@ export default function ChangePassword() {
     if (submitted == 1) {
       const timer = setTimeout(() => {
         if (user.role == "AGENT") {
-          navigate("/home/agent");
+          navigate("/account/agent");
         } else if (user.role == "COMPANY") {
-          navigate("/home/company");
+          navigate("/account/company");
         } else if (user.role == "ADMIN") {
-          navigate("/home/admin");
+          navigate("/account/admin");
         }
       }, 1000);
       return () => clearTimeout(timer);
     }
   }, [submitted]);
+
+  const handleCancle = () => {
+    if (user.role == "AGENT") {
+      navigate("/account/agent");
+    } else if (user.role == "COMPANY") {
+      navigate("/account/company");
+    } else if (user.role == "ADMIN") {
+      navigate("/account/admin");
+    }
+  };
 
   const handlesubmit = async (e) => {
     e.preventDefault();
@@ -126,8 +136,17 @@ export default function ChangePassword() {
 
             {!isSubmitting && (
               <div className="w-full flex mt-7 justify-center">
-                <div className="w-30">
-                  <Button text={"Change"} type="submit"></Button>
+                <div className="space-x-2 w-[90%] flex justify-between">
+                  <div className="w-40">
+                    <Button
+                      text={"Cancel"}
+                      variant="dark"
+                      onClick={() => handleCancle()}
+                    />
+                  </div>
+                  <div className="w-40">
+                    <Button text={"Change"} type="submit"></Button>
+                  </div>
                 </div>
               </div>
             )}

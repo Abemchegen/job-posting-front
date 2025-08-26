@@ -8,23 +8,11 @@ import { GiPoliceBadge } from "react-icons/gi";
 export default function UserCard({ detail = false, user }) {
   const navigate = useNavigate();
 
-  const [userData, setUserData] = useState({
-    name: user.name,
-    phonenumber: user.phonenumber,
-    email: user.email,
-    birthdate: user.birthdate,
-    role: user.role,
-    pfp: user.pfp,
-    id: user.id,
-    companyName: user.companyName,
-    companyPhonenumber: user.companyPhonenumber,
-  });
   const roleLabels = {
     COMPANY: "Company",
     AGENT: "Agent",
     ADMIN: "Admin",
   };
-
   return (
     <div className="w-full">
       {!detail && (
@@ -32,24 +20,21 @@ export default function UserCard({ detail = false, user }) {
           <div className="flex flex-col mb-3 space-x-3  ">
             <div className="flex items-center">
               <div className="rounded-full mr-5 mb-5 w-28 h-28">
-                {userData.pfp && (
-                  <CloudImage
-                    className="rounded-full"
-                    publicId={userData.pfp}
-                  />
+                {user.pfp && (
+                  <CloudImage className="rounded-full" publicId={user.pfp} />
                 )}
-                {!userData.pfp && (
+                {!user.pfp && (
                   <User className="rounded-full w-full h-full text-gray-400 bg-gray-100 p-4" />
                 )}
               </div>
               <p className="text-brand text-xl font-bold hover:text-brand-dark">
-                {userData.name}
+                {user.name}
               </p>
             </div>
             <div className="flex space-x-5">
               <div className="text-gray-500 space-x-2 font-semibold flex items-center ">
                 <Mail className="w-5 " />
-                <p>{userData.email}</p>
+                <p>{user.email}</p>
               </div>
               <div className="flex items-center space-x-2 text-gray-500 font-semibold ">
                 {user.role == "COMPANY" && <House className="w-5 " />}
@@ -68,7 +53,7 @@ export default function UserCard({ detail = false, user }) {
             <Button
               text={"View Details"}
               onClick={() => {
-                navigate(`/userdetail?id=${userData.id}`);
+                navigate(`/userdetail?id=${user.id}`);
               }}
             />
           </div>
@@ -81,19 +66,16 @@ export default function UserCard({ detail = false, user }) {
             <div className="flex justify-center">
               <div className="flex w-2/3 mb-5 justify-between space-x-5 items-center">
                 <div className="rounded-full mb-5 w-50 h-50">
-                  {userData.pfp && (
-                    <CloudImage
-                      className="rounded-full"
-                      publicId={userData.pfp}
-                    />
+                  {user.pfp && (
+                    <CloudImage className="rounded-full" publicId={user.pfp} />
                   )}
-                  {!userData.pfp && (
+                  {!user.pfp && (
                     <User className="rounded-full w-full h-full text-gray-400 bg-gray-100 p-4" />
                   )}
                 </div>
                 <div className="flex flex-col space-y-3 items-center">
                   <p className="text-brand text-xl font-bold hover:text-brand-dark">
-                    {userData.name}
+                    {user.name}
                   </p>
                 </div>
               </div>
@@ -106,21 +88,21 @@ export default function UserCard({ detail = false, user }) {
                     <p className="font-semibold ">Email:</p>
                   </div>
 
-                  <p className="">{userData.email}</p>
+                  <p className="">{user.email}</p>
                 </div>
                 <div className="space-x-4 flex justify-between">
                   <div className="flex space-x-1 items-center">
                     <Phone className="w-4" />
                     <p className="font-semibold  ">Phone Number:</p>
                   </div>
-                  <p className="">{userData.phonenumber}</p>
+                  <p className="">{user.phonenumber}</p>
                 </div>
                 <div className="space-x-4 flex justify-between">
                   <div className="flex space-x-1 items-center">
                     <Clock className="w-4" />
                     <p className="font-semibold ">Birth date:</p>
                   </div>
-                  <p className="">{userData.birthdate}</p>
+                  <p className="">{user.birthdate}</p>
                 </div>
                 <div className="space-x-4 flex justify-between">
                   <div className="flex space-x-1 items-center">
@@ -129,7 +111,7 @@ export default function UserCard({ detail = false, user }) {
                   </div>
                   <p className="">{roleLabels[user.role]}</p>
                 </div>
-                {userData.role == "COMPANY" && (
+                {user.role == "COMPANY" && (
                   <>
                     <div className="space-x-4 flex justify-between">
                       <div className="flex space-x-1 items-center">

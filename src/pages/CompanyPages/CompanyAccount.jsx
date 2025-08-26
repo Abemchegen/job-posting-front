@@ -161,77 +161,76 @@ export default function CompanyAccount() {
           <div className="flex justify-center min-h-[calc(100vh-80px)]">
             <div className="w-full max-w-4xl m-3 p-6 bg-white rounded-lg flex flex-col items-center">
               <div className="w-full p-3">
-                <div className="flex justify-between mb-10">
-                  <div className="flex flex-col">
-                    <h1 className="text-2xl text-brand">
-                      Welcome, {user.name.split(" ")[0]}
-                    </h1>
+                <div className="flex md:flex-row flex-col justify-between items-center mb-10">
+                  <div className="flex items-center mb-3">
+                    <div className="mr-3" onClick={() => {}}>
+                      {userData.pfp && (
+                        <div
+                          className="rounded-full w-30 h-30 flex flex-col items-center justify-center  cursor-pointer transition"
+                          onClick={() => {
+                            setChangePfp(true);
+                          }}
+                        >
+                          <CloudImage
+                            className="rounded-full"
+                            publicId={userData.pfp}
+                            width={120}
+                            height={120}
+                          />
+                        </div>
+                      )}
+                      {!userData.pfp && (
+                        <div
+                          className="rounded-full border-2 border-dashed border-gray-300 w-30 h-30 flex flex-col items-center justify-center bg-gray-50 cursor-pointer hover:bg-muted transition"
+                          onClick={() => {
+                            document.getElementById("pfp").click();
+                          }}
+                        >
+                          <Plus className="text-gray-400 w-8 h-8 mb-1" />
+                          <span className="text-gray-500 text-sm">
+                            Upload Image
+                          </span>
+                          <input
+                            id="pfp"
+                            type="file"
+                            hidden={true}
+                            accept="image/*"
+                            onChange={handleUpload}
+                          ></input>
+                        </div>
+                      )}
+                    </div>{" "}
+                    <div className="flex flex-col">
+                      <h1 className="text-2xl text-brand">
+                        Welcome, {user.name.split(" ")[0]}
+                      </h1>
 
-                    <h2 className="text-xl text-brand-dark">
-                      {user.companyName}
-                    </h2>
+                      <h2 className="text-xl text-brand-dark">
+                        {user.companyName}
+                      </h2>
 
-                    <p className="text-gray-500 text-lg">
-                      {new Date().toLocaleDateString()}
-                    </p>
-                  </div>
-                  <div className="mr-3" onClick={() => {}}>
-                    {userData.pfp && (
-                      <div
-                        className="rounded-full w-30 h-30 flex flex-col items-center justify-center  cursor-pointer transition"
-                        onClick={() => {
-                          setChangePfp(true);
-                        }}
-                      >
-                        <CloudImage
-                          className="rounded-full"
-                          publicId={userData.pfp}
-                          width={120}
-                          height={120}
-                        />
-                      </div>
-                    )}
-                    {!userData.pfp && (
-                      <div
-                        className="rounded-full border-2 border-dashed border-gray-300 w-30 h-30 flex flex-col items-center justify-center bg-gray-50 cursor-pointer hover:bg-muted transition"
-                        onClick={() => {
-                          document.getElementById("pfp").click();
-                        }}
-                      >
-                        <Plus className="text-gray-400 w-8 h-8 mb-1" />
-                        <span className="text-gray-500 text-sm">
-                          Upload Image
-                        </span>
-                        <input
-                          id="pfp"
-                          type="file"
-                          hidden={true}
-                          accept="image/*"
-                          onChange={handleUpload}
-                        ></input>
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <div className="flex justify-end mb-7">
-                  <div>
-                    <div className="flex space-x-3">
-                      <div>
-                        <Button
-                          text={"Edit Account"}
-                          onClick={() => setEdit(true)}
-                        />
-                      </div>
-                      <div>
-                        <Button
-                          variant="danger"
-                          text={"Delete Account"}
-                          onClick={() => handleDeleteAccount(true)}
-                        />
-                      </div>
+                      <p className="text-gray-500 text-lg">
+                        {new Date().toLocaleDateString()}
+                      </p>
+                    </div>{" "}
+                  </div>{" "}
+                  <div className="flex space-x-3">
+                    <div>
+                      <Button
+                        text={"Edit Account"}
+                        onClick={() => setEdit(true)}
+                      />
                     </div>
-                  </div>
+                    <div>
+                      <Button
+                        variant="danger"
+                        text={"Delete Account"}
+                        onClick={() => handleDeleteAccount(true)}
+                      />
+                    </div>
+                  </div>{" "}
                 </div>
+
                 <form className="flex justify-center" onSubmit={submitform}>
                   <div className="flex  flex-col space-y-2 ">
                     <div className="flex items-center md:flex-row flex-col md:gap-10">

@@ -1,3 +1,5 @@
+import { over } from "stompjs";
+import SockJS from "sockjs-client/dist/sockjs";
 class ApiService {
   async request(endpoint, options = {}) {
     const url = `${endpoint}`;
@@ -194,6 +196,23 @@ class ApiService {
       method: "Delete",
       body: deletename,
     });
+  }
+  // chat-related API calls
+  async getAllChats(params = "") {
+    return this.request(`/chat/contacts${params}`);
+  }
+
+  async deleteChat(id) {
+    return this.request(`/chat/delete/${id}`, {
+      method: "DELETE",
+    });
+  }
+
+  async fetchChatHistory(id) {
+    return this.request(`/chat/history/${id}`);
+  }
+  async getUsertoChat(id) {
+    return this.request(`/chat/${id}`);
   }
 }
 

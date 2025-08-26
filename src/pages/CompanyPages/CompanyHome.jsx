@@ -11,12 +11,8 @@ export default function CompanyHome() {
   const { jobPosts, loading, fetchJobPost, fetchJobsWithFilters } =
     useJobPosts();
   const [error, setError] = useState(null);
-  const [posts, setPosts] = useState([]);
-  useEffect(() => {
-    if (jobPosts) {
-      setPosts(jobPosts);
-    }
-  }, [jobPosts]);
+  const [filteredposts, setFilteredPosts] = useState([]);
+
   const datePostedOptions = [
     "Any Time",
     "Past 24 hours",
@@ -25,7 +21,7 @@ export default function CompanyHome() {
   ];
 
   const sortResults = ["Latest Posts", "Highest Salary"];
-  const [filters, setFlters] = useState({
+  const [filters, setFilters] = useState({
     salaryRange: false,
     datePosted: false,
     sortResult: false,
@@ -37,10 +33,12 @@ export default function CompanyHome() {
       final: null,
     },
     datePosted: "",
+    search: "",
     sortResult: "",
+    request: false,
   });
 
-  const applyFilters = async () => {
+  function checkFilterNull() {
     const isSalaryNull =
       selectedFilters.salaryRange.initial == null &&
       selectedFilters.salaryRange.final == null;
@@ -48,10 +46,15 @@ export default function CompanyHome() {
       !selectedFilters.datePosted || selectedFilters.datePosted.trim() === "";
     const isSortNull =
       !selectedFilters.sortResult || selectedFilters.sortResult.trim() === "";
+
     const searchValueNull =
       !selectedFilters.search || selectedFilters.search.trim() === "";
 
-    if (isSalaryNull && isDateNull && isSortNull && searchValueNull) {
+    return isSalaryNull && isDateNull && isSortNull && searchValueNull;
+  }
+
+  const applyFilters = async () => {
+    if (checkFilterNull()) {
       console.log("no filters selected !!!");
       setFilter(false);
       return;
@@ -66,8 +69,12 @@ export default function CompanyHome() {
       console.log(filterData);
 
       const response = await fetchJobsWithFilters(filterData);
-      setPosts(response);
+      setFilteredPosts(response);
       console.log(response);
+      setSelectedFilters({
+        ...selectedFilters,
+        request: true,
+      });
     } catch (e) {
       console.log(e);
     } finally {
@@ -76,23 +83,15 @@ export default function CompanyHome() {
   };
 
   const clearFilters = async () => {
-    try {
-      const response = await fetchJobPost();
-      setPosts(response);
-      setSelectedFilters({
-        salaryRange: {
-          initial: null,
-          final: null,
-        },
-        datePosted: "",
-        sortResult: "",
-      });
-      console.log(response);
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setFilter(false);
-    }
+    setFilteredPosts([]);
+    setSelectedFilters({
+      request: false,
+      salaryRange: { initial: null, final: null },
+      datePosted: "",
+      sortResult: "",
+      search: "",
+    });
+    setFilter(false);
   };
   return (
     <div>
@@ -115,6 +114,7 @@ export default function CompanyHome() {
                     setSelectedFilters({
                       ...selectedFilters,
                       search: e.target.value,
+                      request: false,
                     })
                   }
                   value={selectedFilters.search}
@@ -151,7 +151,7 @@ export default function CompanyHome() {
                     <div className="flex mb-3 flex-col w-full">
                       <div
                         onClick={() => {
-                          setFlters({
+                          setFilters({
                             ...filters,
                             datePosted: !filters.datePosted,
                           });
@@ -193,7 +193,7 @@ export default function CompanyHome() {
                       <div className="flex mb-3 flex-col w-full">
                         <div
                           onClick={() => {
-                            setFlters({
+                            setFilters({
                               ...filters,
                               sortResult: !filters.sortResult,
                             });
@@ -237,7 +237,7 @@ export default function CompanyHome() {
                     <div className="flex mb-3 flex-col w-full">
                       <div
                         onClick={() => {
-                          setFlters({
+                          setFilters({
                             ...filters,
                             salaryRange: !filters.salaryRange,
                           });
@@ -324,26 +324,41 @@ export default function CompanyHome() {
       <div className="flex mb-10 justify-center">
         <div className="p-2 w-full max-w-5xl">
           <h2 className="m-5 text-2xl font-bold">Job Posts Found</h2>
-
-          {posts.length == 0 && !loading && (
-            <div className="w-full">
-              <p className="mt-8 font-semibold text-gray-500">
-                No posts found...
-              </p>
-            </div>
-          )}
-          {posts.length == 0 && loading && (
+          {loading ? (
             <div className="flex justify-center items-center m-5 space-x-5">
               <Spinner />
               <p className="text-xl font-semibold text-gray-500">Loading...</p>
             </div>
-          )}
-          {posts.length > 0 && (
-            <div className="w-full">
-              {posts.map((item, idx) => {
-                return <CompanyJobPostCard jobPost={item} key={idx} />;
-              })}
-            </div>
+          ) : (
+            <>
+              {!checkFilterNull() && selectedFilters.request === true ? (
+                filteredposts.length === 0 ? (
+                  <div className="w-full flex justify-center">
+                    <p className="mt-8 font-semibold text-gray-500">
+                      No posts found..
+                    </p>
+                  </div>
+                ) : (
+                  <div className="w-full flex flex-col items-center">
+                    {filteredposts.map((item, idx) => (
+                      <CompanyJobPostCard jobPost={item} key={idx} />
+                    ))}
+                  </div>
+                )
+              ) : jobPosts.length === 0 ? (
+                <div className="w-full flex justify-center">
+                  <p className="mt-8 font-semibold text-gray-500">
+                    No jobs found..
+                  </p>
+                </div>
+              ) : (
+                <div className="w-full flex flex-col items-center">
+                  {jobPosts.map((item, idx) => (
+                    <CompanyJobPostCard jobPost={item} key={idx} />
+                  ))}
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>

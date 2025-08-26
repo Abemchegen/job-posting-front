@@ -37,15 +37,6 @@ export const useApplications = () => {
       return { success: false, error: err.message };
     }
   };
-  // const updateApplication = async (jobData, postid) => {
-  //   try {
-  //     const response = await apiService.updateApplication(jobData, postid);
-  //     return response;
-  //   } catch (err) {
-  //     setError(err.message);
-  //     return { success: false, error: err.message };
-  //   }
-  // };
 
   const deleteApplication = async (id) => {
     try {
