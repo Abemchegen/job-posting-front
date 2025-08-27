@@ -12,7 +12,7 @@ export default function AddJob() {
   const [editingIdx, setEditingIdx] = useState(null);
   const [editValues, setEditValues] = useState({ name: "", description: "" });
   const [deleteProccede, setDeleteProccede] = useState(null);
-
+  const [loading, setLoading] = useState(false);
   const [jobData, setJobData] = useState({
     name: "",
     description: "",
@@ -34,7 +34,6 @@ export default function AddJob() {
   const handleAddJob = async (e) => {
     e.preventDefault();
     if (!jobData.name.trim() || !jobData.description.trim()) return;
-    // api call
 
     const submitData = {
       name: jobData.name.trim(),
@@ -42,29 +41,32 @@ export default function AddJob() {
     };
 
     if (jobData.subcatagories && jobData.subcatagories.length > 0) {
-      submitData["subcatagories"] = jobData.subcatagories.trim();
+      submitData["subcatagories"] = jobData.subcatagories;
     }
 
     try {
+      setLoading(true);
       await createJob(submitData);
       setJobAdded(true);
     } catch (e) {
       console.log(e);
+    } finally {
+      setLoading(false);
     }
   };
   const handleAddSub = (e) => {
     e.preventDefault();
-
     if (!subValues.name.trim() || !subValues.description.trim()) return;
-
     setJobData({
       ...jobData,
       subcatagories: [
         ...jobData.subcatagories,
-        { name: subValues.name, description: subValues.description },
+        {
+          name: subValues.name.trim(),
+          description: subValues.description.trim(),
+        },
       ],
     });
-
     setAddSub(false);
     setSubValues({ name: "", description: "" });
   };
@@ -216,7 +218,8 @@ export default function AddJob() {
               />
             </div>
             <div className="w-25">
-              <Button type="submit" text={"Save"} />
+              {!loading && <Button type="submit" text={"Save"} />}
+              {loading && <Button type="submit" text={"Saving..."} />}
             </div>
           </div>
         </form>

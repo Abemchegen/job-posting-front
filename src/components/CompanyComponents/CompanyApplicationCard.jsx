@@ -86,7 +86,7 @@ export default function CompanyApplicationCard({
 
   return (
     <div className="w-full flex justify-center max-w-3xl">
-      <div className="bg-white w-full text-black m-2 space-y-2 rounded-xl shadow-sm p-7">
+      <div className="bg-white w-full  m-2 space-y-2 rounded-xl shadow-sm p-7">
         <div className="flex items-center justify-between">
           <div
             className={`flex ${

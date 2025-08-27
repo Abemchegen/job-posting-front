@@ -94,7 +94,7 @@ export default function AgentApplicationCard({
   }, [deleteProccede]);
 
   return (
-    <div className="w-full  max-w-4xl mb-2">
+    <div className="w-full max-w-4xl mb-2">
       <div className="bg-white  text-black min-w-sm space-y-2 rounded-xl shadow-sm p-7">
         <div className="flex justify-between items-center">
           <div className="flex items-center mb-3 space-x-3 cursor-pointer ">

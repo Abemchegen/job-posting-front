@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useJobs } from "../../hook/useJobs";
 import { useJobPosts } from "../../hook/useJobPost";
 import { useAuth } from "../../context/authContext";
+import { X } from "lucide-react";
 
 export default function PostJobComp({
   create = true,
@@ -177,6 +178,16 @@ export default function PostJobComp({
             create ? "rounded-xl shadow-sm" : ""
           }`}
         >
+          {!create && (
+            <div className="flex w-full justify-end">
+              <X
+                className="text-gray-700 font-semibold"
+                onClick={() => {
+                  EditPost(false);
+                }}
+              />
+            </div>
+          )}
           <h1 className="text-2xl mt-5 text-center font-semibold ">
             {create && "Create a Job Post"}
             {!create && "Update your Post"}

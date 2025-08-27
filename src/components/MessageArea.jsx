@@ -241,6 +241,11 @@ const MessageArea = ({ reciever }) => {
               id="standard-basic"
               className="flex-1 border-2 m-3 bg-white rounded-2xl border-gray-200 px-2 py-1 focus:border-white outline-none"
               value={data.message}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && data.message.trim()) {
+                  sendMessage();
+                }
+              }}
               onChange={handleMessageChange}
             />
             <div className="m-3">

@@ -14,12 +14,15 @@ export default function UserCard({ detail = false, user }) {
     ADMIN: "Admin",
   };
   return (
-    <div className="w-full">
+    <div
+      className="w-full max-w-4xl
+    "
+    >
       {!detail && (
-        <div className="bg-white flex justify-between items-center p-7 w-full my-5 rounded-xl shadow-sm">
-          <div className="flex flex-col mb-3 space-x-3  ">
+        <div className="bg-white m-2 flex justify-between items-center p-7 w-full my-5 rounded-xl shadow-sm">
+          <div className="flex flex-1 max-w-[70%] overflow-hidden flex-col mb-3">
             <div className="flex items-center">
-              <div className="rounded-full mr-5 mb-5 w-28 h-28">
+              <div className="flex-shrink-0 rounded-full mr-5 mb-5 w-20 h-20 md:w-20 md:h-20 ">
                 {user.pfp && (
                   <CloudImage className="rounded-full" publicId={user.pfp} />
                 )}
@@ -31,20 +34,20 @@ export default function UserCard({ detail = false, user }) {
                 {user.name}
               </p>
             </div>
-            <div className="flex space-x-5">
+            <div className="flex min-w-0 overflow-hidden truncate  space-x-5">
               <div className="text-gray-500 space-x-2 font-semibold flex items-center ">
                 <Mail className="w-5 " />
-                <p>{user.email}</p>
+                <p className="truncate">{user.email}</p>
               </div>
               <div className="flex items-center space-x-2 text-gray-500 font-semibold ">
                 {user.role == "COMPANY" && <House className="w-5 " />}
                 {user.role == "AGENT" && <User className="w-5 " />}
                 {user.role == "ADMIN" && <GiPoliceBadge className="w-5 " />}
-                <p className="">{roleLabels[user.role]}</p>
+                <p className="truncate">{roleLabels[user.role]}</p>
               </div>
               <div className="flex items-center space-x-2 text-gray-500 font-semibold">
                 <Phone className="mr-3 w-5" />
-                <p className="">{user.phonenumber}</p>
+                <p className="truncate">{user.phonenumber}</p>
               </div>
             </div>
           </div>
@@ -61,11 +64,11 @@ export default function UserCard({ detail = false, user }) {
       )}
 
       {detail && (
-        <div>
-          <div className="bg-white flex flex-col  p-7 my-5 rounded-xl shadow-sm">
+        <div className="w-full">
+          <div className="bg-white flex flex-col p-7  m-2 my-5 rounded-xl shadow-sm">
             <div className="flex justify-center">
               <div className="flex w-2/3 mb-5 justify-between space-x-5 items-center">
-                <div className="rounded-full mb-5 w-50 h-50">
+                <div className="rounded-full items-center mb-5 w-30 h-30 md:w-50 md:h-50">
                   {user.pfp && (
                     <CloudImage className="rounded-full" publicId={user.pfp} />
                   )}
@@ -80,7 +83,7 @@ export default function UserCard({ detail = false, user }) {
                 </div>
               </div>
             </div>
-            <div className="flex justify-center">
+            <div className="flex justify-center overflow-hidden">
               <div className="flex text-gray-500 space-y-2 flex-col w-full md:w-4/5  justify-center ">
                 <div className="space-x-4 flex justify-between">
                   <div className="flex space-x-1 items-center">

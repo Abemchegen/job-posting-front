@@ -43,37 +43,47 @@ export default function Nav() {
         )}
       </div>
       {isAuthenticated && (
-        <div className="flex space-x-10 mr-10">
+        <div className="flex mr-10">
           {user.role == "AGENT" && (
-            <>
-              <Link
-                className="hover:text-brand hover:font-bold w-10"
-                to="/home/agent"
-              >
-                Home
-              </Link>
-              <Link
-                className="hover:text-brand hover:font-bold w-31"
-                to="/myapplications"
-              >
-                My Applications
-              </Link>{" "}
-              <Link
-                className="hover:text-brand hover:font-bold w-10"
-                to="myChats"
-              >
-                Chat
-              </Link>
-              <Link
-                className="hover:text-brand hover:font-bold w-10"
-                to={`/account/agent`}
-              >
-                Account
-              </Link>
-            </>
+            <div className="flex justify-between w-90">
+              <div>
+                <Link
+                  className="hover:text-brand hover:font-bold w-10"
+                  to="/home/agent"
+                >
+                  Home
+                </Link>{" "}
+              </div>{" "}
+              <div>
+                <Link
+                  className="hover:text-brand hover:font-bold w-31"
+                  to="/myapplications"
+                >
+                  My Applications
+                </Link>{" "}
+              </div>
+              <div>
+                {" "}
+                <Link
+                  className="hover:text-brand hover:font-bold w-10"
+                  to="myChats"
+                >
+                  Chat
+                </Link>
+              </div>
+              <div>
+                {" "}
+                <Link
+                  className="hover:text-brand hover:font-bold w-10"
+                  to={`/account/agent`}
+                >
+                  Account
+                </Link>
+              </div>
+            </div>
           )}
           {user.role == "COMPANY" && (
-            <div className="flex justify-between w-75">
+            <div className="flex justify-between w-90">
               <div>
                 <Link
                   className="hover:text-brand hover:font-bold "
@@ -106,33 +116,42 @@ export default function Nav() {
             </div>
           )}
           {user.role == "ADMIN" && (
-            <>
-              <Link
-                className="hover:text-brand hover:font-bold w-10"
-                to="/home/admin"
-              >
-                Home
-              </Link>
-
-              <Link
-                className="hover:text-brand hover:font-bold w-10"
-                to="/pageJob"
-              >
-                Jobs
-              </Link>
-              <Link
-                className="hover:text-brand hover:font-bold w-18"
-                to="/addjob"
-              >
-                Add Job
-              </Link>
-              <Link
-                className="hover:text-brand hover:font-bold w-10"
-                to={`/account/admin`}
-              >
-                Account
-              </Link>
-            </>
+            <div className="flex justify-between w-90">
+              <div>
+                <Link
+                  className="hover:text-brand hover:font-bold w-10"
+                  to="/home/admin"
+                >
+                  Home
+                </Link>{" "}
+              </div>
+              <div>
+                <Link
+                  className="hover:text-brand hover:font-bold w-10"
+                  to="/pageJob"
+                >
+                  Jobs
+                </Link>{" "}
+              </div>
+              <div>
+                {" "}
+                <Link
+                  className="hover:text-brand hover:font-bold w-18"
+                  to="/addjob"
+                >
+                  Add Job
+                </Link>{" "}
+              </div>
+              <div>
+                {" "}
+                <Link
+                  className="hover:text-brand hover:font-bold w-10"
+                  to={`/account/admin`}
+                >
+                  Account
+                </Link>{" "}
+              </div>
+            </div>
           )}
         </div>
       )}

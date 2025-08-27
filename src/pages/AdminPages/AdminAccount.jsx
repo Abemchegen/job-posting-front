@@ -6,8 +6,15 @@ import CloudImage from "../../components/CloudImage";
 import { useAuth } from "../../context/authContext";
 import { Spinner } from "../../components/Spinner";
 export default function AdminAccount() {
-  const { user, deleteAccount, updateAccount, deletePic, uploadPfp, loading } =
-    useAuth();
+  const {
+    user,
+    setUser,
+    deletePic,
+    deleteAccount,
+    updateAccount,
+    uploadPfp,
+    loading,
+  } = useAuth();
   const navigate = useNavigate();
   const [userData, setUserData] = useState({
     name: null,
@@ -93,29 +100,38 @@ export default function AdminAccount() {
       const formData = new FormData();
       formData.append("file", file);
       try {
+        setPfpLoading(true);
+
         const url = await uploadPfp(user.id, formData);
         console.log(url);
-        setUserData({
-          ...userData,
+        setUser({
+          ...user,
           pfp: url,
         });
       } catch (e) {
         console.log(e);
       } finally {
         setChangePfp(false);
+        setPfpLoading(false);
       }
     }
   };
+  const [pfpLoading, setPfpLoading] = useState(false);
 
   const handleDelete = async () => {
     try {
+      setPfpLoading(true);
       await deletePic(user.id);
-      setUserData({
-        ...userData,
+      setUser({
+        ...user,
         pfp: "",
       });
     } catch (e) {
       console.log(e);
+    } finally {
+      setPfpLoading(false);
+      setDeletePfp(false);
+      setChangePfp(false);
     }
   };
 
@@ -140,7 +156,7 @@ export default function AdminAccount() {
                 <div className="flex md:flex-row flex-col justify-between items-center mb-10">
                   <div className="flex items-center mb-3 ">
                     <div className="mr-3" onClick={() => {}}>
-                      {userData.pfp && (
+                      {!pfpLoading && userData.pfp && (
                         <div
                           className="rounded-full w-30 h-30 flex flex-col items-center justify-center  cursor-pointer transition"
                           onClick={() => {
@@ -155,7 +171,7 @@ export default function AdminAccount() {
                           />
                         </div>
                       )}
-                      {!userData.pfp && (
+                      {!pfpLoading && !userData.pfp && (
                         <div
                           className="rounded-full border-2 border-dashed border-gray-300 w-30 h-30 flex flex-col items-center justify-center bg-gray-50 cursor-pointer hover:bg-muted transition"
                           onClick={() => {
@@ -173,6 +189,11 @@ export default function AdminAccount() {
                             accept="image/*"
                             onChange={handleUpload}
                           ></input>
+                        </div>
+                      )}
+                      {pfpLoading && (
+                        <div className="rounded-full border-2 border-dashed border-gray-100 w-30 h-30 flex flex-col items-center justify-center bg-gray-50 cursor-pointer hover:bg-muted transition">
+                          <Spinner />
                         </div>
                       )}
                     </div>{" "}
@@ -339,7 +360,10 @@ export default function AdminAccount() {
                           type="file"
                           accept="image/*"
                           hidden={true}
-                          onChange={handleUpload}
+                          onChange={(e) => {
+                            handleUpload(e);
+                            setChangePfp(false);
+                          }}
                         ></input>
                       </div>
                       <div
@@ -359,7 +383,7 @@ export default function AdminAccount() {
           )}
           {deletePfp && (
             <div className="z-100 fixed inset-0 top-0 left-0 flex justify-center items-center">
-              <div className="w-2/5 bg-white p-7 flex flex-col items-center shadow-2xl rounded-2xl">
+              <div className="w-full max-w-md bg-white p-7 flex flex-col items-center shadow-2xl rounded-2xl">
                 <div>
                   <div className="flex justify-between mb-7">
                     <h1 className="text-xl">Delete Profile photo</h1>
@@ -384,8 +408,6 @@ export default function AdminAccount() {
                         text={"Delete"}
                         onClick={() => {
                           handleDelete();
-                          setDeletePfp(false);
-                          setChangePfp(false);
                         }}
                         variant="danger"
                       />

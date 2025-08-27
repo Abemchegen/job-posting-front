@@ -80,7 +80,7 @@ export default function AdminHome() {
     setFilter(false);
   }
   return (
-    <div>
+    <div className="w-full">
       <div className=" space-y-4 bg-brand-dark flex flex-col mt-15 items-center text-white">
         <h1 className="text-4xl mt-18 mb-9 font-bold">Find Users</h1>
         <p className="text-center text-2xl mb-10">
@@ -188,8 +188,13 @@ export default function AdminHome() {
         </div>
       </div>
       <div className="flex justify-center">
-        <div className="p-2 w-full max-w-4xl mt-10">
-          <h2 className="m-5 text-2xl font-bold">Users Found</h2>
+        <div className="p-2 w-full mt-10">
+          <div className="flex justify-center">
+            <h2 className="m-5 w-full max-w-3xl text-2xl  font-bold">
+              Users Found
+            </h2>
+          </div>
+
           {loading ? (
             <div className="flex justify-center items-center m-5 space-x-5">
               <Spinner />
@@ -218,7 +223,7 @@ export default function AdminHome() {
                   </p>
                 </div>
               ) : (
-                <div className="w-full   flex flex-col items-center">
+                <div className="w-full flex flex-col items-center">
                   {users.map((item, idx) => (
                     <UserCard user={item} key={idx} />
                   ))}

@@ -131,6 +131,8 @@ export default function AgentAccount() {
       console.log(e);
     } finally {
       setPfpLoading(false);
+      setDeletePfp(false);
+      setChangePfp(false);
     }
   };
 
@@ -381,7 +383,7 @@ export default function AgentAccount() {
           )}
           {deletePfp && (
             <div className="z-100 fixed inset-0 top-0 left-0 flex justify-center items-center">
-              <div className="w-2/5 bg-white p-7 flex flex-col items-center shadow-2xl rounded-2xl">
+              <div className="w-full max-w-md  bg-white p-7 flex flex-col items-center shadow-2xl rounded-2xl">
                 <div>
                   <div className="flex justify-between mb-7">
                     <h1 className="text-xl">Delete Profile photo</h1>
@@ -406,8 +408,6 @@ export default function AgentAccount() {
                         text={"Delete"}
                         onClick={() => {
                           handleDelete();
-                          setDeletePfp(false);
-                          setChangePfp(false);
                         }}
                         variant="danger"
                       />

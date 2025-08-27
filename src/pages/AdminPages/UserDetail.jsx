@@ -39,7 +39,7 @@ export default function UserDetail() {
         </div>
       )}
       {user && (
-        <div className="w-2/3 max-w-2xl">
+        <div className="w-full flex justify-center">
           <UserCard detail={true} user={user} />
         </div>
       )}
