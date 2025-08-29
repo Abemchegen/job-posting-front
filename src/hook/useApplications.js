@@ -17,6 +17,7 @@ export const useApplications = () => {
       setJobPosts(data || []);
     } catch (err) {
       setError(err.message);
+      console.log(err);
       console.error("Error fetching job post:", err);
     } finally {
       setLoading(false);
@@ -34,7 +35,8 @@ export const useApplications = () => {
       return response;
     } catch (err) {
       setError(err.message);
-      return { success: false, error: err.message };
+      console.log(err);
+      return;
     }
   };
 
@@ -44,7 +46,8 @@ export const useApplications = () => {
       return response;
     } catch (err) {
       setError(err.message);
-      return { success: false, error: err.message };
+      console.log(err);
+      return;
     }
   };
   const getMyApplications = async () => {
@@ -54,7 +57,8 @@ export const useApplications = () => {
       return response;
     } catch (err) {
       setError(err.message);
-      return { success: false, error: err.message };
+      console.log(err);
+      return;
     } finally {
       setLoading(false);
     }
@@ -67,7 +71,8 @@ export const useApplications = () => {
       return response;
     } catch (err) {
       setError(err.message);
-      return { success: false, error: err.message };
+      console.log(err);
+      return;
     } finally {
       setLoading(false);
     }
@@ -78,9 +83,10 @@ export const useApplications = () => {
       setLoading(true);
       const response = await apiService.uploadCv(Cvdata);
       return response;
-    } catch (e) {
+    } catch (err) {
       setError(err.message);
-      return { success: false, error: err.message };
+      console.log(err);
+      return;
     } finally {
       setLoading(false);
     }
@@ -91,9 +97,10 @@ export const useApplications = () => {
       setLoading(true);
       const response = await apiService.updateCv(Cvdata);
       return response;
-    } catch (e) {
+    } catch (err) {
       setError(err.message);
-      return { success: false, error: err.message };
+      console.log(err);
+      return;
     } finally {
       setLoading(false);
     }
@@ -104,9 +111,10 @@ export const useApplications = () => {
       setLoading(true);
       const response = await apiService.deleteCv(deleteid, deletename);
       return response;
-    } catch (e) {
+    } catch (err) {
       setError(err.message);
-      return { success: false, error: err.message };
+      console.log(err);
+      return;
     } finally {
       setLoading(false);
     }
@@ -136,6 +144,7 @@ export const useApplications = () => {
       return data;
     } catch (err) {
       setError(err.message);
+      console.log(err);
       console.error("Error fetching posts with filters:", err);
     } finally {
       setLoading(false);
@@ -165,6 +174,7 @@ export const useApplications = () => {
       return data;
     } catch (err) {
       setError(err.message);
+      console.log(err);
       console.error("Error fetching applications with filters:", err);
     } finally {
       setLoading(false);
@@ -207,6 +217,7 @@ export const useApplication = (id) => {
         setApplication(data);
       } catch (err) {
         setError(err.message);
+        console.log(err);
         console.error("Error fetching job post:", err);
       } finally {
         setLoading(false);
@@ -237,6 +248,7 @@ export const useAgentJobPost = (id) => {
         setJobPost(data);
       } catch (err) {
         setError(err.message);
+        console.log(err);
         console.error("Error fetching job post:", err);
       } finally {
         setLoading(false);

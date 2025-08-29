@@ -66,9 +66,9 @@ export default function UserCard({ detail = false, user }) {
       {detail && (
         <div className="w-full">
           <div className="bg-white flex flex-col p-7  m-2 my-5 rounded-xl shadow-sm">
-            <div className="flex justify-center">
-              <div className="flex w-2/3 mb-5 justify-between space-x-5 items-center">
-                <div className="rounded-full items-center mb-5 w-30 h-30 md:w-50 md:h-50">
+            <div className="flex items-center  justify-center">
+              <div className="flex mb-5 items-center">
+                <div className="rounded-full items-center mb-5 mr-7 w-30 h-30 md:w-40 md:h-40">
                   {user.pfp && (
                     <CloudImage className="rounded-full" publicId={user.pfp} />
                   )}
@@ -76,11 +76,7 @@ export default function UserCard({ detail = false, user }) {
                     <User className="rounded-full w-full h-full text-gray-400 bg-gray-100 p-4" />
                   )}
                 </div>
-                <div className="flex flex-col space-y-3 items-center">
-                  <p className="text-brand text-xl font-bold hover:text-brand-dark">
-                    {user.name}
-                  </p>
-                </div>
+                <p className="text-brand text-xl font-bold ">{user.name}</p>
               </div>
             </div>
             <div className="flex justify-center overflow-hidden">

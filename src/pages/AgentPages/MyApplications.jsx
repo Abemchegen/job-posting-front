@@ -402,7 +402,10 @@ export default function MyApplications() {
                   </div>
                 ) : (
                   <div className="w-full flex flex-col items-center">
-                    {filteredApplications.map((item, idx) => (
+                    {(Array.isArray(filteredApplications)
+                      ? filteredApplications
+                      : []
+                    ).map((item, idx) => (
                       <AgentApplicationCard applicationItem={item} key={idx} />
                     ))}
                   </div>
@@ -415,9 +418,11 @@ export default function MyApplications() {
                 </div>
               ) : (
                 <div className="w-full flex flex-col items-center">
-                  {applications.map((item, idx) => (
-                    <AgentApplicationCard applicationItem={item} key={idx} />
-                  ))}
+                  {(Array.isArray(applications) ? applications : []).map(
+                    (item, idx) => (
+                      <AgentApplicationCard applicationItem={item} key={idx} />
+                    )
+                  )}
                 </div>
               )}
             </>
