@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import apiService from "../service/api";
 import { useAuth } from "../context/authContext";
+import authService from "../service/auth";
 
 export const useJobs = () => {
   const { user, isAdmin } = useAuth();
@@ -27,7 +28,35 @@ export const useJobs = () => {
       fetchJobs();
     }
   }, [user]);
-
+  useEffect(() => {
+    async function refreshTokens() {
+      if (error != null && error.status === 401) {
+        try {
+          console.log("dkfjsdjjfsdjifosjodfjio");
+          const data = await authService.refreshToken();
+          localStorage.setItem("accessToken", data.token);
+          setUser(data.response);
+          console.log("refresh tokensss", data);
+        } catch (refreshErr) {
+          setUser(null);
+          localStorage.removeItem("accessToken");
+          if (
+            window.location.pathname !== "/" &&
+            window.location.pathname !== "/login" &&
+            window.location.pathname !== "/signup" &&
+            window.location.pathname !== "/registerType" &&
+            window.location.pathname !== "/verifyEmail"
+          ) {
+            window.location.replace("/");
+          }
+          console.log("Refresh fail");
+        }
+      } else {
+        console.log(error);
+      }
+    }
+    refreshTokens();
+  }, [error]);
   const createJob = async (jobData) => {
     try {
       await apiService.createJob(jobData);
@@ -35,7 +64,7 @@ export const useJobs = () => {
       return { success: true };
     } catch (err) {
       setError(err.message);
-      return { success: false, error: err.message };
+      return null;
     }
   };
   const updateJobDetails = async (jobData) => {
@@ -45,7 +74,7 @@ export const useJobs = () => {
       return response;
     } catch (err) {
       setError(err.message);
-      return { success: false, error: err.message };
+      return null;
     }
   };
   const updateSubcatagory = async (subData) => {
@@ -56,7 +85,7 @@ export const useJobs = () => {
       return response;
     } catch (err) {
       setError(err.message);
-      return { success: false, error: err.message };
+      return null;
     }
   };
 
@@ -67,7 +96,7 @@ export const useJobs = () => {
       return response;
     } catch (err) {
       setError(err.message);
-      return { success: false, error: err.message };
+      return null;
     }
   };
 
@@ -78,7 +107,7 @@ export const useJobs = () => {
       return response;
     } catch (err) {
       setError(err.message);
-      return { success: false, error: err.message };
+      return null;
     }
   };
   const deleteSubcat = async (subData) => {
@@ -88,7 +117,7 @@ export const useJobs = () => {
       return response;
     } catch (err) {
       setError(err.message);
-      return { success: false, error: err.message };
+      return null;
     }
   };
   const fetchJobsWithFilters = async (filters) => {

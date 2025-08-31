@@ -402,15 +402,12 @@ export default function MyApplications() {
                   </div>
                 ) : (
                   <div className="w-full flex flex-col items-center">
-                    {(Array.isArray(filteredApplications)
-                      ? filteredApplications
-                      : []
-                    ).map((item, idx) => (
+                    {filteredApplications.map((item, idx) => (
                       <AgentApplicationCard applicationItem={item} key={idx} />
                     ))}
                   </div>
                 )
-              ) : applications.length === 0 ? (
+              ) : applications == null || applications.length === 0 ? (
                 <div className="w-full flex justify-center">
                   <p className="mt-8 font-semibold text-gray-500">
                     No applications found..
@@ -418,11 +415,9 @@ export default function MyApplications() {
                 </div>
               ) : (
                 <div className="w-full flex flex-col items-center">
-                  {(Array.isArray(applications) ? applications : []).map(
-                    (item, idx) => (
-                      <AgentApplicationCard applicationItem={item} key={idx} />
-                    )
-                  )}
+                  {applications.map((item, idx) => (
+                    <AgentApplicationCard applicationItem={item} key={idx} />
+                  ))}
                 </div>
               )}
             </>

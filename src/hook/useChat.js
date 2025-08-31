@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import apiService from "../service/api";
 import { useAuth } from "../context/authContext";
+import authService from "../service/auth";
 
 export const useChats = () => {
   const { user } = useAuth();

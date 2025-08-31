@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import Button from "../components/Button";
 import { useAuth } from "../context/authContext";
 import { useNavigate } from "react-router-dom";
-import { Spinner } from "../components/Spinner";
 
 export default function VerifyEmail() {
   const { verifyEmail, resendVerCode, setUser, user } = useAuth();
@@ -46,7 +45,7 @@ export default function VerifyEmail() {
         email: verifyData.email.trim(),
       };
       const res = await verifyEmail(data);
-      setUser(res);
+      // setUser(res);
       console.log("verified!!", res);
       setVerified(true);
     } catch (e) {
@@ -79,20 +78,14 @@ export default function VerifyEmail() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (verified && user) {
+    if (verified) {
       const timer = setTimeout(() => {
-        if (user.role === "AGENT") {
-          navigate("/home/agent");
-        } else if (user.role === "COMPANY") {
-          navigate("/home/company");
-        } else if (user.role === "ADMIN") {
-          navigate("/home/admin");
-        }
+        navigate("/login");
       }, 500);
 
       return () => clearTimeout(timer);
     }
-  }, [user, verified, navigate]);
+  }, [verified, navigate]);
 
   return (
     <div className="flex items-center mt-25 justify-center w-full">

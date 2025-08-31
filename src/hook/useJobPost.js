@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import apiService from "../service/api";
 import { useAuth } from "../context/authContext";
+import authService from "../service/auth";
 
 export const useJobPosts = () => {
   const { user } = useAuth();
@@ -36,7 +37,7 @@ export const useJobPosts = () => {
       return { success: true };
     } catch (err) {
       setError(err.message);
-      return { success: false, error: err.message };
+      return null;
     }
   };
   const updateJobPost = async (jobData, postid) => {
@@ -46,7 +47,7 @@ export const useJobPosts = () => {
       return response;
     } catch (err) {
       setError(err.message);
-      return { success: false, error: err.message };
+      return null;
     }
   };
 
@@ -57,7 +58,7 @@ export const useJobPosts = () => {
       return response;
     } catch (err) {
       setError(err.message);
-      return { success: false, error: err.message };
+      return null;
     }
   };
   const getAllApplications = async (id) => {
@@ -67,7 +68,7 @@ export const useJobPosts = () => {
       return response;
     } catch (err) {
       setError(err.message);
-      return { success: false, error: err.message };
+      return null;
     } finally {
       setLoading(false);
     }
@@ -80,7 +81,7 @@ export const useJobPosts = () => {
       return response;
     } catch (err) {
       setError(err.message);
-      return { success: false, error: err.message };
+      return null;
     } finally {
       setLoading(false);
     }
@@ -97,7 +98,7 @@ export const useJobPosts = () => {
       return response;
     } catch (err) {
       setError(err.message);
-      return { success: false, error: err.message };
+      return null;
     } finally {
       setLoading(false);
     }

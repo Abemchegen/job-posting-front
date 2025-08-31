@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import apiService from "../service/api";
 import { useAuth } from "../context/authContext";
+import authService from "../service/auth";
 
 export const useApplications = () => {
   const { user } = useAuth();
@@ -13,7 +14,7 @@ export const useApplications = () => {
       setLoading(true);
       setError(null);
       const data = await apiService.getAllJobPosts();
-      console.log(data);
+      console.log("jobposts", data);
       setJobPosts(data || []);
     } catch (err) {
       setError(err.message);
@@ -36,7 +37,7 @@ export const useApplications = () => {
     } catch (err) {
       setError(err.message);
       console.log(err);
-      return;
+      return null;
     }
   };
 
@@ -47,7 +48,7 @@ export const useApplications = () => {
     } catch (err) {
       setError(err.message);
       console.log(err);
-      return;
+      return null;
     }
   };
   const getMyApplications = async () => {
@@ -58,7 +59,7 @@ export const useApplications = () => {
     } catch (err) {
       setError(err.message);
       console.log(err);
-      return;
+      return null;
     } finally {
       setLoading(false);
     }
@@ -72,49 +73,49 @@ export const useApplications = () => {
     } catch (err) {
       setError(err.message);
       console.log(err);
-      return;
+      return null;
     } finally {
       setLoading(false);
     }
   };
 
-  const uploadCv = async (Cvdata) => {
+  const uploadCv = async (Cvdata, id) => {
     try {
       setLoading(true);
-      const response = await apiService.uploadCv(Cvdata);
+      const response = await apiService.uploadCv(Cvdata, id);
       return response;
     } catch (err) {
       setError(err.message);
       console.log(err);
-      return;
+      return null;
     } finally {
       setLoading(false);
     }
   };
 
-  const updateCv = async (Cvdata) => {
+  const updateCv = async (Cvdata, id) => {
     try {
       setLoading(true);
-      const response = await apiService.updateCv(Cvdata);
+      const response = await apiService.updateCv(Cvdata, id);
       return response;
     } catch (err) {
       setError(err.message);
       console.log(err);
-      return;
+      return null;
     } finally {
       setLoading(false);
     }
   };
 
-  const deleteCv = async (deleteid, deletename) => {
+  const deleteCv = async (deleteid, deletename, id) => {
     try {
       setLoading(true);
-      const response = await apiService.deleteCv(deleteid, deletename);
+      const response = await apiService.deleteCv(deleteid, deletename, id);
       return response;
     } catch (err) {
       setError(err.message);
       console.log(err);
-      return;
+      return null;
     } finally {
       setLoading(false);
     }
@@ -207,7 +208,7 @@ export const useApplication = (id) => {
     const fetchApplication = async () => {
       if (!id) {
         console.log("no id");
-        return;
+        return null;
       }
       try {
         setLoading(true);
@@ -238,7 +239,7 @@ export const useAgentJobPost = (id) => {
     const fetchJobPost = async () => {
       if (!id) {
         console.log("no id");
-        return;
+        return null;
       }
       try {
         setLoading(true);

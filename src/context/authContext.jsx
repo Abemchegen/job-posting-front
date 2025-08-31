@@ -18,18 +18,9 @@ export const AuthProvider = ({ children }) => {
       console.log("Server verification successful:", userData);
       setUser(userData);
     } catch (err) {
-      setError(err.message);
+      setError(err);
       setUser(null);
       console.error(err);
-      if (
-        window.location.pathname !== "/" &&
-        window.location.pathname !== "/login" &&
-        window.location.pathname !== "/signup" &&
-        window.location.pathname !== "/registerType" &&
-        window.location.pathname !== "/verifyEmail"
-      ) {
-        window.location.replace("/");
-      }
     } finally {
       setLoading(false);
     }
@@ -45,7 +36,7 @@ export const AuthProvider = ({ children }) => {
       setUser(data);
       return data;
     } catch (err) {
-      setError(err.message);
+      setError(err);
       throw err;
     }
   };
@@ -55,10 +46,11 @@ export const AuthProvider = ({ children }) => {
     try {
       setError(null);
       const data = await authService.login(credentials);
-      setUser(data);
+      localStorage.setItem("accessToken", data.token);
+      setUser(data.response);
       return data;
     } catch (err) {
-      setError(err.message);
+      setError(err);
       throw err;
     }
   };
@@ -68,7 +60,7 @@ export const AuthProvider = ({ children }) => {
       const data = await authService.uploadPfp(userid, formData);
       return data;
     } catch (err) {
-      setError(err.message);
+      setError(err);
       throw err;
     }
   };
@@ -78,7 +70,7 @@ export const AuthProvider = ({ children }) => {
       const data = await authService.deletePic(userid);
       return data;
     } catch (err) {
-      setError(err.message);
+      setError(err);
       throw err;
     }
   };
@@ -88,6 +80,7 @@ export const AuthProvider = ({ children }) => {
       const response = await authService.logout();
       setUser(null);
       setError(null);
+      localStorage.removeItem("accessToken");
       console.log(response);
     } catch (e) {
       console.log(e);
@@ -180,7 +173,7 @@ export const AuthProvider = ({ children }) => {
       );
       return data;
     } catch (err) {
-      setError(err.message);
+      setError(err);
       console.error("Error fetching users with filters:", err);
     } finally {
       setLoading(false);

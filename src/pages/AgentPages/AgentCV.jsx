@@ -14,6 +14,7 @@ import AgentCvCard from "../../components/AgentComponents/AgentCvCard";
 import AgentCvElement from "../../components/AgentComponents/AgentCvElement";
 import { useAuth } from "../../context/authContext";
 import { useApplications } from "../../hook/useApplications";
+import { Spinner } from "../../components/Spinner";
 
 export default function AgentCV() {
   const { user, setUser } = useAuth();
@@ -97,7 +98,7 @@ export default function AgentCV() {
         uploadData["award"] = editFormData;
       }
       console.log(uploadData);
-      const response = await updateCv(uploadData);
+      const response = await updateCv(uploadData, user.id);
       setUser({
         ...user,
         cv: response.cv,
@@ -124,8 +125,8 @@ export default function AgentCV() {
       } else if (selectedItem.label == "Award") {
         deletename = "award";
       }
-      console.log(deletename, selectedItem.id);
-      const response = await deleteCv(selectedItem.id, deletename);
+
+      const response = await deleteCv(selectedItem.id, deletename, user.id);
       setUser({
         ...user,
         cv: response.cv,
@@ -153,7 +154,8 @@ export default function AgentCV() {
         uploadData["award"] = [addFormData];
       }
       console.log(uploadData);
-      const response = await uploadCv(uploadData);
+
+      const response = await uploadCv(uploadData, user.id);
       setUser({
         ...user,
         cv: response.cv,
@@ -173,130 +175,140 @@ export default function AgentCV() {
         <h1 className="text-2xl font-bold mb-10 text-center">
           You can add your education, experiance and projects here{" "}
         </h1>
-        <div className="w-full  mb-3">
-          <div
-            className="p-5 bg-brand-dark text-white rounded-xl"
-            onClick={() =>
-              setExpand({
-                ...expand,
-                education: !expand.education,
-              })
-            }
-          >
-            <div className="flex justify-between">
-              <div className="flex space-x-2">
-                <GraduationCap />
-                <p className="font-bold">Education</p>
-              </div>
-              {!expand.education && <ArrowDown />}
-              {expand.education && <ArrowUp />}
-            </div>
+        {!user && (
+          <div className="flex justify-center items-center">
+            <Spinner />
           </div>
-          {expand.education && (
-            <AgentCvCard
-              setAdd={setAdd}
-              setDelete={setDeleteEle}
-              setSelectedItem={setSelectedItem}
-              setEdit={setEdit}
-              sectionLable={"Education"}
-              list={cvData.Education}
-              config={educationConfig}
-            />
-          )}
-        </div>
-        <div className="w-full mb-3">
-          <div
-            className="p-5 bg-brand-dark text-white rounded-xl"
-            onClick={() =>
-              setExpand({
-                ...expand,
-                experiance: !expand.experiance,
-              })
-            }
-          >
-            <div className="flex justify-between">
-              <div className="flex space-x-2">
-                <Briefcase />
-                <p className="font-bold">Experiance</p>
+        )}
+
+        {user && (
+          <>
+            <div className="w-full  mb-3">
+              <div
+                className="p-5 bg-brand-dark text-white rounded-xl"
+                onClick={() =>
+                  setExpand({
+                    ...expand,
+                    education: !expand.education,
+                  })
+                }
+              >
+                <div className="flex justify-between">
+                  <div className="flex space-x-2">
+                    <GraduationCap />
+                    <p className="font-bold">Education</p>
+                  </div>
+                  {!expand.education && <ArrowDown />}
+                  {expand.education && <ArrowUp />}
+                </div>
               </div>
-              {!expand.experiance && <ArrowDown />}
-              {expand.experiance && <ArrowUp />}
+              {expand.education && (
+                <AgentCvCard
+                  setAdd={setAdd}
+                  setDelete={setDeleteEle}
+                  setSelectedItem={setSelectedItem}
+                  setEdit={setEdit}
+                  sectionLable={"Education"}
+                  list={cvData.Education}
+                  config={educationConfig}
+                />
+              )}
             </div>
-          </div>
-          {expand.experiance && (
-            <AgentCvCard
-              setAdd={setAdd}
-              setDelete={setDeleteEle}
-              setSelectedItem={setSelectedItem}
-              setEdit={setEdit}
-              sectionLable={"Experiance"}
-              list={cvData.Experiance}
-              config={experianceConfig}
-            />
-          )}
-        </div>
-        <div className="w-full mb-3">
-          <div
-            className=" p-5  bg-brand-dark text-white rounded-xl"
-            onClick={() =>
-              setExpand({
-                ...expand,
-                project: !expand.project,
-              })
-            }
-          >
-            <div className="flex justify-between">
-              <div className="flex space-x-2">
-                <Folder />
-                <p className="font-bold">Project</p>
+            <div className="w-full mb-3">
+              <div
+                className="p-5 bg-brand-dark text-white rounded-xl"
+                onClick={() =>
+                  setExpand({
+                    ...expand,
+                    experiance: !expand.experiance,
+                  })
+                }
+              >
+                <div className="flex justify-between">
+                  <div className="flex space-x-2">
+                    <Briefcase />
+                    <p className="font-bold">Experiance</p>
+                  </div>
+                  {!expand.experiance && <ArrowDown />}
+                  {expand.experiance && <ArrowUp />}
+                </div>
               </div>
-              {!expand.project && <ArrowDown />}
-              {expand.project && <ArrowUp />}
+              {expand.experiance && (
+                <AgentCvCard
+                  setAdd={setAdd}
+                  setDelete={setDeleteEle}
+                  setSelectedItem={setSelectedItem}
+                  setEdit={setEdit}
+                  sectionLable={"Experiance"}
+                  list={cvData.Experiance}
+                  config={experianceConfig}
+                />
+              )}
             </div>
-          </div>
-          {expand.project && (
-            <AgentCvCard
-              setAdd={setAdd}
-              setDelete={setDeleteEle}
-              setSelectedItem={setSelectedItem}
-              sectionLable={"Project"}
-              setEdit={setEdit}
-              list={cvData.Project}
-              config={projectConfig}
-            />
-          )}
-        </div>
-        <div className="w-full ">
-          <div
-            className="p-5 bg-brand-dark text-white rounded-xl"
-            onClick={() =>
-              setExpand({
-                ...expand,
-                award: !expand.award,
-              })
-            }
-          >
-            <div className="flex justify-between">
-              <div className="flex space-x-2">
-                <Medal />
-                <p className="font-bold">Awards</p>
+            <div className="w-full mb-3">
+              <div
+                className=" p-5  bg-brand-dark text-white rounded-xl"
+                onClick={() =>
+                  setExpand({
+                    ...expand,
+                    project: !expand.project,
+                  })
+                }
+              >
+                <div className="flex justify-between">
+                  <div className="flex space-x-2">
+                    <Folder />
+                    <p className="font-bold">Project</p>
+                  </div>
+                  {!expand.project && <ArrowDown />}
+                  {expand.project && <ArrowUp />}
+                </div>
               </div>
-              {!expand.award && <ArrowDown />}
-              {expand.award && <ArrowUp />}
+              {expand.project && (
+                <AgentCvCard
+                  setAdd={setAdd}
+                  setDelete={setDeleteEle}
+                  setSelectedItem={setSelectedItem}
+                  sectionLable={"Project"}
+                  setEdit={setEdit}
+                  list={cvData.Project}
+                  config={projectConfig}
+                />
+              )}
             </div>
-          </div>
-          {expand.award && (
-            <AgentCvCard
-              setAdd={setAdd}
-              setDelete={setDeleteEle}
-              setSelectedItem={setSelectedItem}
-              setEdit={setEdit}
-              sectionLable={"Award"}
-              list={cvData.Award}
-              config={awardConfig}
-            />
-          )}
-        </div>
+            <div className="w-full ">
+              <div
+                className="p-5 bg-brand-dark text-white rounded-xl"
+                onClick={() =>
+                  setExpand({
+                    ...expand,
+                    award: !expand.award,
+                  })
+                }
+              >
+                <div className="flex justify-between">
+                  <div className="flex space-x-2">
+                    <Medal />
+                    <p className="font-bold">Awards</p>
+                  </div>
+                  {!expand.award && <ArrowDown />}
+                  {expand.award && <ArrowUp />}
+                </div>
+              </div>
+              {expand.award && (
+                <AgentCvCard
+                  setAdd={setAdd}
+                  setDelete={setDeleteEle}
+                  setSelectedItem={setSelectedItem}
+                  setEdit={setEdit}
+                  sectionLable={"Award"}
+                  list={cvData.Award}
+                  config={awardConfig}
+                />
+              )}
+            </div>
+          </>
+        )}
       </div>
       {edit && selectedItem !== null && (
         <div className="fixed inset-0 z-10 flex items-center justify-center">
