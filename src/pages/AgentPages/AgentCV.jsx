@@ -41,16 +41,29 @@ export default function AgentCV() {
   ];
 
   const [cvData, setCvData] = useState({});
+  const [per, setPer] = useState(0);
 
   useEffect(() => {
     if (user && user.cv != null && user.cv.resume != null) {
       setCvData({
-        Education: user.cv.resume.education,
-        Experiance: user.cv.resume.experiance,
-        Award: user.cv.resume.award,
-        Project: user.cv.resume.project,
+        Education: user.cv.resume.education || [],
+        Experiance: user.cv.resume.experiance || [],
+        Award: user.cv.resume.award || [],
+        Project: user.cv.resume.project || [],
       });
-      console.log(cvData);
+      const filledSections =
+        (user.cv.resume.education && user.cv.resume.education.length > 0
+          ? 1
+          : 0) +
+        (user.cv.resume.experiance && user.cv.resume.experiance.length > 0
+          ? 1
+          : 0) +
+        (user.cv.resume.award && user.cv.resume.award.length > 0 ? 1 : 0) +
+        (user.cv.resume.project && user.cv.resume.project.length > 0 ? 1 : 0);
+
+      setPer(Math.round((filledSections / 4) * 100));
+
+      console.log(filledSections, per);
     }
   }, [user]);
 
@@ -173,6 +186,7 @@ export default function AgentCV() {
         <h1 className="text-2xl font-bold mb-10 text-center">
           You can add your education, experiance and projects here{" "}
         </h1>
+<<<<<<< HEAD
         <div className="w-full  mb-3">
           <div
             className="p-5 bg-brand-dark text-white rounded-xl"
@@ -191,6 +205,48 @@ export default function AgentCV() {
               {!expand.education && <ArrowDown />}
               {expand.education && <ArrowUp />}
             </div>
+=======
+        <div className="w-full flex flex-col items-center mb-10">
+          <div className="max-w-3xl w-full rounded-lg shadow-lg space-y-3 bg-white flex flex-col items-center justify-center mb-4 p-4">
+            <h1 className="text-xl font-semibold"> CV Completion Progress</h1>
+            <div className="flex space-x-5 items-center">
+              <p className="text-brand text-xl font-bold">{per}%</p>
+              <div className="w-48 h-3 bg-gray-200 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-brand transition-all duration-300"
+                  style={{ width: `${per}%` }}
+                ></div>
+              </div>
+            </div>
+
+            {per > 0 && per < 100 && (
+              <>
+                <h1 className="text-md text-brand">
+                  Keep going! You're making great progress.
+                </h1>
+                <p className="text-gray-500">
+                  Complete your CV to increase your chances of landing your
+                  dream job.
+                </p>
+              </>
+            )}
+            {per == 100 && (
+              <>
+                <h1 className="text-md text-brand">
+                  Congratulations! Your CV is complete.
+                </h1>
+                <p className="text-gray-500">
+                  Improve your CV to increase your chances of landing your dream
+                  job.
+                </p>
+              </>
+            )}
+          </div>
+        </div>
+        {!user && (
+          <div className="flex justify-center items-center">
+            <Spinner />
+>>>>>>> b448fba (finalcommit)
           </div>
           {expand.education && (
             <AgentCvCard

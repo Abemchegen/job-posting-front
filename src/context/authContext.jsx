@@ -55,7 +55,13 @@ export const AuthProvider = ({ children }) => {
     try {
       setError(null);
       const data = await authService.login(credentials);
+<<<<<<< HEAD
       setUser(data);
+=======
+      console.log(data, "Df");
+      localStorage.setItem("accessToken", data.token);
+      setUser(data.response);
+>>>>>>> b448fba (finalcommit)
       return data;
     } catch (err) {
       setError(err.message);
@@ -88,6 +94,11 @@ export const AuthProvider = ({ children }) => {
       const response = await authService.logout();
       setUser(null);
       setError(null);
+<<<<<<< HEAD
+=======
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("tempContacts");
+>>>>>>> b448fba (finalcommit)
       console.log(response);
     } catch (e) {
       console.log(e);
@@ -107,7 +118,7 @@ export const AuthProvider = ({ children }) => {
   const updateAccount = async (userid, updateData) => {
     try {
       const response = await authService.updateUser(userid, updateData);
-      setUser(response);
+      return response;
     } catch (e) {
       console.log(e);
     }
@@ -134,11 +145,7 @@ export const AuthProvider = ({ children }) => {
   const updateCompanyDetails = async (updateData) => {
     try {
       const response = await authService.updateCompanyDetails(updateData);
-      setUser({
-        ...user,
-        companyName: response.companyName,
-        companyPhonenumber: response.companyPhonenumber,
-      });
+      return response;
     } catch (e) {
       console.log(e);
     }

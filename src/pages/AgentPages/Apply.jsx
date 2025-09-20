@@ -58,6 +58,10 @@ export default function Apply() {
         "You must either upload a cv or fill out the custom cv to make an application.";
     } else if (formData.cv && formData.cv.size > 5 * 1024 * 1024) {
       newErrors.cv = "You must either upload a file less than 5MB.";
+    } else if (
+      formData.coverLetter.trim().split(/\s+/).filter(Boolean).length < 150
+    ) {
+      newErrors.coverLetter = "You must write a minimum of 150 words.";
     }
 
     setErrors(newErrors);
@@ -112,61 +116,11 @@ export default function Apply() {
 
               <form onSubmit={handlesubmit} className="w-full">
                 <div className="flex flex-col space-y-2">
-                  {/* <div>
-                    <label htmlFor="fullName">
-                      Full name <span className="text-red-600">*</span>
-                    </label>
-                    <input
-                      id="fullName"
-                      type="text"
-                      value={formData.fullName}
-                      required={true}
-                      onChange={handleInput}
-                      className="w-full border border-gray-300 shadow-sm rounded-lg focus:outline-none focus:border-gray-400 py-1 px-2"
-                    ></input>
-                    {errors.fullName && (
-                      <p className="text-red-500 text-sm">{errors.fullName}</p>
-                    )}
-                  </div> */}
-                  {/* <div className="flex justify-between">
-                    <div className="flex flex-col w-1/2 mr-3">
-                      <label htmlFor="email">
-                        Email <span className="text-red-600">*</span>
-                      </label>
-                      <input
-                        id="email"
-                        type="text"
-                        value={formData.email}
-                        required={true}
-                        onChange={handleInput}
-                        className="border border-gray-300 shadow-sm rounded-lg focus:outline-none focus:border-gray-400 py-1 px-2"
-                      ></input>
-                      {errors.email && (
-                        <p className="text-red-500 text-sm">{errors.email}</p>
-                      )}
-                    </div>
-                    <div className="flex flex-col w-1/2">
-                      <label htmlFor="phoneNumber">
-                        Phone number <span className="text-red-600">*</span>{" "}
-                      </label>
-                      <input
-                        id="phoneNumber"
-                        type="text"
-                        required={true}
-                        value={formData.phoneNumber}
-                        onChange={handleInput}
-                        className="border border-gray-300 shadow-sm rounded-lg focus:outline-none focus:border-gray-400 py-1 px-2"
-                      ></input>
-                      {errors.phoneNumber && (
-                        <p className="text-red-500 text-sm">
-                          {errors.phoneNumber}
-                        </p>
-                      )}
-                    </div>
-                  </div> */}
                   <div>
                     <label htmlFor="coverLetter">
-                      Cover Letter <span className="text-red-600">*</span>{" "}
+                      Cover Letter{" "}
+                      <span className="text-gray-500">{"(150 min)"}</span>
+                      <span className="text-red-600">*</span>{" "}
                     </label>
                     <textarea
                       id="coverLetter"
@@ -175,7 +129,7 @@ export default function Apply() {
                       required={true}
                       onChange={handleInput}
                       placeholder="Tell us why you're a good fit for this position..."
-                      className=" w-full border border-gray-300 shadow-sm rounded-lg focus:outline-none focus:border-gray-400 py-1 px-2"
+                      className="w-full border border-gray-300 shadow-sm rounded-lg focus:outline-none focus:border-gray-400 py-1 px-2"
                     ></textarea>
                     {errors.coverLetter && (
                       <p className="text-red-500 text-sm">

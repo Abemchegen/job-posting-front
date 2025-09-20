@@ -81,7 +81,8 @@ export default function CompanyAccount() {
         updateData.email = userData.email.trim();
       }
 
-      await updateAccount(user.id, updateData);
+      const accountresponse = await updateAccount(user.id, updateData);
+      let companyreponse;
 
       const updateCompanyData = {};
       if (userData.companyName.trim()) {
@@ -92,8 +93,17 @@ export default function CompanyAccount() {
       }
 
       if (updateCompanyData != null) {
-        await updateCompanyDetails(updateCompanyData);
+        companyreponse = await updateCompanyDetails(updateCompanyData);
       }
+
+      console.log(accountresponse, companyreponse);
+
+      setUser({
+        ...user,
+        ...accountresponse,
+        companyName: companyreponse.companyName,
+        companyPhonenumber: companyreponse.companyPhonenumber,
+      });
 
       setEdit(false);
     } catch (e) {
@@ -254,7 +264,7 @@ export default function CompanyAccount() {
                       <div className="flex md:w-sm w-xs md:mr-2 flex-col ">
                         <label htmlFor="fullName">Full name: </label>
                         <input
-                          value={userData.name}
+                          value={userData.name || ""}
                           onChange={(e) =>
                             setUserData({
                               ...userData,
@@ -276,7 +286,7 @@ export default function CompanyAccount() {
                           onChange={(e) =>
                             setUserData({ ...userData, email: e.target.value })
                           }
-                          value={userData.email}
+                          value={userData.email || ""}
                           id="email"
                           type="text"
                           className={`border border-gray-300 shadow-sm rounded-lg focus:outline-none ${
@@ -296,7 +306,7 @@ export default function CompanyAccount() {
                               birthdate: e.target.value,
                             })
                           }
-                          value={userData.birthdate}
+                          value={userData.birthdate || ""}
                           id="birthdate"
                           type="date"
                           className={`border border-gray-300 shadow-sm rounded-lg focus:outline-none ${
@@ -314,7 +324,7 @@ export default function CompanyAccount() {
                               phonenumber: e.target.value,
                             })
                           }
-                          value={userData.phonenumber}
+                          value={userData.phonenumber || ""}
                           id="phonenumber"
                           type="text"
                           className={`border border-gray-300 shadow-sm rounded-lg focus:outline-none ${
@@ -335,7 +345,7 @@ export default function CompanyAccount() {
                               companyName: e.target.value,
                             })
                           }
-                          value={userData.companyName}
+                          value={userData.companyName || ""}
                           id="companyName"
                           type="text"
                           className={`border border-gray-300 shadow-sm rounded-lg focus:outline-none ${
@@ -355,12 +365,13 @@ export default function CompanyAccount() {
                               companyPhonenumber: e.target.value,
                             })
                           }
-                          value={userData.companyPhonenumber}
+                          value={userData.companyPhonenumber || ""}
                           id="companyphone"
                           type="text"
                           className={`border border-gray-300 shadow-sm rounded-lg focus:outline-none ${
                             edit ? " focus:border-gray-400" : ""
                           } py-1 px-2`}
+                          why
                         ></input>
                       </div>
                     </div>

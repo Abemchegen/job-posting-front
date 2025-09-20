@@ -3,17 +3,16 @@ import List from "@mui/material/List";
 import React, { useEffect, useState } from "react";
 import SockJS from "sockjs-client";
 import ListItem from "@mui/material/ListItem";
-
 import Typography from "@mui/material/Typography";
 import Button from "./Button";
 import { useAuth } from "../context/authContext";
 import { useChats } from "../hook/useChat";
 import { useRef } from "react";
-
 import ContactSidebar from "./ContactSidebar";
 const MessageArea = ({ reciever }) => {
   const { user } = useAuth();
-  const { Contacts, setContacts, fetchChatHistory } = useChats();
+  const { Contacts, fetchChatHistory } = useChats();
+  const [totalContacts, setTotalContacts] = useState([]);
   const [selectedContactId, setSelectedContactId] = useState(null);
   const [chatMessages, setChatMessages] = useState({});
   const [stompClient, setStompClient] = useState(null);
@@ -24,6 +23,23 @@ const MessageArea = ({ reciever }) => {
     senderID: "",
     receiverID: "",
   });
+
+  useEffect(() => {
+    const stored = localStorage.getItem("tempContacts");
+    const tempContacts = stored
+      ? JSON.parse(localStorage.getItem("tempContacts"))
+      : [];
+    let total = tempContacts;
+    if (Contacts && Contacts.length > 0) {
+      const merged = [
+        ...Contacts,
+        ...tempContacts.filter((tc) => !Contacts.some((c) => c.id === tc.id)),
+      ];
+      total = merged;
+    }
+    setTotalContacts(total);
+  }, [Contacts]);
+
   useEffect(() => {
     if (user) {
       setData((prev) => ({
@@ -41,37 +57,28 @@ const MessageArea = ({ reciever }) => {
         receiverID: reciever.id,
         recieverName: reciever.email,
       }));
-      setContacts((prev) => {
-        const exists = prev.some((contact) => contact.id === reciever.id);
-        if (exists) return prev;
-        return [...prev, reciever];
-      });
       handleSelectChat(reciever.id);
       console.log(reciever);
     }
   }, [reciever]);
 
-  useEffect(() => {
-    console.log("data:", data);
-  }, [data]);
   const handleMessageChange = (e) => {
     setData({ ...data, message: e.target.value });
   };
   useEffect(() => {
     if (
-      Contacts &&
-      Contacts.length > 0 &&
+      totalContacts &&
+      totalContacts.length > 0 &&
       !selectedContactId &&
       reciever == null
     ) {
-      handleSelectChat(Contacts[0].id);
-      console.log("Contacts ", Contacts);
+      handleSelectChat(totalContacts[0].id);
     }
-  }, [Contacts, reciever]);
+  }, [totalContacts, reciever]);
 
   const handleSelectChat = (contactId) => {
     setSelectedContactId(contactId);
-    const selectedContact = Contacts.find(
+    const selectedContact = totalContacts.find(
       (contact) => contact.id === contactId
     );
     if (selectedContact) {
@@ -86,6 +93,7 @@ const MessageArea = ({ reciever }) => {
   const fetchHistory = async (id) => {
     try {
       const response = await fetchChatHistory(id);
+      console.log(response, "jhkjhkhkjh");
       setChatMessages((prev) => {
         return {
           ...prev,
@@ -172,7 +180,7 @@ const MessageArea = ({ reciever }) => {
           <ContactSidebar
             active={sidebarOpen}
             setActive={setSidebarOpen}
-            contacts={Contacts}
+            contacts={totalContacts}
             selected={selectedContactId}
             handleSelectChat={handleSelectChat}
           />
@@ -180,6 +188,12 @@ const MessageArea = ({ reciever }) => {
         <div className="flex-1 bg-white rounded flex flex-col justify-between">
           <div className="flex-1 overflow-y-auto">
             <List className="px-2">
+              {(chatMessages[selectedContactId] || []).length === 0 && (
+                <div className="flex flex-col items-center justify-center py-10 text-gray-400">
+                  <span className="text-4xl mb-2">💬</span>
+                  <span className="font-semibold">No messages yet!</span>
+                </div>
+              )}
               {(chatMessages[selectedContactId] || []).map(
                 (msg, index, arr) => {
                   const currentDate = new Date(msg.date);
