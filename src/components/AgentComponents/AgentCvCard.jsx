@@ -1,5 +1,6 @@
 import { Pen, Plus, Trash } from "lucide-react";
 import AgentCvElement from "./AgentCvElement";
+import { FilterBuilder } from "stream-chat";
 
 export default function AgentCvCard({
   list = [],
@@ -22,6 +23,7 @@ export default function AgentCvCard({
               {config.map((field) => (
                 <AgentCvElement
                   key={field.key}
+                  identifier={field.key}
                   label={field.label}
                   item={item[field.key]}
                 />

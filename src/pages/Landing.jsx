@@ -1,11 +1,25 @@
 import "../index.css";
 import { useNavigate } from "react-router-dom";
-import { Search } from "lucide-react";
+import { useAuth } from "../context/authContext";
 import Button from "../components/Button";
 import LandingCard from "../components/LandingCard";
 import LandingType from "../components/LandingType";
+import { useEffect } from "react";
 export default function Home() {
+  const { user } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      if (user.role === "AGENT") {
+        navigate("/home/agent");
+      } else if (user.role === "COMPANY") {
+        navigate("/home/company");
+      } else if (user.role === "ADMIN") {
+        navigate("/home/admin");
+      }
+    }
+  }, [user, navigate]);
 
   return (
     <div className="w-full bg-muted">

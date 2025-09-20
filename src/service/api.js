@@ -61,10 +61,8 @@ class ApiService {
         try {
           const data = await authService.refreshToken();
           localStorage.setItem("accessToken", data.token);
-          // setUser(data.response);
           return await apiService.request(endpoint, options);
         } catch (refreshErr) {
-          // setUser(null);
           localStorage.removeItem("accessToken");
           if (
             window.location.pathname !== "/" &&
@@ -75,7 +73,6 @@ class ApiService {
           ) {
             window.location.replace("/");
           }
-          throw refreshErr;
         }
       }
       throw err;

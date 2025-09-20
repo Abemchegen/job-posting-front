@@ -2,6 +2,7 @@ import Select from "react-select";
 
 export default function AgentCvElement({
   label,
+  identifier,
   field,
   item,
   agent = true,
@@ -54,13 +55,39 @@ export default function AgentCvElement({
       {type === "normal" && agent && (
         <div className="w-full flex items-center min-w-0 mr-10 mb-2">
           <p className="text-gray-500 font-bold mr-2 ">{label}:</p>
-          <p className="text-gray-500 py-1 truncate">{item}</p>
+          {identifier === "url" &&
+          typeof item === "string" &&
+          /^https?:\/\//.test(item) ? (
+            <a
+              href={item}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 underline truncate py-1"
+            >
+              {item}
+            </a>
+          ) : (
+            <p className="text-gray-500 py-1 truncate">{item}</p>
+          )}
         </div>
       )}
       {type === "normal" && !agent && (
         <div className="w-full flex items-center min-w-0 mb-2">
           <p className="text-gray-500 font-bold mr-2 ">{label}:</p>
-          <p className="text-gray-500 py-1">{item}</p>
+          {identifier === "link" &&
+          typeof item === "string" &&
+          /^https?:\/\//.test(item) ? (
+            <a
+              href={item}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 underline truncate py-1"
+            >
+              {item}
+            </a>
+          ) : (
+            <p className="text-gray-500 py-1 truncate">{item}</p>
+          )}
         </div>
       )}
 

@@ -46,6 +46,7 @@ export const AuthProvider = ({ children }) => {
     try {
       setError(null);
       const data = await authService.login(credentials);
+      console.log(data, "Df");
       localStorage.setItem("accessToken", data.token);
       setUser(data.response);
       return data;
@@ -81,6 +82,7 @@ export const AuthProvider = ({ children }) => {
       setUser(null);
       setError(null);
       localStorage.removeItem("accessToken");
+      localStorage.removeItem("tempContacts");
       console.log(response);
     } catch (e) {
       console.log(e);
@@ -100,7 +102,7 @@ export const AuthProvider = ({ children }) => {
   const updateAccount = async (userid, updateData) => {
     try {
       const response = await authService.updateUser(userid, updateData);
-      setUser(response);
+      return response;
     } catch (e) {
       console.log(e);
     }
@@ -127,11 +129,7 @@ export const AuthProvider = ({ children }) => {
   const updateCompanyDetails = async (updateData) => {
     try {
       const response = await authService.updateCompanyDetails(updateData);
-      setUser({
-        ...user,
-        companyName: response.companyName,
-        companyPhonenumber: response.companyPhonenumber,
-      });
+      return response;
     } catch (e) {
       console.log(e);
     }

@@ -30,6 +30,7 @@ export default function Signup() {
     conpas: null,
     companyPhonenumber: null,
     companyName: null,
+    serverError: null,
   });
   const [isLoading, setIsLoading] = useState(false);
 
@@ -45,6 +46,14 @@ export default function Signup() {
       ...errors,
       [id]: null,
     });
+
+    if (id == "pas" || id == "conpas") {
+      setErrors({
+        ...errors,
+        pas: null,
+        conpas: null,
+      });
+    }
   }
   useEffect(() => {
     if (submitted) {
@@ -65,7 +74,7 @@ export default function Signup() {
       newErrors.pas = "Password must be at least 6 characters long";
     }
     if (formData.conpas.trim() !== formData.pas.trim()) {
-      newErrors.conpas = "Password and conform  are not matching";
+      newErrors.conpas = "Password and conform Password are not matching";
     }
     setErrors({ ...errors, ...newErrors });
     return Object.keys(newErrors).length == 0;
@@ -97,6 +106,7 @@ export default function Signup() {
     } catch (e) {
       console.error("Error submitting", e);
       setsubmitted(false);
+      setErrors({ ...errors, serverError: e.message });
     } finally {
       setIsLoading(false);
     }
@@ -258,10 +268,9 @@ export default function Signup() {
               </div>
             </div>
           </form>
-          {submitted === false && (
-            <p className="text-red-500">Submission failed</p>
+          {submitted === false && errors.serverError && (
+            <p className="text-red-500">{errors.serverError}</p>
           )}
-          {/* {error && <div className="text-red-500">{error}</div>} */}
 
           <p className="text-center">
             Already have an account?

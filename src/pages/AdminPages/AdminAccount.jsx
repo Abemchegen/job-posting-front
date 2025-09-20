@@ -76,7 +76,8 @@ export default function AdminAccount() {
       if (userData.email.trim()) {
         updateData.email = userData.email.trim();
       }
-      await updateAccount(user.id, updateData);
+      const response = await updateAccount(user.id, updateData);
+      setUser({ ...user, ...response });
       setEdit(false);
     } catch (e) {
       console.log(e);
@@ -231,7 +232,7 @@ export default function AdminAccount() {
                       <div className="flex md:w-sm w-xs md:mr-2 flex-col ">
                         <label htmlFor="fullName">Full name: </label>
                         <input
-                          value={userData.name}
+                          value={userData.name || ""}
                           onChange={(e) =>
                             setUserData({
                               ...userData,
@@ -253,7 +254,7 @@ export default function AdminAccount() {
                           onChange={(e) =>
                             setUserData({ ...userData, email: e.target.value })
                           }
-                          value={userData.email}
+                          value={userData.email || ""}
                           id="email"
                           type="text"
                           className={`border border-gray-300 shadow-sm rounded-lg focus:outline-none ${
@@ -273,7 +274,7 @@ export default function AdminAccount() {
                               birthdate: e.target.value,
                             })
                           }
-                          value={userData.birthdate}
+                          value={userData.birthdate || ""}
                           id="birthdate"
                           type="date"
                           className={`border border-gray-300 shadow-sm rounded-lg focus:outline-none ${
@@ -291,7 +292,7 @@ export default function AdminAccount() {
                               phonenumber: e.target.value,
                             })
                           }
-                          value={userData.phonenumber}
+                          value={userData.phonenumber || ""}
                           id="phonenumber"
                           type="text"
                           className={`border border-gray-300 shadow-sm rounded-lg focus:outline-none ${

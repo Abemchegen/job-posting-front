@@ -9,6 +9,7 @@ import {
   TimerIcon,
   File,
   House,
+  User,
 } from "lucide-react";
 import Button from "../Button";
 import { useNavigate } from "react-router-dom";
@@ -103,12 +104,21 @@ export default function AgentApplicationCard({
                 className="rounded-full w-23 h-23 flex flex-col items-center justify-center transition"
                 onClick={() => {}}
               >
-                <CloudImage
-                  className="rounded-full"
-                  publicId={applicationItem.userInfo.pfp}
-                  width={100}
-                  height={100}
-                />
+                {applicationItem.userInfo.pfp ? (
+                  <CloudImage
+                    className="rounded-full"
+                    publicId={applicationItem.userInfo.pfp}
+                    width={100}
+                    height={100}
+                  />
+                ) : (
+                  <div
+                    className="bg-gray-200 rounded-full flex items-center justify-center"
+                    style={{ width: 100, height: 100 }}
+                  >
+                    <User size={60} color="#888" />
+                  </div>
+                )}
               </div>
             )}
             <div className="flex flex-col">
@@ -146,14 +156,19 @@ export default function AgentApplicationCard({
             </div>
           )}
         </div>
-        <div className="space-x-4 flex">
-          <div className="flex">
-            <Calendar className="w-4 font-light mr-1 text-gray-500"></Calendar>
-            <span className="text-gray-500"> {applicationItem.appliedAt}</span>
-          </div>
-          <div className="flex">
-            <TimerIcon className="w-4 font-light text-gray-500"></TimerIcon>
-            <span className="text-gray-500"> Status: {statusLabel}</span>
+        <div className="space-x-4 flex flex-col md:flex-row space-y-1">
+          <div className="flex space-x-4">
+            <div className="flex">
+              <Calendar className="w-4 font-light mr-1 text-gray-500"></Calendar>
+              <span className="text-gray-500">
+                {" "}
+                {applicationItem.appliedAt}
+              </span>
+            </div>
+            <div className="flex">
+              <TimerIcon className="w-4 font-light text-gray-500"></TimerIcon>
+              <span className="text-gray-500"> Status: {statusLabel}</span>
+            </div>
           </div>
           <div className="flex">
             <House className="w-4 font-light text-gray-500"></House>

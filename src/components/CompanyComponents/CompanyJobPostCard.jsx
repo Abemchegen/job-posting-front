@@ -72,7 +72,7 @@ export default function CompanyJobPostCard({ jobPost, detail = false }) {
           <div
             className={`flex flex-col  ${
               detail ? "md:items-start items-center " : "items-start"
-            } space-x-5 mb-5`}
+            } space-x-5 mb-1`}
           >
             <p className="text-blue-600 text-2xl mb-1 font-bold hover:text-blue-800">
               {jobPostData.jobName}

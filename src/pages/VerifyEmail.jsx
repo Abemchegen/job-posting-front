@@ -89,15 +89,15 @@ export default function VerifyEmail() {
 
   return (
     <div className="flex items-center mt-25 justify-center w-full">
-      <div className="bg-white text-gray-600 max-w-md p-5 space-y-3 flex flex-col rounded-lg shadow-lg w-full">
+      <div className="bg-white text-gray-600 max-w-md p-5 space-y-3 flex flex-col items-center justify-center rounded-lg shadow-lg w-full">
         <h1 className="font-bold text-center text-xl ">
           Please verify your email
         </h1>
-        <p>
-          An authentication code has been sent to the email adress you have
+        <p className="text-center">
+          An authentication link has been sent to the email address you have
           registered with.
         </p>
-        {resend == true && (
+        {/* {resend == true && (
           <div>
             <p>Code resent!</p>
           </div>
@@ -147,9 +147,9 @@ export default function VerifyEmail() {
               </div>
             )}
           </div>
-        </div>
+        </div> */}
 
-        <div className="flex space-x-5 w-full items-center">
+        {/* <div className="flex space-x-5 w-full items-center">
           <div className="w-1/2 flex items-center justify-center">
             {!resendLoading && (
               <Button
@@ -169,7 +169,7 @@ export default function VerifyEmail() {
             )}
             {verifyLoading && <Button text={"Verifying..."} disabled={true} />}
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

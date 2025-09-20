@@ -51,22 +51,28 @@ export default function AgentJobPostCard({ jobPost, detail = false }) {
             )}
           </div>
 
-          <div className="space-x-4 flex items-center">
-            <div className="flex items-center">
-              <DollarSign className="w-4 font-light text-gray-500"></DollarSign>
-              <span className="text-gray-500"> {jobPostData.salary}</span>
+          <div className="space-x-4 flex mb-2 md:flex-row flex-col md:items-center space-y-1 overflow-hidden">
+            <div className="flex space-x-4">
+              <div className="flex items-center ">
+                <DollarSign className="w-4 font-light text-gray-500"></DollarSign>
+                <span className="text-gray-500"> {jobPostData.salary}</span>
+              </div>
+              <div className="flex items-center">
+                <Calendar className="w-4 font-light mr-1 text-gray-500"></Calendar>
+                <span className="text-gray-500"> {jobPostData.date}</span>
+              </div>
+              <div className="flex items-center">
+                <BsPerson className="w-4 font-light mr-1 text-gray-500"></BsPerson>
+                <span className="text-gray-500">
+                  {jobPostData.peopleNeeded}
+                </span>
+              </div>
             </div>
-            <div className="flex items-center">
-              <Calendar className="w-4 font-light mr-1 text-gray-500"></Calendar>
-              <span className="text-gray-500"> {jobPostData.date}</span>
-            </div>
-            <div className="flex items-center">
-              <House className="w-4 font-light mr-1 text-gray-500"></House>
-              <span className="text-gray-500"> {jobPostData.company}</span>
-            </div>
-            <div className="flex items-center">
-              <BsPerson className="w-4 font-light mr-1 text-gray-500"></BsPerson>
-              <span className="text-gray-500"> {jobPostData.peopleNeeded}</span>
+            <div className="flex space-x-3">
+              <div className="flex items-center">
+                <House className="w-4 font-light mr-1 text-gray-500"></House>
+                <span className="text-gray-500"> {jobPostData.company}</span>
+              </div>
             </div>
             {jobPostData.applied == true && (
               <div className="flex items-center">

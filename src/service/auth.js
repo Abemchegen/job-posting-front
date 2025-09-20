@@ -47,6 +47,7 @@ class AuthService {
           const errorText = await response.text();
           error.message = errorText;
         }
+        console.log(error);
         throw error;
       }
       const contentType = response.headers.get("content-type");
@@ -69,12 +70,18 @@ class AuthService {
         try {
           const data = await this.refreshToken();
           localStorage.setItem("accessToken", data.token);
-          return await apiService.request(endpoint, options);
+          return await this.request(endpoint, options);
         } catch (refreshErr) {
-          setUser(null);
           localStorage.removeItem("accessToken");
-          window.location.replace("/");
-          throw refreshErr;
+          if (
+            window.location.pathname !== "/" &&
+            window.location.pathname !== "/login" &&
+            window.location.pathname !== "/signup" &&
+            window.location.pathname !== "/registerType" &&
+            window.location.pathname !== "/verifyEmail"
+          ) {
+            window.location.replace("/");
+          }
         }
       }
       throw err;
@@ -87,11 +94,10 @@ class AuthService {
     });
   }
   async login(credentials) {
-    const response = this.safeRequest("/users/public/login", {
+    return this.safeRequest("/users/public/login", {
       method: "POST",
       body: JSON.stringify(credentials),
     });
-    return response;
   }
   async logout() {
     return this.safeRequest("/users/logout");

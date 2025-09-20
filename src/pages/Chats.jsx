@@ -18,6 +18,19 @@ export default function Chats() {
         if (id) {
           const res = await getUsertoChat(id);
           setReciever(res);
+          const tempContacts =
+            JSON.parse(localStorage.getItem("tempContacts")) || [];
+          let exists = false;
+          console.log("person", res);
+          if (tempContacts.length > 0) {
+            exists = tempContacts.some((c) => c.id === res.id);
+          }
+          if (!exists && res) {
+            localStorage.setItem(
+              "tempContacts",
+              JSON.stringify([...tempContacts, res])
+            );
+          }
         }
       } catch (e) {
         console.log(e);
