@@ -36,7 +36,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import Button from "./components/Button";
 import { useLocation } from "react-router-dom";
 import JobPage from "./pages/AdminPages/JobPage";
-import VerifyEmail from "./pages/verifyEmail";
+import VerifyEmail from "./pages/VerifyEmail";
 import Chats from "./pages/Chats";
 
 function MyFallback({ error, resetErrorBoundary }) {
