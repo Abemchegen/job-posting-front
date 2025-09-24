@@ -34,7 +34,8 @@ export const useApplications = () => {
       return response;
     } catch (err) {
       setError(err.message);
-      return { success: false, error: err.message };
+      console.error("Error applying:", err);
+      throw err;
     }
   };
 
@@ -44,7 +45,8 @@ export const useApplications = () => {
       return response;
     } catch (err) {
       setError(err.message);
-      return { success: false, error: err.message };
+      console.error("Error deleting application:", err);
+      throw err;
     }
   };
   const getMyApplications = async () => {
@@ -54,7 +56,8 @@ export const useApplications = () => {
       return response;
     } catch (err) {
       setError(err.message);
-      return { success: false, error: err.message };
+      console.error("Error fething applications:", err);
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -67,7 +70,8 @@ export const useApplications = () => {
       return response;
     } catch (err) {
       setError(err.message);
-      return { success: false, error: err.message };
+      console.error("Error fetching application:", err);
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -79,8 +83,9 @@ export const useApplications = () => {
       const response = await apiService.uploadCv(Cvdata);
       return response;
     } catch (e) {
-      setError(err.message);
-      return { success: false, error: err.message };
+      setError(e.message);
+      console.error("Error uploading cv:", e);
+      throw e;
     } finally {
       setLoading(false);
     }
@@ -92,8 +97,9 @@ export const useApplications = () => {
       const response = await apiService.updateCv(Cvdata);
       return response;
     } catch (e) {
-      setError(err.message);
-      return { success: false, error: err.message };
+      setError(e.message);
+      console.error("Error updating cv:", e);
+      throw e;
     } finally {
       setLoading(false);
     }
@@ -105,8 +111,9 @@ export const useApplications = () => {
       const response = await apiService.deleteCv(deleteid, deletename);
       return response;
     } catch (e) {
-      setError(err.message);
-      return { success: false, error: err.message };
+      setError(e.message);
+      console.error("Error deleting cv:", e);
+      throw e;
     } finally {
       setLoading(false);
     }
@@ -137,6 +144,7 @@ export const useApplications = () => {
     } catch (err) {
       setError(err.message);
       console.error("Error fetching posts with filters:", err);
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -166,6 +174,7 @@ export const useApplications = () => {
     } catch (err) {
       setError(err.message);
       console.error("Error fetching applications with filters:", err);
+      throw err;
     } finally {
       setLoading(false);
     }

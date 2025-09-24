@@ -165,7 +165,7 @@ export default function AgentCV() {
       } else if (selectedItem.label == "Award") {
         uploadData["award"] = [addFormData];
       }
-      console.log(uploadData);
+      console.log(uploadData, user);
       const response = await uploadCv(uploadData);
       setUser({
         ...user,
@@ -186,26 +186,6 @@ export default function AgentCV() {
         <h1 className="text-2xl font-bold mb-10 text-center">
           You can add your education, experiance and projects here{" "}
         </h1>
-<<<<<<< HEAD
-        <div className="w-full  mb-3">
-          <div
-            className="p-5 bg-brand-dark text-white rounded-xl"
-            onClick={() =>
-              setExpand({
-                ...expand,
-                education: !expand.education,
-              })
-            }
-          >
-            <div className="flex justify-between">
-              <div className="flex space-x-2">
-                <GraduationCap />
-                <p className="font-bold">Education</p>
-              </div>
-              {!expand.education && <ArrowDown />}
-              {expand.education && <ArrowUp />}
-            </div>
-=======
         <div className="w-full flex flex-col items-center mb-10">
           <div className="max-w-3xl w-full rounded-lg shadow-lg space-y-3 bg-white flex flex-col items-center justify-center mb-4 p-4">
             <h1 className="text-xl font-semibold"> CV Completion Progress</h1>
@@ -246,7 +226,26 @@ export default function AgentCV() {
         {!user && (
           <div className="flex justify-center items-center">
             <Spinner />
->>>>>>> b448fba (finalcommit)
+          </div>
+        )}
+        <div className="w-full mb-3">
+          <div
+            className="p-5 bg-brand-dark text-white rounded-xl"
+            onClick={() =>
+              setExpand({
+                ...expand,
+                education: !expand.education,
+              })
+            }
+          >
+            <div className="flex justify-between">
+              <div className="flex space-x-2">
+                <GraduationCap />
+                <p className="font-bold">Education</p>
+              </div>
+              {!expand.education && <ArrowDown />}
+              {expand.education && <ArrowUp />}
+            </div>
           </div>
           {expand.education && (
             <AgentCvCard

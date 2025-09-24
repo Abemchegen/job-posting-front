@@ -206,8 +206,8 @@ class ApiService {
       body: JSON.stringify(updateData),
     });
   }
-  async uploadCv(Cvdata, userid) {
-    return this.safeRequest(`/users/agent/uploadCv/${userid}`, {
+  async uploadCv(Cvdata) {
+    return this.safeRequest(`/users/agent/uploadCv`, {
       method: "POST",
       body: JSON.stringify(Cvdata),
     });

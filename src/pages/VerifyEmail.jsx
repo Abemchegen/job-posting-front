@@ -45,8 +45,9 @@ export default function VerifyEmail() {
         code: verifyData.code.trim(),
         email: verifyData.email.trim(),
       };
+      console.log(data);
       const res = await verifyEmail(data);
-      setUser(res);
+      // setUser(res.response);
       console.log("verified!!", res);
       setVerified(true);
     } catch (e) {

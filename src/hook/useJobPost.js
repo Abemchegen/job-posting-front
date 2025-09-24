@@ -19,6 +19,7 @@ export const useJobPosts = () => {
     } catch (err) {
       setError(err.message);
       console.error("Error fetching job post:", err);
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -36,7 +37,7 @@ export const useJobPosts = () => {
       return { success: true };
     } catch (err) {
       setError(err.message);
-      return { success: false, error: err.message };
+      throw err;
     }
   };
   const updateJobPost = async (jobData, postid) => {
@@ -46,7 +47,7 @@ export const useJobPosts = () => {
       return response;
     } catch (err) {
       setError(err.message);
-      return { success: false, error: err.message };
+      throw err;
     }
   };
 
@@ -57,7 +58,7 @@ export const useJobPosts = () => {
       return response;
     } catch (err) {
       setError(err.message);
-      return { success: false, error: err.message };
+      throw err;
     }
   };
   const getAllApplications = async (id) => {
@@ -67,7 +68,7 @@ export const useJobPosts = () => {
       return response;
     } catch (err) {
       setError(err.message);
-      return { success: false, error: err.message };
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -80,7 +81,7 @@ export const useJobPosts = () => {
       return response;
     } catch (err) {
       setError(err.message);
-      return { success: false, error: err.message };
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -97,7 +98,7 @@ export const useJobPosts = () => {
       return response;
     } catch (err) {
       setError(err.message);
-      return { success: false, error: err.message };
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -122,6 +123,7 @@ export const useJobPosts = () => {
     } catch (err) {
       setError(err.message);
       console.error("Error fetching posts with filters:", err);
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -162,6 +164,7 @@ export const useJobPost = (id) => {
       } catch (err) {
         setError(err.message);
         console.error("Error fetching job post:", err);
+        throw err;
       } finally {
         setLoading(false);
       }

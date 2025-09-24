@@ -114,7 +114,9 @@ const MessageArea = ({ reciever }) => {
       data.senderName &&
       data.recieverName &&
       data.receiverID &&
-      data.senderID
+      data.senderID &&
+      stompClient &&
+      stompClient.connected // <-- add this check
     ) {
       const chatMessage = {
         senderName: data.senderName,

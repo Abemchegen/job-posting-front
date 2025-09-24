@@ -18,6 +18,7 @@ export const useJobs = () => {
     } catch (err) {
       setError(err.message);
       console.error("Error fetching jobs:", err);
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -35,7 +36,7 @@ export const useJobs = () => {
       return { success: true };
     } catch (err) {
       setError(err.message);
-      return { success: false, error: err.message };
+      throw err;
     }
   };
   const updateJobDetails = async (jobData) => {
@@ -45,7 +46,7 @@ export const useJobs = () => {
       return response;
     } catch (err) {
       setError(err.message);
-      return { success: false, error: err.message };
+      throw err;
     }
   };
   const updateSubcatagory = async (subData) => {
@@ -56,7 +57,7 @@ export const useJobs = () => {
       return response;
     } catch (err) {
       setError(err.message);
-      return { success: false, error: err.message };
+      throw err;
     }
   };
 
@@ -67,7 +68,7 @@ export const useJobs = () => {
       return response;
     } catch (err) {
       setError(err.message);
-      return { success: false, error: err.message };
+      throw err;
     }
   };
 
@@ -78,7 +79,7 @@ export const useJobs = () => {
       return response;
     } catch (err) {
       setError(err.message);
-      return { success: false, error: err.message };
+      throw err;
     }
   };
   const deleteSubcat = async (subData) => {
@@ -88,7 +89,7 @@ export const useJobs = () => {
       return response;
     } catch (err) {
       setError(err.message);
-      return { success: false, error: err.message };
+      throw err;
     }
   };
   const fetchJobsWithFilters = async (filters) => {
@@ -104,6 +105,7 @@ export const useJobs = () => {
     } catch (err) {
       setError(err.message);
       console.error("Error fetching jobs with filters:", err);
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -144,6 +146,7 @@ export const useJob = (id) => {
       } catch (err) {
         setError(err.message);
         console.error("Error fetching job:", err);
+        throw err;
       } finally {
         setLoading(false);
       }

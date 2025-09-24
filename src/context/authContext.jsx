@@ -55,13 +55,9 @@ export const AuthProvider = ({ children }) => {
     try {
       setError(null);
       const data = await authService.login(credentials);
-<<<<<<< HEAD
-      setUser(data);
-=======
       console.log(data, "Df");
       localStorage.setItem("accessToken", data.token);
       setUser(data.response);
->>>>>>> b448fba (finalcommit)
       return data;
     } catch (err) {
       setError(err.message);
@@ -94,14 +90,11 @@ export const AuthProvider = ({ children }) => {
       const response = await authService.logout();
       setUser(null);
       setError(null);
-<<<<<<< HEAD
-=======
       localStorage.removeItem("accessToken");
       localStorage.removeItem("tempContacts");
->>>>>>> b448fba (finalcommit)
       console.log(response);
     } catch (e) {
-      console.log(e);
+      throw e;
     }
   };
   // delete account
@@ -111,7 +104,7 @@ export const AuthProvider = ({ children }) => {
       setUser(null);
       setError(null);
     } catch (e) {
-      console.log(e);
+      throw e;
     }
   };
 
@@ -120,17 +113,17 @@ export const AuthProvider = ({ children }) => {
       const response = await authService.updateUser(userid, updateData);
       return response;
     } catch (e) {
-      console.log(e);
+      throw e;
     }
   };
 
   const getAllUsers = async () => {
     try {
       const response = await authService.getAllUsers();
-      console.log("users: " + response);
+      console.log("users: ", response);
       return response;
     } catch (e) {
-      console.log(e);
+      throw e;
     }
   };
   const getUser = async (id) => {
@@ -139,7 +132,7 @@ export const AuthProvider = ({ children }) => {
       console.log("user: ", response);
       return response;
     } catch (e) {
-      console.log(e);
+      throw e;
     }
   };
   const updateCompanyDetails = async (updateData) => {
@@ -147,7 +140,7 @@ export const AuthProvider = ({ children }) => {
       const response = await authService.updateCompanyDetails(updateData);
       return response;
     } catch (e) {
-      console.log(e);
+      throw e;
     }
   };
   const updatePass = async (userid, updateData) => {
@@ -155,15 +148,17 @@ export const AuthProvider = ({ children }) => {
       const response = await authService.updatePass(userid, updateData);
       return response;
     } catch (e) {
-      console.log(e);
+      throw e;
     }
   };
-  const verifyEmail = async (userid, updateData) => {
+  const verifyEmail = async (updateData) => {
     try {
-      const response = await authService.verifyEmail(userid, updateData);
+      const response = await authService.verifyEmail(updateData);
+      setUser(response.response);
+      localStorage.setItem("accessToken", response.token);
       return response;
     } catch (e) {
-      console.log(e);
+      throw e;
     }
   };
   const resendVerCode = async (verifyBody) => {
@@ -171,7 +166,7 @@ export const AuthProvider = ({ children }) => {
       const response = await authService.resendVerCode(verifyBody);
       return response;
     } catch (e) {
-      console.log(e);
+      throw e;
     }
   };
   const fetchUsersWithFilters = async (filters) => {
