@@ -87,31 +87,31 @@ class AuthService {
     }
   }
   async register(userData) {
-    return this.safeRequest(`/users/public`, {
+    return this.safeRequest(`/api/proxy/users/public`, {
       method: "POST",
       body: JSON.stringify(userData),
     });
   }
   async login(credentials) {
-    return this.safeRequest("/users/public/login", {
+    return this.safeRequest("/api/proxy/users/public/login", {
       method: "POST",
       body: JSON.stringify(credentials),
     });
   }
   async logout() {
-    return this.safeRequest("/users/logout");
+    return this.safeRequest("/api/proxy/users/logout");
   }
   async getCurrentUser() {
-    return this.safeRequest("/users/auth/me");
+    return this.safeRequest("/api/proxy/users/auth/me");
   }
   async getUser(userid) {
-    return this.safeRequest(`/users/${userid}`);
+    return this.safeRequest(`/api/proxy/users/${userid}`);
   }
   async getAllUsers() {
-    return this.safeRequest(`/users`);
+    return this.safeRequest(`/api/proxy/users`);
   }
   async verifyEmail(verifyBody) {
-    return this.safeRequest(`/users/public/verifyEmail`, {
+    return this.safeRequest(`/api/proxy/users/public/verifyEmail`, {
       method: "POST",
       body: JSON.stringify(verifyBody),
     });
@@ -119,49 +119,49 @@ class AuthService {
 
   async resendVerCode(email) {
     return this.safeRequest(
-      `/users/public/resendCode?email=${encodeURIComponent(email)}`
+      `/api/proxy/users/public/resendCode?email=${encodeURIComponent(email)}`
     );
   }
   async updateUser(userId, userData) {
-    return this.safeRequest(`/users/${userId}`, {
+    return this.safeRequest(`/api/proxy/users/${userId}`, {
       method: "PUT",
       body: JSON.stringify(userData),
     });
   }
   async updateCompanyDetails(userData) {
-    return this.safeRequest(`/company/updateDetails`, {
+    return this.safeRequest(`/api/proxy/company/updateDetails`, {
       method: "PUT",
       body: JSON.stringify(userData),
     });
   }
   async uploadPfp(userId, formData) {
-    return this.safeRequest(`/users/uploadImage/${userId}`, {
+    return this.safeRequest(`/api/proxy/users/uploadImage/${userId}`, {
       method: "POST",
       body: formData,
     });
   }
   async updatePass(userid, submitData) {
-    return this.safeRequest(`/users/updatePas/${userid}`, {
+    return this.safeRequest(`/api/proxy/users/updatePas/${userid}`, {
       method: "PUT",
       body: JSON.stringify(submitData),
     });
   }
   async deleteUser(userId) {
-    return this.safeRequest(`/users/${userId}`, {
+    return this.safeRequest(`/api/proxy/users/${userId}`, {
       method: "DELETE",
     });
   }
   async fetchUsersWithFilters(params = "") {
-    return this.safeRequest(`/users${params}`);
+    return this.safeRequest(`/api/proxy/users${params}`);
   }
   async deletePic(userId) {
-    return this.safeRequest(`/users/deletePfp/${userId}`, {
+    return this.safeRequest(`/api/proxy/users/deletePfp/${userId}`, {
       method: "DELETE",
     });
   }
   async refreshToken() {
     return this.request(
-      `/users/refresh`,
+      `/api/proxy/users/refresh`,
       {
         method: "POST",
         body: JSON.stringify({}),

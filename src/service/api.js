@@ -80,49 +80,49 @@ class ApiService {
   }
   // Job-related API calls
   async getAllJobs(params = "") {
-    return this.safeRequest(`/job${params}`);
+  return this.safeRequest(`/api/proxy/job${params}`);
   }
 
   async getJobById(id) {
-    return this.safeRequest(`/job/${id}`);
+  return this.safeRequest(`/api/proxy/job/${id}`);
   }
 
   async createJob(jobData) {
-    return this.safeRequest("/job/addJob", {
+  return this.safeRequest("/api/proxy/job/addJob", {
       method: "POST",
       body: JSON.stringify(jobData),
     });
   }
 
   async updateJobDetails(jobData) {
-    return this.safeRequest(`/job/updateJobDetails`, {
+  return this.safeRequest(`/api/proxy/job/updateJobDetails`, {
       method: "POST",
       body: JSON.stringify(jobData),
     });
   }
 
   async updateSubcatagory(subData) {
-    return this.safeRequest(`/job/updateSubcatagory`, {
+  return this.safeRequest(`/api/proxy/job/updateSubcatagory`, {
       method: "POST",
       body: JSON.stringify(subData),
     });
   }
 
   async addSubcatagory(subData) {
-    return this.safeRequest(`/job/addSubcatagories`, {
+  return this.safeRequest(`/api/proxy/job/addSubcatagories`, {
       method: "POST",
       body: JSON.stringify(subData),
     });
   }
 
   async deleteaJob(id) {
-    return this.safeRequest(`/job/${id}`, {
+  return this.safeRequest(`/api/proxy/job/${id}`, {
       method: "DELETE",
     });
   }
 
   async deleteSubcat(subData) {
-    return this.safeRequest(`/job/removeSubcatagories`, {
+  return this.safeRequest(`/api/proxy/job/removeSubcatagories`, {
       method: "POST",
       body: JSON.stringify(subData),
     });
@@ -131,43 +131,43 @@ class ApiService {
   // job post related api calls
 
   async getAllJobPostsCompany(params = "") {
-    return this.safeRequest(`/jobpost/company${params}`);
+  return this.safeRequest(`/api/proxy/jobpost/company${params}`);
   }
 
   async getJobPostById(id) {
-    return this.safeRequest(`/jobpost/${id}`);
+  return this.safeRequest(`/api/proxy/jobpost/${id}`);
   }
 
   async createJobPost(jobData) {
-    return this.safeRequest("/jobpost/create", {
+  return this.safeRequest("/api/proxy/jobpost/create", {
       method: "POST",
       body: JSON.stringify(jobData),
     });
   }
 
   async updateJobPost(jobData, id) {
-    return this.safeRequest(`/jobpost/update/${id}`, {
+  return this.safeRequest(`/api/proxy/jobpost/update/${id}`, {
       method: "POST",
       body: JSON.stringify(jobData),
     });
   }
 
   async deleteJobPost(id) {
-    return this.safeRequest(`/jobpost/${id}`, {
+  return this.safeRequest(`/api/proxy/jobpost/${id}`, {
       method: "DELETE",
     });
   }
 
   async getAllApplications(id) {
-    return this.safeRequest(`/jobpost/${id}/jobApplication`);
+  return this.safeRequest(`/api/proxy/jobpost/${id}/jobApplication`);
   }
 
   async getanApplication(postid, appid) {
-    return this.safeRequest(`/jobpost/${postid}/jobApplication/${appid}`);
+  return this.safeRequest(`/api/proxy/jobpost/${postid}/jobApplication/${appid}`);
   }
 
   async updateStatesofApplication(postid, appid, update) {
-    return this.safeRequest(`/jobpost/${postid}/jobApplication/${appid}`, {
+  return this.safeRequest(`/api/proxy/jobpost/${postid}/jobApplication/${appid}`, {
       method: "PUT",
       body: JSON.stringify(update),
     });
@@ -175,45 +175,45 @@ class ApiService {
 
   // Application-related API calls
   async getAllJobPosts(params = "") {
-    return this.safeRequest(`/jobApplication/jobpost${params}`);
+  return this.safeRequest(`/api/proxy/jobApplication/jobpost${params}`);
   }
   async getJobPost(id) {
-    return this.safeRequest(`/jobApplication/jobpost/${id}`);
+  return this.safeRequest(`/api/proxy/jobApplication/jobpost/${id}`);
   }
   async apply(application, postid) {
-    return this.safeRequest(`/jobApplication/${postid}/apply`, {
+  return this.safeRequest(`/api/proxy/jobApplication/${postid}/apply`, {
       method: "POST",
       body: application,
     });
   }
   async getMyApplications(params = "") {
-    return this.safeRequest(`/jobApplication${params}`);
+  return this.safeRequest(`/api/proxy/jobApplication${params}`);
   }
 
   async getApplicationById(appid) {
-    return this.safeRequest(`/jobApplication/${appid}`);
+  return this.safeRequest(`/api/proxy/jobApplication/${appid}`);
   }
 
   async deleteApplication(appid) {
-    return this.safeRequest(`/jobApplication/${appid}`, {
+  return this.safeRequest(`/api/proxy/jobApplication/${appid}`, {
       method: "DELETE",
     });
   }
 
   async updateApplication(updateData, appid) {
-    return this.safeRequest(`/jobApplication/update/${appid}`, {
+  return this.safeRequest(`/api/proxy/jobApplication/update/${appid}`, {
       method: "POST",
       body: JSON.stringify(updateData),
     });
   }
   async uploadCv(Cvdata) {
-    return this.safeRequest(`/users/agent/uploadCv`, {
+  return this.safeRequest(`/api/proxy/users/agent/uploadCv`, {
       method: "POST",
       body: JSON.stringify(Cvdata),
     });
   }
   async updateCv(Cvdata, userid) {
-    return this.safeRequest(`/users/agent/updateCv/${userid}`, {
+  return this.safeRequest(`/api/proxy/users/agent/updateCv/${userid}`, {
       method: "POST",
       body: JSON.stringify(Cvdata),
     });
@@ -221,7 +221,7 @@ class ApiService {
 
   async deleteCv(deleteid, deletename, userid) {
     return this.safeRequest(
-      `/users/agent/deleteCv/${deleteid}/user/${userid}`,
+      `/api/proxy/users/agent/deleteCv/${deleteid}/user/${userid}`,
       {
         method: "DELETE",
         body: deletename,
@@ -230,20 +230,20 @@ class ApiService {
   }
   // chat-related API calls
   async getAllChats(params = "") {
-    return this.safeRequest(`/chat/contacts${params}`);
+  return this.safeRequest(`/api/proxy/chat/contacts${params}`);
   }
 
   async deleteChat(id) {
-    return this.safeRequest(`/chat/delete/${id}`, {
+  return this.safeRequest(`/api/proxy/chat/delete/${id}`, {
       method: "DELETE",
     });
   }
 
   async fetchChatHistory(id) {
-    return this.safeRequest(`/chat/history/${id}`);
+  return this.safeRequest(`/api/proxy/chat/history/${id}`);
   }
   async getUsertoChat(id) {
-    return this.safeRequest(`/chat/${id}`);
+  return this.safeRequest(`/api/proxy/chat/${id}`);
   }
 }
 
