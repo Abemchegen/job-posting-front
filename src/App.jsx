@@ -23,7 +23,7 @@ import CompanyJobPostDetail from "./pages/CompanyPages/CompanyJobPostDetail";
 import CompanyApplicationDetail from "./pages/CompanyPages/CompanyApplicationDetail";
 import AgentCV from "./pages/AgentPages/AgentCV";
 import PostJob from "./pages/CompanyPages/PostJob";
-import EditPost from "./pages/CompanyPages/EditPOst";
+import EditPost from "./pages/CompanyPages/EditPost";
 import AdminNavLayout from "./components/AdminComponents/AdminNavLayout";
 import AdminHome from "./pages/AdminPages/AdminHome";
 import UserDetail from "./pages/AdminPages/UserDetail";
