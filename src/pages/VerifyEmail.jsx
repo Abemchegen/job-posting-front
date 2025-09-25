@@ -14,6 +14,7 @@ export default function VerifyEmail() {
   const [errors, setErrors] = useState({
     code: "",
     email: "",
+    server: "",
   });
   const [resend, setResend] = useState(null);
   const [resendLoading, setResendLoading] = useState(null);
@@ -47,12 +48,15 @@ export default function VerifyEmail() {
       };
       console.log(data);
       const res = await verifyEmail(data);
-      // setUser(res.response);
       console.log("verified!!", res);
       setVerified(true);
     } catch (e) {
       console.log(e);
       setVerified(false);
+      setErrors({
+        ...errors,
+        server: e.message,
+      });
     } finally {
       setVerifyLoading(false);
     }
@@ -155,6 +159,11 @@ export default function VerifyEmail() {
               </div>
             )}
           </div>
+          {errors.server && (
+            <div>
+              <p className="text-red-500">{errors.server}</p>
+            </div>
+          )}
         </div>
 
         <div className="flex space-x-5 w-full items-center">

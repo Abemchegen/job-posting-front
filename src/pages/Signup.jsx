@@ -269,7 +269,9 @@ export default function Signup() {
             </div>
           </form>
           {submitted === false && errors.serverError && (
-            <p className="text-red-500">{errors.serverError}</p>
+            <p className="text-red-400">
+              Register unsuccessful: {errors.serverError}
+            </p>
           )}
 
           <p className="text-center">

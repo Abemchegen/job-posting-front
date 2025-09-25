@@ -120,11 +120,13 @@ export default function Login() {
 
             {submitted == 2 && (
               <div>
-                <p className="text-red-500">Log not successfull</p>
+                <p className="text-red-500">
+                  Login not successfull :{" "}
+                  {error && <span className="text-red-500">{error}</span>}
+                </p>
               </div>
             )}
           </form>
-          {error && <div className="text-red-500">{error}</div>}
 
           <p className="text-center">
             Don't have an account?
