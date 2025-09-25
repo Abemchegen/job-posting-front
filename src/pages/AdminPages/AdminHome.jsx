@@ -29,7 +29,6 @@ export default function AdminHome() {
           const response = await getAllUsers();
           setusers(response.users);
         } catch (e) {
-          console.log(e);
         } finally {
           setLoading(false);
         }
@@ -47,7 +46,6 @@ export default function AdminHome() {
   }
   const applyFilters = async () => {
     if (checkFilterNull()) {
-      console.log("no filters selected !!!");
       setFilter(false);
       return;
     }
@@ -58,13 +56,12 @@ export default function AdminHome() {
       };
       const response = await fetchUsersWithFilters(filterData);
       setFilteredUsers(response.users);
-      console.log(response.users);
+
       setSelectedFilters({
         ...selectedFilters,
         request: true,
       });
     } catch (e) {
-      console.log(e);
     } finally {
       setFilter(false);
     }

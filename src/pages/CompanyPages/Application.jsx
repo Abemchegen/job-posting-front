@@ -17,9 +17,7 @@ export default function Application() {
         setLoading(true);
         const response = await getAllApplications(jobpostid);
         setApplications(response);
-        console.log(response);
       } catch (e) {
-        console.log(e);
       } finally {
         setLoading(false);
       }

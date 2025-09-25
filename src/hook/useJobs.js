@@ -13,7 +13,7 @@ export const useJobs = () => {
       setLoading(true);
       setError(null);
       const data = await apiService.getAllJobs();
-      console.log(data);
+
       setJobs(data || []);
     } catch (err) {
       setError(err.message);
@@ -53,7 +53,7 @@ export const useJobs = () => {
     try {
       const response = await apiService.updateSubcatagory(subData);
       await fetchJobs(); // Refresh the list
-      console.log(response);
+
       return response;
     } catch (err) {
       setError(err.message);
@@ -134,7 +134,6 @@ export const useJob = (id) => {
   useEffect(() => {
     const fetchJob = async () => {
       if (!id) {
-        console.log("no id");
         return;
       }
 

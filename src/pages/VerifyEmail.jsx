@@ -39,19 +39,17 @@ export default function VerifyEmail() {
     try {
       setVerifyLoading(true);
       if (!validate()) {
-        console.log("less than 6 digits");
         return;
       }
       const data = {
         code: verifyData.code.trim(),
         email: verifyData.email.trim(),
       };
-      console.log(data);
+
       const res = await verifyEmail(data);
-      console.log("verified!!", res);
+
       setVerified(true);
     } catch (e) {
-      console.log(e);
       setVerified(false);
       setErrors({
         ...errors,
@@ -74,7 +72,6 @@ export default function VerifyEmail() {
       await resendVerCode(verifyData.email);
       setResend(true);
     } catch (e) {
-      console.log(e);
       setResend(false);
     } finally {
       setResendLoading(false);

@@ -13,7 +13,7 @@ export const useJobPosts = () => {
       setLoading(true);
       setError(null);
       const data = await apiService.getAllJobPostsCompany();
-      console.log(data);
+
       setJobPosts(data || []);
       return data;
     } catch (err) {
@@ -152,14 +152,13 @@ export const useJobPost = (id) => {
   useEffect(() => {
     const fetchJobPost = async () => {
       if (!id) {
-        console.log("no id");
         return;
       }
       try {
         setLoading(true);
         setError(null);
         const data = await apiService.getJobPostById(id);
-        console.log(data);
+
         setJobPost(data);
       } catch (err) {
         setError(err.message);

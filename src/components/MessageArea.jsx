@@ -58,7 +58,6 @@ const MessageArea = ({ reciever }) => {
         recieverName: reciever.email,
       }));
       handleSelectChat(reciever.id);
-      console.log(reciever);
     }
   }, [reciever]);
 
@@ -93,20 +92,16 @@ const MessageArea = ({ reciever }) => {
   const fetchHistory = async (id) => {
     try {
       const response = await fetchChatHistory(id);
-      console.log(response, "jhkjhkhkjh");
+
       setChatMessages((prev) => {
         return {
           ...prev,
           [id]: response,
         };
       });
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (e) {}
   };
-  useEffect(() => {
-    console.log("Updated chatMessages:", chatMessages, selectedContactId);
-  }, [chatMessages, selectedContactId]);
+  useEffect(() => {}, [chatMessages, selectedContactId]);
 
   const sendMessage = () => {
     if (
@@ -125,7 +120,7 @@ const MessageArea = ({ reciever }) => {
         receiverID: data.receiverID,
         senderID: data.senderID,
       };
-      console.log(chatMessage);
+
       stompClient.send("/app/private-message", {}, JSON.stringify(chatMessage));
       setData({
         ...data,
@@ -140,7 +135,7 @@ const MessageArea = ({ reciever }) => {
     client.connect({}, () => {
       client.subscribe("/user/" + user.email + "/private", (message) => {
         const recievedMessage = JSON.parse(message.body);
-        console.log("Recieved messages", recievedMessage);
+
         setChatMessages((prev) => {
           const contactID =
             recievedMessage.senderID === user.id

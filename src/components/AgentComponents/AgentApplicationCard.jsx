@@ -66,10 +66,9 @@ export default function AgentApplicationCard({
       const response = await deleteApplication(
         applicationItem.jobApplicationID
       );
-      console.log(response);
+
       SetDeleteProccede(true);
     } catch (e) {
-      console.log(e);
     } finally {
       setDeleteApp(false);
       setLoading(false);

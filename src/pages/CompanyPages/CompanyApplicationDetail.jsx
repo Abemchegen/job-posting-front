@@ -16,10 +16,9 @@ export default function CompanyApplicationDetail() {
       try {
         setLoading(true);
         const response = await getanApplication(pid, aid);
-        console.log(response, "application here ");
+
         setApplication(response);
       } catch (e) {
-        console.log(e);
       } finally {
         setLoading(false);
       }

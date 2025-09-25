@@ -46,10 +46,9 @@ export default function MyApplications() {
       try {
         setLoading(true);
         const response = await getMyApplications();
-        console.log(response);
+
         setApplications(response);
       } catch (e) {
-        console.log(e);
       } finally {
         setLoading(false);
       }
@@ -80,7 +79,6 @@ export default function MyApplications() {
   }
   const applyFilters = async () => {
     if (checkFilterNull()) {
-      console.log("no filters selected !!!");
       setFilter(false);
       return;
     }
@@ -92,17 +90,15 @@ export default function MyApplications() {
         status: selectedFilters.status.trim(),
         search: selectedFilters.search.trim(),
       };
-      console.log(filterData);
 
       const response = await fetchApplicationsWithFilters(filterData);
-      console.log(response);
+
       setFilteredApplications(response);
       setSelectedFilters({
         ...selectedFilters,
         request: true,
       });
     } catch (e) {
-      console.log(e);
     } finally {
       setFilter(false);
     }

@@ -49,7 +49,6 @@ export default function AddJob() {
       await createJob(submitData);
       setJobAdded(true);
     } catch (e) {
-      console.log(e);
     } finally {
       setLoading(false);
     }

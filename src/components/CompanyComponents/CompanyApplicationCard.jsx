@@ -23,7 +23,6 @@ export default function CompanyApplicationCard({
   applicationItem,
   detail = false,
 }) {
-  console.log(applicationItem, "fsdklfjol");
   const educationConfig = [
     { key: "level", label: "Education" },
     { key: "institution", label: "Institution" },
@@ -78,10 +77,7 @@ export default function CompanyApplicationCard({
         applicationItem.jobApplicationID,
         update
       );
-      console.log(response, "status");
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (e) {}
   };
 
   return (

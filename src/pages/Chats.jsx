@@ -21,7 +21,7 @@ export default function Chats() {
           const tempContacts =
             JSON.parse(localStorage.getItem("tempContacts")) || [];
           let exists = false;
-          console.log("person", res);
+
           if (tempContacts.length > 0) {
             exists = tempContacts.some((c) => c.id === res.id);
           }
@@ -33,7 +33,6 @@ export default function Chats() {
           }
         }
       } catch (e) {
-        console.log(e);
       } finally {
         setLoading(false);
       }

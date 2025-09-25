@@ -8,9 +8,7 @@ export default function Sidebar({ active, setactive, role }) {
     try {
       await logout();
       navigate("/");
-    } catch (e) {
-      console.log(e.message());
-    }
+    } catch (e) {}
   };
   return (
     <div>

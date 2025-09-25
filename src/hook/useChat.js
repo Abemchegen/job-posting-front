@@ -111,14 +111,13 @@ export const useChat = (id) => {
   useEffect(() => {
     const fetchChatHistory = async () => {
       if (!id) {
-        console.log("no id");
         return;
       }
       try {
         setLoading(true);
         setError(null);
         const data = await apiService.fetchChatHistory(id);
-        console.log(data);
+
         setChat(data || []);
       } catch (err) {
         setError(err.message);

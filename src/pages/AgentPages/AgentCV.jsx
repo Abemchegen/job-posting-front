@@ -62,8 +62,6 @@ export default function AgentCV() {
         (user.cv.resume.project && user.cv.resume.project.length > 0 ? 1 : 0);
 
       setPer(Math.round((filledSections / 4) * 100));
-
-      console.log(filledSections, per);
     }
   }, [user]);
 
@@ -109,15 +107,13 @@ export default function AgentCV() {
       } else if (selectedItem.label == "Award") {
         uploadData["award"] = editFormData;
       }
-      console.log(uploadData);
+
       const response = await updateCv(uploadData);
       setUser({
         ...user,
         cv: response.cv,
       });
-      console.log(response);
     } catch (e) {
-      console.log(e);
     } finally {
       setEdit(false);
       setSelectedItem(null);
@@ -137,15 +133,13 @@ export default function AgentCV() {
       } else if (selectedItem.label == "Award") {
         deletename = "award";
       }
-      console.log(deletename, selectedItem.id);
+
       const response = await deleteCv(selectedItem.id, deletename);
       setUser({
         ...user,
         cv: response.cv,
       });
-      console.log(response);
     } catch (e) {
-      console.log(e);
     } finally {
       setDeleteEle(false);
       setSelectedItem(null);
@@ -165,15 +159,13 @@ export default function AgentCV() {
       } else if (selectedItem.label == "Award") {
         uploadData["award"] = [addFormData];
       }
-      console.log(uploadData, user);
+
       const response = await uploadCv(uploadData);
       setUser({
         ...user,
         cv: response.cv,
       });
-      console.log(response);
     } catch (e) {
-      console.log(e);
     } finally {
       setAdd(false);
       setAddFormData(null);

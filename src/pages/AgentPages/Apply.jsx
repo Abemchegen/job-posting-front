@@ -78,7 +78,7 @@ export default function Apply() {
         appData.append("file", formData.cv);
       }
       const response = await apply(appData, jobPost.id);
-      console.log(response);
+
       setsubmitted(1);
     } catch (error) {
       console.error("Error submitting", error);

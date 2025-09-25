@@ -49,7 +49,6 @@ export default function JobCard({ detail = false, jobItem }) {
       setAddValues({ name: "", description: "" });
       setAddSub(false);
     } catch (e) {
-      console.log(e);
     } finally {
     }
   };
@@ -67,7 +66,6 @@ export default function JobCard({ detail = false, jobItem }) {
       const response = await updateSubcatagory(subData);
       setJob(response);
     } catch (e) {
-      console.log(e);
     } finally {
       setEditingIdx(null);
     }
@@ -86,7 +84,6 @@ export default function JobCard({ detail = false, jobItem }) {
       const response = await deleteSubcat(deleteData);
       setJob(response);
     } catch (e) {
-      console.log(e);
     } finally {
       setDeleteProccede(null);
     }
@@ -103,7 +100,6 @@ export default function JobCard({ detail = false, jobItem }) {
       const response = await updateJobDetails(updateData);
       setJob(response);
     } catch (e) {
-      console.log(e);
     } finally {
       setEditJob(false);
     }
@@ -114,7 +110,6 @@ export default function JobCard({ detail = false, jobItem }) {
       const response = await deleteaJob(job.id);
       setJobDeleted(true);
     } catch (e) {
-      console.log(e);
     } finally {
       setDeleteJob(false);
     }

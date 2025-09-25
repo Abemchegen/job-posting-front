@@ -34,7 +34,6 @@ class AuthService {
       const response = await fetch(url, config);
 
       if (!response.ok) {
-        console.log("Response", response);
         const contentType = response.headers.get("content-type");
         const error = {
           status: response.status,
@@ -47,7 +46,7 @@ class AuthService {
           const errorText = await response.text();
           error.message = errorText;
         }
-        console.log(error);
+
         throw error;
       }
       const contentType = response.headers.get("content-type");

@@ -19,7 +19,7 @@ export default function AgentJobPostCard({ jobPost, detail = false }) {
     applied: jobPost.applied,
     applicationid: jobPost.applicationid,
   });
-  console.log(jobPostData.applied);
+
   const navigate = useNavigate();
   return (
     <div className="w-full flex flex-col items-center">

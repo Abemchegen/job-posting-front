@@ -57,9 +57,7 @@ export default function AgentAccount() {
     try {
       await deleteAccount(user.id);
       setDeleteAccountProccede(true);
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (e) {}
   };
   const submitform = async (e) => {
     e.preventDefault();
@@ -85,9 +83,7 @@ export default function AgentAccount() {
         ...response,
       });
       setEdit(false);
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (e) {}
   };
   function clearinput() {
     setUserData({
@@ -109,13 +105,12 @@ export default function AgentAccount() {
       try {
         setPfpLoading(true);
         const url = await uploadPfp(user.id, formData);
-        console.log(url);
+
         setUser({
           ...user,
           pfp: url,
         });
       } catch (e) {
-        console.log(e);
       } finally {
         setChangePfp(false);
         setPfpLoading(false);
@@ -132,7 +127,6 @@ export default function AgentAccount() {
         pfp: "",
       });
     } catch (e) {
-      console.log(e);
     } finally {
       setPfpLoading(false);
       setDeletePfp(false);

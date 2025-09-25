@@ -88,7 +88,6 @@ export default function PostJobComp({
       }));
       setCustomJob({ name: "", description: "" });
     } catch (e) {
-      console.log(e);
     } finally {
       setShowCustomJob(false);
     }
@@ -113,7 +112,6 @@ export default function PostJobComp({
       }));
       setCustomSub({ name: "", desc: "" });
     } catch (e) {
-      console.log(e);
     } finally {
       setShowCustomSub(false);
     }
@@ -133,13 +131,12 @@ export default function PostJobComp({
       if (jobPost.subcat != "none") {
         jobData["subcatagoryName"] = jobPost.subcat.trim();
       }
-      console.log(jobData);
+
       await createJobPost(jobData);
       setTimeout(() => {
         navigate("/home/company");
       }, 1000);
     } catch (e) {
-      console.log(e);
     } finally {
       setLoading(false);
     }
@@ -161,7 +158,6 @@ export default function PostJobComp({
       const response = await updateJobPost(submitData, Post.id);
       updated(response);
     } catch (e) {
-      console.log(e);
     } finally {
       EditPost(false);
       setLoading(false);

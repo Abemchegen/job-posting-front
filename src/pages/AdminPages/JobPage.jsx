@@ -19,7 +19,6 @@ export default function JobPage() {
   }
   const applyFilters = async () => {
     if (checkFilterNull()) {
-      console.log("no filters selected !!!");
       setFilter(false);
       return;
     }
@@ -29,13 +28,12 @@ export default function JobPage() {
       };
       const response = await fetchJobsWithFilters(filterData);
       setFilteredJobs(response);
-      console.log(response);
+
       setSelectedFilters({
         ...selectedFilters,
         request: true,
       });
     } catch (e) {
-      console.log(e);
     } finally {
       setFilter(false);
     }

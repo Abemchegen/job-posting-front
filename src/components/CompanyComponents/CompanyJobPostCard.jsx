@@ -33,7 +33,6 @@ export default function CompanyJobPostCard({ jobPost, detail = false }) {
   }, [updatedJobpost]);
   const { deleteJobPost } = useJobPosts();
 
-  console.log("jobpostdata", jobPostData);
   const navigate = useNavigate();
   const [editPost, setEditPost] = useState(false);
   const [deleteProccede, setDeleteProccede] = useState(false);
@@ -41,10 +40,9 @@ export default function CompanyJobPostCard({ jobPost, detail = false }) {
   const handleDeletePost = async () => {
     try {
       const response = deleteJobPost(jobPostData.id);
-      console.log(response);
+
       setDeleteProccede(true);
     } catch (e) {
-      console.log(e);
     } finally {
       setDeletePost(false);
     }

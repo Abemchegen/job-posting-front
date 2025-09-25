@@ -59,9 +59,7 @@ export default function CompanyAccount() {
     try {
       await deleteAccount(user.id);
       setDeleteAccountProccede(true);
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (e) {}
   };
 
   const submitform = async (e) => {
@@ -96,8 +94,6 @@ export default function CompanyAccount() {
         companyreponse = await updateCompanyDetails(updateCompanyData);
       }
 
-      console.log(accountresponse, companyreponse);
-
       setUser({
         ...user,
         ...accountresponse,
@@ -106,9 +102,7 @@ export default function CompanyAccount() {
       });
 
       setEdit(false);
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (e) {}
   };
   function clearinput() {
     setUserData({
@@ -133,13 +127,12 @@ export default function CompanyAccount() {
         setPfpLoading(true);
 
         const url = await uploadPfp(user.id, formData);
-        console.log(url);
+
         setUser({
           ...user,
           pfp: url,
         });
       } catch (e) {
-        console.log(e);
       } finally {
         setChangePfp(false);
         setPfpLoading(false);
@@ -156,7 +149,6 @@ export default function CompanyAccount() {
         pfp: "",
       });
     } catch (e) {
-      console.log(e);
     } finally {
       setPfpLoading(false);
       setDeletePfp(false);

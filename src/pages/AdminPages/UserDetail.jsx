@@ -18,7 +18,6 @@ export default function UserDetail() {
         const response = await getUser(id);
         setUser(response);
       } catch (e) {
-        console.log(e);
       } finally {
         setLoading(false);
       }

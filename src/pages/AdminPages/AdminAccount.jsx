@@ -46,9 +46,7 @@ export default function AdminAccount() {
     try {
       await deleteAccount(user.id);
       setDeleteAccountProccede(true);
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (e) {}
   };
 
   useEffect(() => {
@@ -79,9 +77,7 @@ export default function AdminAccount() {
       const response = await updateAccount(user.id, updateData);
       setUser({ ...user, ...response });
       setEdit(false);
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (e) {}
   };
   function clearinput() {
     setUserData({
@@ -104,13 +100,12 @@ export default function AdminAccount() {
         setPfpLoading(true);
 
         const url = await uploadPfp(user.id, formData);
-        console.log(url);
+
         setUser({
           ...user,
           pfp: url,
         });
       } catch (e) {
-        console.log(e);
       } finally {
         setChangePfp(false);
         setPfpLoading(false);
@@ -128,7 +123,6 @@ export default function AdminAccount() {
         pfp: "",
       });
     } catch (e) {
-      console.log(e);
     } finally {
       setPfpLoading(false);
       setDeletePfp(false);

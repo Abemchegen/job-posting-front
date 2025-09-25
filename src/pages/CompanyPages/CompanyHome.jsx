@@ -55,7 +55,6 @@ export default function CompanyHome() {
 
   const applyFilters = async () => {
     if (checkFilterNull()) {
-      console.log("no filters selected !!!");
       setFilter(false);
       return;
     }
@@ -66,17 +65,15 @@ export default function CompanyHome() {
         sort: selectedFilters.sortResult.trim(),
         search: selectedFilters.search.trim(),
       };
-      console.log(filterData);
 
       const response = await fetchJobsWithFilters(filterData);
       setFilteredPosts(response);
-      console.log(response);
+
       setSelectedFilters({
         ...selectedFilters,
         request: true,
       });
     } catch (e) {
-      console.log(e);
     } finally {
       setFilter(false);
     }

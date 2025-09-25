@@ -13,7 +13,7 @@ export const useApplications = () => {
       setLoading(true);
       setError(null);
       const data = await apiService.getAllJobPosts();
-      console.log(data);
+
       setJobPosts(data || []);
     } catch (err) {
       setError(err.message);
@@ -205,14 +205,13 @@ export const useApplication = (id) => {
   useEffect(() => {
     const fetchApplication = async () => {
       if (!id) {
-        console.log("no id");
         return;
       }
       try {
         setLoading(true);
         setError(null);
         const data = await apiService.getApplicationById(id);
-        console.log(data);
+
         setApplication(data);
       } catch (err) {
         setError(err.message);
@@ -235,14 +234,13 @@ export const useAgentJobPost = (id) => {
   useEffect(() => {
     const fetchJobPost = async () => {
       if (!id) {
-        console.log("no id");
         return;
       }
       try {
         setLoading(true);
         setError(null);
         const data = await apiService.getJobPost(id);
-        console.log(data);
+
         setJobPost(data);
       } catch (err) {
         setError(err.message);

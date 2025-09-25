@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
       setLoading(true);
       setError(null);
       const userData = await authService.getCurrentUser();
-      console.log("Server verification successful:", userData);
+
       setUser(userData);
     } catch (err) {
       setError(err.message);
@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }) => {
     try {
       setError(null);
       const data = await authService.login(credentials);
-      console.log(data, "Df");
+
       localStorage.setItem("accessToken", data.token);
       setUser(data.response);
       return data;
@@ -92,7 +92,6 @@ export const AuthProvider = ({ children }) => {
       setError(null);
       localStorage.removeItem("accessToken");
       localStorage.removeItem("tempContacts");
-      console.log(response);
     } catch (e) {
       throw e;
     }
@@ -120,7 +119,7 @@ export const AuthProvider = ({ children }) => {
   const getAllUsers = async () => {
     try {
       const response = await authService.getAllUsers();
-      console.log("users: ", response);
+
       return response;
     } catch (e) {
       throw e;
@@ -129,7 +128,7 @@ export const AuthProvider = ({ children }) => {
   const getUser = async (id) => {
     try {
       const response = await authService.getUser(id);
-      console.log("user: ", response);
+
       return response;
     } catch (e) {
       throw e;
