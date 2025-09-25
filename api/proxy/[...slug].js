@@ -3,6 +3,7 @@ import fetch from "node-fetch";
 export default async function handler(req, res) {
   const { slug } = req.query;
   const backendUrl = `${process.env.API_BASE_URL}/${slug.join("/")}`;
+  console.log(backendUrl, "SDfsdfsf");
 
   // Prepare headers, remove problematic ones
   const headers = { ...req.headers };
