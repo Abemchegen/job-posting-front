@@ -1,5 +1,5 @@
 import authService from "../service/auth";
-const baseUrl = process.env.VITE_API_BASE_URL;
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 class ApiService {
   async request(endpoint, options = {}) {
