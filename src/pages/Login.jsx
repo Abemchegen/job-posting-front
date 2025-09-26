@@ -82,7 +82,7 @@ export default function Login() {
   };
   return (
     <div className="h-full bg-muted">
-      <div className="flex justify-center mt-15 ">
+  <div className="flex justify-center mt-16 ">
         <div className="max-w-md w-full bg-white mt-20  p-7 shadow-sm rounded-2xl">
           {submitted == 1 && (
             <div className="flex justify-end font-bold text-gray-500">

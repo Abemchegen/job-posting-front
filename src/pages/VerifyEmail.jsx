@@ -97,7 +97,7 @@ export default function VerifyEmail() {
   }, [user, verified, navigate]);
 
   return (
-    <div className="flex items-center mt-25 justify-center w-full">
+    <div className="flex items-center mt-24 justify-center w-full">
       <div className="bg-white text-gray-600 max-w-md p-5 space-y-3 flex flex-col rounded-lg shadow-lg w-full">
         <h1 className="font-bold text-center text-xl ">
           Please verify your email

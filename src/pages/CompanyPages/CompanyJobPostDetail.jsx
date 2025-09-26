@@ -10,7 +10,7 @@ export default function CompanyJobPostDetail() {
 
   return (
     <div>
-      <div className="h-screen mt-15">
+      <div className="h-screen mt-16">
         {!jobPost && !loading && (
           <div className="w-full">
             <p className="mt-8 font-semibold text-gray-500">
@@ -31,7 +31,7 @@ export default function CompanyJobPostDetail() {
               <Link to={"/home/company"}>Back to Job Posts</Link>
             </div>
             <div className="flex flex-col items-center">
-              <div className="w-9/10 max-w-4xl">
+              <div className="w-10/12 max-w-4xl">
                 <CompanyJobPostCard jobPost={jobPost} detail={true} />
               </div>
             </div>

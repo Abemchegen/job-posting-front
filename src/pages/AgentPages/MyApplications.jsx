@@ -117,7 +117,7 @@ export default function MyApplications() {
   };
 
   return (
-    <div className="flex w-full flex-col justify-center mt-15 items-center">
+  <div className="flex w-full flex-col justify-center mt-16 items-center">
       <div className="w-full flex flex-col items-center">
         <p className="text-gray-500 text-lg mb-5">
           Search applications you have made so far by using keywords.

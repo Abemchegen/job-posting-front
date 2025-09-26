@@ -2,8 +2,8 @@ import LandingType from "../components/LandingType";
 export default function RegisterType() {
   return (
     <div className="w-full h-full">
-      <div className="w-full min-h-screen flex flex-col mt-5 items-center bg-brand-dark text-white">
-        <h1 className="text-3xl font-bold mt-15">
+  <div className="w-full min-h-screen flex flex-col mt-5 items-center bg-brand-dark text-white">
+  <h1 className="text-3xl font-bold mt-16">
           Start your journey with us!
         </h1>
         <div className="w-full flex justify-center mb-3">

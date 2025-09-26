@@ -92,8 +92,8 @@ export default function CompanyHome() {
   };
   return (
     <div>
-      <div className=" space-y-4 bg-brand-dark flex flex-col mt-15 mb-15  items-center text-white">
-        <h1 className="text-4xl text-center mt-18 mb-9 font-bold">
+  <div className=" space-y-4 bg-brand-dark flex flex-col mt-16 mb-16  items-center text-white">
+  <h1 className="text-4xl text-center mt-20 mb-9 font-bold">
           Job Posts made by your company
         </h1>
         <p className="text-center text-xl mb-10">
@@ -133,7 +133,7 @@ export default function CompanyHome() {
             onClick={() => setFilter(!filter)}
           />
           {filter && (
-            <div className="absolute z-20 left-1/2 -translate-x-1/2 top-full mt-2 rounded-xl shadow-sm bg-white p-5 w-110 ">
+            <div className="absolute z-20 left-1/2 -translate-x-1/2 top-full mt-2 rounded-xl shadow-sm bg-white p-5 w-full max-w-5xl ">
               <div className="flex mb-5 justify-between">
                 <p className="text-2xl text-center">Filters</p>
                 <XIcon

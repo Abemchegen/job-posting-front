@@ -12,7 +12,7 @@ export default function AdminSidebarLayout() {
           active={sidebarExpanded}
           setactive={setSidebarExpanded}
         />
-        <div className={`flex-1 mt-15 ${sidebarExpanded ? "ml-55" : "ml-15"}`}>
+  <div className={`flex-1 mt-16 ${sidebarExpanded ? "ml-56" : "ml-16"}`}>
           <Outlet />
         </div>
       </div>

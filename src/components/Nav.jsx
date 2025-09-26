@@ -7,7 +7,7 @@ export default function Nav() {
   const navigate = useNavigate();
   const { isAuthenticated, user, loading } = useAuth();
   return (
-    <nav className="bg-muted flex h-15 z-10 px-2 w-full justify-between items-center fixed top-0 left-0 space-x-3">
+    <nav className="bg-muted flex h-16 z-10 px-2 w-full justify-between items-center fixed top-0 left-0 space-x-3">
       <div className="">
         {isAuthenticated && user.role == "AGENT" && (
           <div>
@@ -45,10 +45,10 @@ export default function Nav() {
       {isAuthenticated && (
         <div className="flex mr-10">
           {user.role == "AGENT" && (
-            <div className="flex justify-between w-90">
+            <div className="flex justify-between w-80">
               <div>
                 <Link
-                  className="hover:text-brand hover:font-bold w-10"
+                  className="hover:text-brand hover:font-bold w-12"
                   to="/home/agent"
                 >
                   Home
@@ -56,7 +56,7 @@ export default function Nav() {
               </div>{" "}
               <div>
                 <Link
-                  className="hover:text-brand hover:font-bold w-31"
+                  className="hover:text-brand hover:font-bold w-32"
                   to="/myapplications"
                 >
                   My Applications
@@ -65,7 +65,7 @@ export default function Nav() {
               <div>
                 {" "}
                 <Link
-                  className="hover:text-brand hover:font-bold w-10"
+                  className="hover:text-brand hover:font-bold w-12"
                   to="myChats"
                 >
                   Chat
@@ -74,7 +74,7 @@ export default function Nav() {
               <div>
                 {" "}
                 <Link
-                  className="hover:text-brand hover:font-bold w-10"
+                  className="hover:text-brand hover:font-bold w-12"
                   to={`/account/agent`}
                 >
                   Account
@@ -83,7 +83,7 @@ export default function Nav() {
             </div>
           )}
           {user.role == "COMPANY" && (
-            <div className="flex justify-between w-90">
+            <div className="flex justify-between w-80">
               <div>
                 <Link
                   className="hover:text-brand hover:font-bold "
@@ -116,10 +116,10 @@ export default function Nav() {
             </div>
           )}
           {user.role == "ADMIN" && (
-            <div className="flex justify-between w-90">
+            <div className="flex justify-between w-80">
               <div>
                 <Link
-                  className="hover:text-brand hover:font-bold w-10"
+                  className="hover:text-brand hover:font-bold w-12"
                   to="/home/admin"
                 >
                   Home
@@ -127,7 +127,7 @@ export default function Nav() {
               </div>
               <div>
                 <Link
-                  className="hover:text-brand hover:font-bold w-10"
+                  className="hover:text-brand hover:font-bold w-12"
                   to="/pageJob"
                 >
                   Jobs
@@ -136,7 +136,7 @@ export default function Nav() {
               <div>
                 {" "}
                 <Link
-                  className="hover:text-brand hover:font-bold w-18"
+                  className="hover:text-brand hover:font-bold w-20"
                   to="/addjob"
                 >
                   Add Job
@@ -145,7 +145,7 @@ export default function Nav() {
               <div>
                 {" "}
                 <Link
-                  className="hover:text-brand hover:font-bold w-10"
+                  className="hover:text-brand hover:font-bold w-12"
                   to={`/account/admin`}
                 >
                   Account

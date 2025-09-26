@@ -160,13 +160,13 @@ export default function CompanyAccount() {
   return (
     <div className="w-full">
       {loading && (
-        <div className="flex justify-center items-center mt-50 space-x-5">
+        <div className="flex justify-center items-center mt-48 space-x-5">
           <Spinner />
           <p className="text-xl font-semibold text-gray-500">Loading...</p>
         </div>
       )}
       {!loading && !user && (
-        <div className="flex justify-center items-center mt-50 space-x-5">
+        <div className="flex justify-center items-center mt-48 space-x-5">
           <div>Can't fetch your data at the moment...</div>
         </div>
       )}
@@ -180,7 +180,7 @@ export default function CompanyAccount() {
                     <div className="mr-3" onClick={() => {}}>
                       {!pfpLoading && userData.pfp && (
                         <div
-                          className="rounded-full w-30 h-30 flex flex-col items-center justify-center  cursor-pointer transition"
+                          className="rounded-full w-32 h-32 flex flex-col items-center justify-center  cursor-pointer transition"
                           onClick={() => {
                             setChangePfp(true);
                           }}
@@ -195,7 +195,7 @@ export default function CompanyAccount() {
                       )}
                       {!pfpLoading && !userData.pfp && (
                         <div
-                          className="rounded-full border-2 border-dashed border-gray-300 w-30 h-30 flex flex-col items-center justify-center bg-gray-50 cursor-pointer hover:bg-muted transition"
+                          className="rounded-full border-2 border-dashed border-gray-300 w-32 h-32 flex flex-col items-center justify-center bg-gray-50 cursor-pointer hover:bg-muted transition"
                           onClick={() => {
                             document.getElementById("pfp").click();
                           }}
@@ -214,7 +214,7 @@ export default function CompanyAccount() {
                         </div>
                       )}
                       {pfpLoading && (
-                        <div className="rounded-full border-2 border-dashed border-gray-100 w-30 h-30 flex flex-col items-center justify-center bg-gray-50 cursor-pointer hover:bg-muted transition">
+                        <div className="rounded-full border-2 border-dashed border-gray-100 w-32 h-32 flex flex-col items-center justify-center bg-gray-50 cursor-pointer hover:bg-muted transition">
                           <Spinner />
                         </div>
                       )}
@@ -370,7 +370,7 @@ export default function CompanyAccount() {
 
                     {edit && (
                       <div className="flex justify-center space-x-5 mt-5">
-                        <div className="w-19">
+                        <div className="w-20">
                           <Button
                             onClick={() => {
                               setEdit(false);
@@ -380,7 +380,7 @@ export default function CompanyAccount() {
                             variant="dark"
                           ></Button>
                         </div>
-                        <div className="w-19">
+                        <div className="w-20">
                           <Button type="submit" text="Save"></Button>
                         </div>
                       </div>
@@ -403,7 +403,7 @@ export default function CompanyAccount() {
                   </div>
 
                   <div className="w-full flex flex-col items-center">
-                    <div className="mb-15">
+                    <div className="mb-16">
                       <CloudImage
                         className="rounded-full"
                         publicId={userData.pfp}
@@ -486,7 +486,7 @@ export default function CompanyAccount() {
           )}
           {deleteAccountConform && (
             <div className="flex fixed inset-0 z-100 items-center justify-center">
-              <div className="w-4/7 bg-white shadow-2xl rounded-2xl">
+              <div className="w-7/12 bg-white shadow-2xl rounded-2xl">
                 {!deleteAccountProccede && (
                   <div className="flex flex-col items-center mt-5 rounded-xl p-6 ">
                     <h1 className="text-2xl font-bold mb-3">

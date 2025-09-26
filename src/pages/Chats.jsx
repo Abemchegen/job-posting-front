@@ -41,7 +41,7 @@ export default function Chats() {
   }, [id]);
 
   return (
-    <div className="mt-15 flex justify-center w-full">
+  <div className="mt-16 flex justify-center w-full">
       {loading && <div>Loading...</div>}
       {!loading && <MessageArea reciever={reciever} />}
     </div>

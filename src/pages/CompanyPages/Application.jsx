@@ -25,7 +25,7 @@ export default function Application() {
     fetchApplications();
   }, [jobpostid]);
   return (
-    <div className="flex w-full mt-15 justify-center">
+  <div className="flex w-full mt-16 justify-center">
       {applications.length == 0 && !loading && (
         <div className="w-full flex justify-center">
           <p className="mt-8 font-semibold text-gray-500">

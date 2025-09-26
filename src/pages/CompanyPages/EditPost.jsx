@@ -67,7 +67,7 @@ export default function EditPost() {
               onSubmit={handlePost}
               className="flex flex-col items-center w-full"
             >
-              <div className="w-8/9">
+              <div className="w-10/12">
                 <div className="flex flex-col my-5">
                   <label className="m-3 font-semibold">Job Description:</label>
                   <textarea
@@ -165,7 +165,7 @@ export default function EditPost() {
                 </div>
               </div>
               <div className="flex space-x-4">
-                <div className="w-30">
+                <div className="w-32">
                   <Button
                     text={"Cancle"}
                     variant="dark"
@@ -174,7 +174,7 @@ export default function EditPost() {
                     }
                   />
                 </div>
-                <div className="w-30">
+                <div className="w-32">
                   <Button type="submit" text={"Save"} />
                 </div>
               </div>

@@ -23,7 +23,7 @@ export default function Home() {
 
   return (
     <div className="w-full bg-muted">
-      <div className="flex flex-col w-full min-h-screen items-center mt-15 bg-brand-dark text-muted mb-20 py-5">
+  <div className="flex flex-col w-full min-h-screen items-center mt-16 bg-brand-dark text-muted mb-20 py-5">
         <h1 className="text-5xl mt-10 font-bold">Welcome to Sira!</h1>
         <div className="w-full flex justify-center">
           <div className="flex flex-col md:flex-row items-center  w-full justify-center">
@@ -69,7 +69,7 @@ export default function Home() {
           />
         </div>
       </div>
-      <div className="flex w-full justify-center  flex-col items-center mt-15">
+  <div className="flex w-full justify-center  flex-col items-center mt-16">
         <p className="text-gray-500  text-2xl mb-10 ">
           We make job posting efficient and simple
         </p>
