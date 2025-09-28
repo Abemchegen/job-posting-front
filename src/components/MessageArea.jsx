@@ -128,9 +128,10 @@ const MessageArea = ({ reciever }) => {
       });
     }
   };
+  const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
-    const socket = new SockJS("http://localhost:8080/ms");
+    const socket = new SockJS(baseUrl + "/ms");
     const client = Stomp.over(socket);
     client.connect({}, () => {
       client.subscribe("/user/" + user.email + "/private", (message) => {
