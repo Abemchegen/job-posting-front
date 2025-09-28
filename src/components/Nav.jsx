@@ -7,7 +7,6 @@ import { Spinner } from "./Spinner";
 export default function Nav() {
   const navigate = useNavigate();
   const { isAuthenticated, user, loading } = useAuth();
-  console.log(isAuthenticated, user, loading);
   return (
     <nav className="bg-muted flex h-16 z-10 px-2 w-full justify-between items-center fixed top-0 left-0 space-x-3">
       <div>
@@ -44,7 +43,6 @@ export default function Nav() {
           </div>
         )}
       </div>
-      {loading && <Spinner />}
       {!loading && isAuthenticated && (
         <div className="flex mr-10">
           {user.role == "AGENT" && (
