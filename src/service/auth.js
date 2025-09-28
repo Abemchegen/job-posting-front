@@ -161,7 +161,7 @@ class AuthService {
   }
   async refreshToken() {
     return this.request(
-      `/users/refresh`,
+      `/users/public/refresh`,
       {
         method: "POST",
         body: JSON.stringify({}),
