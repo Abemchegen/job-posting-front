@@ -93,4 +93,3 @@ Below are screenshots captured from the app (stored in `src/assets`). Click any 
 	</figure>
 </div>
 
-If you add or rename screenshots, update these paths (or place new images in `src/assets`).
