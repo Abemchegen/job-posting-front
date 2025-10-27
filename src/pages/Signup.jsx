@@ -104,7 +104,6 @@ export default function Signup() {
       await register(submitData);
       setsubmitted(true);
     } catch (e) {
-      console.error("Error submitting", e);
       setsubmitted(false);
       setErrors({ ...errors, serverError: e.message });
     } finally {
@@ -113,7 +112,7 @@ export default function Signup() {
   };
   return (
     <div>
-  <div className="flex items-center h-full mt-16 justify-center ">
+      <div className="flex items-center h-full mt-16 justify-center ">
         <div className="w-full flex flex-col items-center space-y-3 shadow-sm bg-white p-7 rounded-2xl mb-10 max-w-lg">
           <h2 className="text-2xl text-center font-bold mb-5">
             Create an account!

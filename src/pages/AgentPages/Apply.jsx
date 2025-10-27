@@ -81,7 +81,6 @@ export default function Apply() {
 
       setsubmitted(1);
     } catch (error) {
-      console.error("Error submitting", error);
       setsubmitted(2);
     } finally {
       setIsSubmitting(false);

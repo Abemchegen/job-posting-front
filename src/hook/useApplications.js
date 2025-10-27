@@ -17,7 +17,6 @@ export const useApplications = () => {
       setJobPosts(data || []);
     } catch (err) {
       setError(err.message);
-      console.error("Error fetching job post:", err);
     } finally {
       setLoading(false);
     }
@@ -34,7 +33,6 @@ export const useApplications = () => {
       return response;
     } catch (err) {
       setError(err.message);
-      console.error("Error applying:", err);
       throw err;
     }
   };
@@ -45,7 +43,6 @@ export const useApplications = () => {
       return response;
     } catch (err) {
       setError(err.message);
-      console.error("Error deleting application:", err);
       throw err;
     }
   };
@@ -56,7 +53,6 @@ export const useApplications = () => {
       return response;
     } catch (err) {
       setError(err.message);
-      console.error("Error fething applications:", err);
       throw err;
     } finally {
       setLoading(false);
@@ -70,7 +66,6 @@ export const useApplications = () => {
       return response;
     } catch (err) {
       setError(err.message);
-      console.error("Error fetching application:", err);
       throw err;
     } finally {
       setLoading(false);
@@ -84,7 +79,6 @@ export const useApplications = () => {
       return response;
     } catch (e) {
       setError(e.message);
-      console.error("Error uploading cv:", e);
       throw e;
     } finally {
       setLoading(false);
@@ -98,7 +92,6 @@ export const useApplications = () => {
       return response;
     } catch (e) {
       setError(e.message);
-      console.error("Error updating cv:", e);
       throw e;
     } finally {
       setLoading(false);
@@ -112,7 +105,6 @@ export const useApplications = () => {
       return response;
     } catch (e) {
       setError(e.message);
-      console.error("Error deleting cv:", e);
       throw e;
     } finally {
       setLoading(false);
@@ -143,7 +135,6 @@ export const useApplications = () => {
       return data;
     } catch (err) {
       setError(err.message);
-      console.error("Error fetching posts with filters:", err);
       throw err;
     } finally {
       setLoading(false);
@@ -173,7 +164,6 @@ export const useApplications = () => {
       return data;
     } catch (err) {
       setError(err.message);
-      console.error("Error fetching applications with filters:", err);
       throw err;
     } finally {
       setLoading(false);
@@ -215,7 +205,6 @@ export const useApplication = (id) => {
         setApplication(data);
       } catch (err) {
         setError(err.message);
-        console.error("Error fetching job post:", err);
       } finally {
         setLoading(false);
       }
@@ -244,7 +233,6 @@ export const useAgentJobPost = (id) => {
         setJobPost(data);
       } catch (err) {
         setError(err.message);
-        console.error("Error fetching job post:", err);
       } finally {
         setLoading(false);
       }

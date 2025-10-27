@@ -17,7 +17,6 @@ export const useChats = () => {
       return data;
     } catch (err) {
       setError(err.message);
-      console.error("Error fetching Chats:", err);
       throw err;
     } finally {
       setLoading(false);
@@ -49,7 +48,6 @@ export const useChats = () => {
       return data;
     } catch (err) {
       setError(err.message);
-      console.error("Error fetching Chat history:", err);
       throw err;
     } finally {
       setLoading(false);
@@ -64,7 +62,6 @@ export const useChats = () => {
       return data;
     } catch (err) {
       setError(err.message);
-      console.error("Error fetching user to chat:", err);
       throw err;
     } finally {
       setLoading(false);
@@ -83,7 +80,6 @@ export const useChats = () => {
       return data;
     } catch (err) {
       setError(err.message);
-      console.error("Error fetching Chats with filters:", err);
       throw err;
     } finally {
       setLoading(false);
@@ -121,7 +117,6 @@ export const useChat = (id) => {
         setChat(data || []);
       } catch (err) {
         setError(err.message);
-        console.error("Error fetching Chat history:", err);
         throw err;
       } finally {
         setLoading(false);

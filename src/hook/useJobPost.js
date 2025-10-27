@@ -18,7 +18,6 @@ export const useJobPosts = () => {
       return data;
     } catch (err) {
       setError(err.message);
-      console.error("Error fetching job post:", err);
       throw err;
     } finally {
       setLoading(false);
@@ -122,7 +121,6 @@ export const useJobPosts = () => {
       return data;
     } catch (err) {
       setError(err.message);
-      console.error("Error fetching posts with filters:", err);
       throw err;
     } finally {
       setLoading(false);
@@ -162,7 +160,6 @@ export const useJobPost = (id) => {
         setJobPost(data);
       } catch (err) {
         setError(err.message);
-        console.error("Error fetching job post:", err);
         throw err;
       } finally {
         setLoading(false);

@@ -17,7 +17,6 @@ export const useJobs = () => {
       setJobs(data || []);
     } catch (err) {
       setError(err.message);
-      console.error("Error fetching jobs:", err);
       throw err;
     } finally {
       setLoading(false);
@@ -104,7 +103,6 @@ export const useJobs = () => {
       return data;
     } catch (err) {
       setError(err.message);
-      console.error("Error fetching jobs with filters:", err);
       throw err;
     } finally {
       setLoading(false);
@@ -144,7 +142,6 @@ export const useJob = (id) => {
         setJob(data);
       } catch (err) {
         setError(err.message);
-        console.error("Error fetching job:", err);
         throw err;
       } finally {
         setLoading(false);

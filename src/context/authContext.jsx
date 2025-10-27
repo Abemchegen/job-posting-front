@@ -19,7 +19,6 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       setError(err.message);
       setUser(null);
-      console.error(err);
       if (
         window.location.pathname !== "/" &&
         window.location.pathname !== "/login" &&
@@ -181,7 +180,6 @@ export const AuthProvider = ({ children }) => {
       return data;
     } catch (err) {
       setError(err.message);
-      console.error("Error fetching users with filters:", err);
     } finally {
       setLoading(false);
     }
